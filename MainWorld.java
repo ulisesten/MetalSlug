@@ -6,7 +6,7 @@ import Greenfoot.*;
 
 public class MainWorld extends World{
     public MainWorld(){
-    
+        int x;
     }
     
 }
