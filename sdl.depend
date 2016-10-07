@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1475599788 source:/home/boss/Documents/gitHub/MetalSlug/main.cpp
+	<stdio.h>
+	<zlib.h>
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+

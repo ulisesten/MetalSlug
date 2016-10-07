@@ -9,7 +9,10 @@ void menuPersonaje(SDL_Surface* screen,SDL_Window* window);//SelecciÃ³n de per
     void select(SDL_Surface* screen,SDL_Surface* image,int copia,int coor);
 void ToggleFullscreen(SDL_Window* window);
 
-void clark(SDL_Surface* screen, SDL_Window* window);
+void nivel1(SDL_Surface* screen,SDL_Window* window);
+void escenario1(SDL_Surface* screen,SDL_Window* window);
+void clark(SDL_Surface* screen, SDL_Window* window,int *iT,int *iP);
+void moverJugador(SDL_Event *tecla,int *x,int *y);
 
 int main ( int argc, char** argv ){
     SDL_Window* window=NULL;//Ventana
@@ -21,7 +24,7 @@ int main ( int argc, char** argv ){
             screen=SDL_GetWindowSurface(window);//Creando pantalla
 
             //menuPersonaje(screen,window);//Seleccion de personaje
-            clark(screen,window);
+            nivel1(screen,window);
 
         }else{
             printf("Error SDL_CreateWindow %s",SDL_GetError());
@@ -35,14 +38,14 @@ int main ( int argc, char** argv ){
     return 0;
 }//main()
 
-void clark(SDL_Surface* screen, SDL_Window* window){
+void clark(SDL_Surface* screen, SDL_Window* window,int *iT,int *iP){
     SDL_Surface* image;
-    //SDL_Event tecla;
-    int flag=IMG_INIT_PNG,iT=0,iP=0,tAux=17;//Iniciando soporte PNG
+    int x=80,y=300;
+    int flag=IMG_INIT_PNG,tAux=17;//Iniciando soporte PNG
     IMG_Init(flag);//Iniciando soporte IMG
 
     if((IMG_Init(flag)&flag)){//Manejo de error
-        SDL_Rect torzo[10][4],pierna[6][2],torCoor,pierCoor;
+        SDL_Rect torzo[10][5],pierna[6][2],torCoor,pierCoor;
             torzo[0][0].x=10; torzo[0][0].y=5;//Parado--------------------------
             torzo[0][0].w=35; torzo[0][0].h=35;
 
@@ -100,6 +103,7 @@ void clark(SDL_Surface* screen, SDL_Window* window){
             torzo[3][2].x=109; torzo[3][2].y=85;
             torzo[3][2].w=35; torzo[3][2].h=35;//-------------------------------
 
+            //Corregir medidas partir de aqui
             //Necesita variable tAux para compensar altura
             torzo[0][3].x=12; torzo[0][3].y=145;//Disparando arriba-------------
             torzo[0][3].w=23; torzo[0][3].h=45;
@@ -131,6 +135,27 @@ void clark(SDL_Surface* screen, SDL_Window* window){
             torzo[9][3].x=300; torzo[9][3].y=145;
             torzo[9][3].w=23; torzo[9][3].h=45;//-------------------------------
 
+            torzo[0][4].x=10; torzo[0][4].y=200;//Recargando arma-----------------
+            torzo[0][4].w=35; torzo[0][4].h=40;
+
+            torzo[1][4].x=45; torzo[1][4].y=200;
+            torzo[1][4].w=40; torzo[1][4].h=40;
+
+            torzo[2][4].x=90; torzo[2][4].y=200;
+            torzo[2][4].w=40; torzo[2][4].h=40;
+
+            torzo[3][4].x=135; torzo[3][4].y=200;
+            torzo[3][4].w=40; torzo[3][4].h=40;
+
+            torzo[4][4].x=190; torzo[4][4].y=200;
+            torzo[4][4].w=40; torzo[4][4].h=40;
+
+            torzo[5][4].x=245; torzo[5][4].y=200;
+            torzo[5][4].w=40; torzo[5][4].h=40;
+
+            torzo[6][4].x=295; torzo[6][4].y=200;
+            torzo[6][4].w=40; torzo[6][4].h=40;//-------------------------------
+
             /*pierna[0][1].x=13; pierna[0][1].y=434;//Corriendo-----------------
             pierna[0][1].w=35;  pierna[0][1].h=34;
 
@@ -147,31 +172,71 @@ void clark(SDL_Surface* screen, SDL_Window* window){
             pierna[4][1].w=35;  pierna[4][1].h=34;
 
             pierna[5][1].x=201; pierna[5][1].y=434;
-            pierna[5][1].w=35;  pierna[5][1].h=34;//----------------------------*/
+            pierna[5][1].w=35;  pierna[5][1].h=34;//--------------------------*/
 
-            torCoor.x=2; torCoor.y=20-tAux;//Torzo
-            pierCoor.x=0; pierCoor.y=41;//Piernas
+            torCoor.x=2+x; torCoor.y=20+y;//Torzo
+            pierCoor.x=0+x; pierCoor.y=41+y;//Piernas
 
         image=IMG_Load("Clark.png");//Cargando imagen
         if(image) {//Manejo de error
-            while(true){
-                if(iT==10)
-                    iT=0;
-                if(iP==6)
-                    iP=0;
-                SDL_BlitSurface(image,&pierna[iP][0],screen,&pierCoor);//Clark piernas
-                SDL_BlitSurface(image,&torzo[iT][3],screen,&torCoor);//Clark torzo
-                SDL_UpdateWindowSurface(window);//Refrescando pantalla
-                SDL_Delay(400);
-                iT++; iP++;
-            }
+            if(*iT==4)
+                *iT=0;
+            if(*iP==6)
+                *iP=0;
+            SDL_BlitSurface(image,&pierna[0][0],screen,&pierCoor);//Clark piernas
+            SDL_BlitSurface(image,&torzo[*iT][0],screen,&torCoor);//Clark torzo
+            SDL_UpdateWindowSurface(window);//Refrescando pantalla
+            SDL_Delay(300);
+            (*iT)++; (*iP)++;
         }else{printf("IMG_Load: %s\n", IMG_GetError());}
     }else{
         printf("Error IMG_Init %s",IMG_GetError());
     }
 }
 
-void menuPersonaje(SDL_Surface* screen,SDL_Window* window){
+void moverJugador(SDL_Event tecla,int *x,int *y){//Funcion para mover jugador
+    while(true){
+        if(SDL_PollEvent(&tecla)){//Capturando teclas
+            if(tecla.type==SDL_QUIT)
+                exit(0);
+            if(tecla.type==SDL_KEYDOWN){
+                if(tecla.key.keysym.sym==SDLK_ESCAPE)//Salir
+                    exit(0);
+                if(tecla.key.keysym.sym==SDLK_RIGHT){//Derecha
+                    x+=5;
+                }
+                if(tecla.key.keysym.sym==SDLK_LEFT){//Izquierda
+                    x-=5;
+                }
+                if(tecla.key.keysym.sym==SDLK_f){//Pantalla completa
+
+                }
+            }
+        }
+    }
+}
+
+void nivel1(SDL_Surface* screen,SDL_Window* window){
+    int *iT,*iP;
+    int a1=0,a2=0;
+    iT=&a1;
+    iP=&a2;
+    while(true){
+        escenario1(screen,window);
+        clark(screen,window,iT,iP);
+    }
+}
+
+void escenario1(SDL_Surface* screen,SDL_Window* window){
+    SDL_Surface* imagen;
+    int flag=IMG_INIT_PNG,tAux=17;//Iniciando soporte PNG
+    IMG_Init(flag);//Iniciando soporte IMG
+
+    imagen=IMG_Load("mision1.png");//Cargando imagen
+    SDL_BlitSurface(imagen,NULL,screen,NULL);
+}
+
+void menuPersonaje(SDL_Surface* screen,SDL_Window* window){//Funcion para elegir personaje
     SDL_Surface* image=NULL;//Puntero a imagen
     SDL_Event tecla;
     int arr[4],copia[4],i=0;
