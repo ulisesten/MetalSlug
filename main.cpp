@@ -10,10 +10,10 @@ void menuPersonaje(SDL_Surface* screen,SDL_Window* window);//SelecciÃ³n de per
 void ToggleFullscreen(SDL_Window* window);
 
 void nivel1(SDL_Surface* screen,SDL_Window* window);
-void escenario1(SDL_Surface* screen,SDL_Window* window);
-void clark(SDL_Surface* screen, SDL_Window* window,int *iT,int *iP);
-void moverJugador(SDL_Event *tecla,int *x,int *y);
-
+void escenario1(SDL_Surface* screen,SDL_Window* window,SDL_Surface* scene);
+void clark(SDL_Surface* screen,SDL_Window* window,SDL_Surface* player,int *iT,int *iP,int x,int y);
+void clarkRun(SDL_Surface* screen,SDL_Window* window,SDL_Surface* player,int *iT,int *iP,int x,int y);
+//MAIN
 int main ( int argc, char** argv ){
     SDL_Window* window=NULL;//Ventana
     SDL_Surface* screen=NULL;//Pantalla
@@ -36,16 +36,10 @@ int main ( int argc, char** argv ){
     IMG_Quit();
     SDL_Quit();//Cerrando SDL
     return 0;
-}//main()
+}//MAIN
 
-void clark(SDL_Surface* screen, SDL_Window* window,int *iT,int *iP){
-    SDL_Surface* image;
-    int x=80,y=300;
-    int flag=IMG_INIT_PNG,tAux=17;//Iniciando soporte PNG
-    IMG_Init(flag);//Iniciando soporte IMG
-
-    if((IMG_Init(flag)&flag)){//Manejo de error
-        SDL_Rect torzo[10][5],pierna[6][2],torCoor,pierCoor;
+void clark(SDL_Surface* screen, SDL_Window* window,SDL_Surface* player,int *iT,int *iP,int x,int y){
+        SDL_Rect torzo[4][1],pierna[1][1],torCoor,pierCoor;
             torzo[0][0].x=10; torzo[0][0].y=5;//Parado--------------------------
             torzo[0][0].w=35; torzo[0][0].h=35;
 
@@ -61,7 +55,7 @@ void clark(SDL_Surface* screen, SDL_Window* window,int *iT,int *iP){
             pierna[0][0].x=145; pierna[0][0].y=20;
             pierna[0][0].w=35; pierna[0][0].h=34;//-----------------------------
 
-            torzo[0][1].x=19; torzo[0][1].y=50;//Disparando adelante------------
+            /*torzo[0][1].x=19; torzo[0][1].y=50;//Disparando adelante------------
             torzo[0][1].w=55; torzo[0][1].h=30;
 
             torzo[1][1].x=85; torzo[1][1].y=50;
@@ -154,86 +148,123 @@ void clark(SDL_Surface* screen, SDL_Window* window,int *iT,int *iP){
             torzo[5][4].w=40; torzo[5][4].h=40;
 
             torzo[6][4].x=295; torzo[6][4].y=200;
-            torzo[6][4].w=40; torzo[6][4].h=40;//-------------------------------
-
-            /*pierna[0][1].x=13; pierna[0][1].y=434;//Corriendo-----------------
-            pierna[0][1].w=35;  pierna[0][1].h=34;
-
-            pierna[1][1].x=57; pierna[1][1].y=434;
-            pierna[1][1].w=35;  pierna[1][1].h=34;
-
-            pierna[2][1].x=101; pierna[2][1].y=434;
-            pierna[2][1].w=35;  pierna[2][1].h=34;
-
-            pierna[3][1].x=133; pierna[3][1].y=434;
-            pierna[3][1].w=35;  pierna[3][1].h=34;
-
-            pierna[4][1].x=167; pierna[4][1].y=434;
-            pierna[4][1].w=35;  pierna[4][1].h=34;
-
-            pierna[5][1].x=201; pierna[5][1].y=434;
-            pierna[5][1].w=35;  pierna[5][1].h=34;//--------------------------*/
+            torzo[6][4].w=40; torzo[6][4].h=40;//-----------------------------*/
 
             torCoor.x=2+x; torCoor.y=20+y;//Torzo
             pierCoor.x=0+x; pierCoor.y=41+y;//Piernas
 
-        image=IMG_Load("Clark.png");//Cargando imagen
-        if(image) {//Manejo de error
+        if(player) {//Manejo de error
             if(*iT==4)
                 *iT=0;
-            if(*iP==6)
-                *iP=0;
-            SDL_BlitSurface(image,&pierna[0][0],screen,&pierCoor);//Clark piernas
-            SDL_BlitSurface(image,&torzo[*iT][0],screen,&torCoor);//Clark torzo
+            //if(*iP==6)
+              //  *iP=0;
+            SDL_BlitSurface(player,&pierna[0][0],screen,&pierCoor);//Clark piernas
+            SDL_BlitSurface(player,&torzo[*iT][0],screen,&torCoor);//Clark torzo
             SDL_UpdateWindowSurface(window);//Refrescando pantalla
-            SDL_Delay(300);
-            (*iT)++; (*iP)++;
         }else{printf("IMG_Load: %s\n", IMG_GetError());}
-    }else{
-        printf("Error IMG_Init %s",IMG_GetError());
-    }
+}
+/**Funciona pero va demasiado rápido. Necesita ajustes de tiempo*/
+void clarkRun(SDL_Surface* screen, SDL_Window* window,SDL_Surface* player,int *iT,int *iP,int x,int y){
+        SDL_Rect torzo[4][1],pierna[6][1],torCoor,pierCoor;
+            torzo[0][0].x=10; torzo[0][0].y=5;//Parado--------------------------
+            torzo[0][0].w=35; torzo[0][0].h=35;
+
+            torzo[1][0].x=43; torzo[1][0].y=5;
+            torzo[1][0].w=35; torzo[1][0].h=35;
+
+            torzo[2][0].x=76; torzo[2][0].y=5;
+            torzo[2][0].w=35; torzo[2][0].h=35;
+
+            torzo[3][0].x=109; torzo[3][0].y=5;
+            torzo[3][0].w=35; torzo[3][0].h=35;
+            //Corriendo---------------------------------------------------------
+            pierna[0][0].x=13; pierna[0][0].y=434;
+            pierna[0][0].w=35; pierna[0][0].h=34;
+
+            pierna[1][0].x=57; pierna[1][0].y=434;
+            pierna[1][0].w=35; pierna[1][0].h=34;
+
+            pierna[2][0].x=101; pierna[2][0].y=434;
+            pierna[2][0].w=35;  pierna[2][0].h=34;
+
+            pierna[3][0].x=133; pierna[3][0].y=434;
+            pierna[3][0].w=35;  pierna[3][0].h=34;
+
+            pierna[4][0].x=167; pierna[4][0].y=434;
+            pierna[4][0].w=35;  pierna[4][0].h=34;
+
+            pierna[5][0].x=201; pierna[5][0].y=434;
+            pierna[5][0].w=35;  pierna[5][0].h=34;//----------------------------
+
+            torCoor.x=2+x; torCoor.y=20+y;//Torzo
+            pierCoor.x=0+x; pierCoor.y=41+y;//Piernas
+
+        if(player) {//Manejo de error
+            if(*iT>=4){
+                *iT=0;
+            }
+            if(*iP>=6){
+                *iP=0;
+            }
+            SDL_BlitSurface(player,&pierna[*iP][0],screen,&pierCoor);//Clark piernas
+            SDL_BlitSurface(player,&torzo[*iT][0],screen,&torCoor);//Clark torzo
+            SDL_UpdateWindowSurface(window);//Refrescando pantalla
+        }else{printf("IMG_Load: %s\n", IMG_GetError());}
 }
 
-void moverJugador(SDL_Event tecla,int *x,int *y){//Funcion para mover jugador
+void nivel1(SDL_Surface* screen,SDL_Window* window){
+    SDL_Event tecla;
+    int *iT,*iP;
+    int a1=0,a2=0;
+    int x=100,y=140;
+    iT=&a1;
+    iP=&a2;
+    unsigned int lastTime=0,currentTime;
+
+    SDL_Surface* scene;
+    SDL_Surface* player;
+    int flag=IMG_INIT_PNG;//Iniciando soporte png
+    IMG_Init(flag);
+
+    scene=IMG_Load("mision1.png");//Cargando backgrounds
+    player=IMG_Load("clark.png");//Cargando jugador
+
     while(true){
         if(SDL_PollEvent(&tecla)){//Capturando teclas
             if(tecla.type==SDL_QUIT)
                 exit(0);
+            else
             if(tecla.type==SDL_KEYDOWN){
                 if(tecla.key.keysym.sym==SDLK_ESCAPE)//Salir
                     exit(0);
-                if(tecla.key.keysym.sym==SDLK_RIGHT){//Derecha
+                else if(tecla.key.keysym.sym==SDLK_RIGHT){//Derecha
+                    clarkRun(screen,window,player,iT,iP,x,y);
                     x+=5;
                 }
-                if(tecla.key.keysym.sym==SDLK_LEFT){//Izquierda
+                else if(tecla.key.keysym.sym==SDLK_LEFT){//Izquierda
                     x-=5;
                 }
-                if(tecla.key.keysym.sym==SDLK_f){//Pantalla completa
+                else if(tecla.key.keysym.sym==SDLK_f){//Pantalla completa
 
                 }
             }
+        }else{
+            /**Si no se oprime ninguna tecla se ejecutan las siguientes funciones*/
+            clark(screen,window,player,iT,iP,x,y);
+
         }
-    }
+        /**Estas funciones se ejecutan siempre*/
+        escenario1(screen,window,scene);
+        currentTime = SDL_GetTicks();
+        if(currentTime > lastTime + 400){
+            (*iT)++; (*iP)++;
+            lastTime = currentTime;
+        }
+    }//while
 }
 
-void nivel1(SDL_Surface* screen,SDL_Window* window){
-    int *iT,*iP;
-    int a1=0,a2=0;
-    iT=&a1;
-    iP=&a2;
-    while(true){
-        escenario1(screen,window);
-        clark(screen,window,iT,iP);
-    }
-}
-
-void escenario1(SDL_Surface* screen,SDL_Window* window){
-    SDL_Surface* imagen;
-    int flag=IMG_INIT_PNG,tAux=17;//Iniciando soporte PNG
-    IMG_Init(flag);//Iniciando soporte IMG
-
-    imagen=IMG_Load("mision1.png");//Cargando imagen
-    SDL_BlitSurface(imagen,NULL,screen,NULL);
+void escenario1(SDL_Surface* screen,SDL_Window* window,SDL_Surface* scene){
+    SDL_BlitSurface(scene,NULL,screen,NULL);
 }
 
 void menuPersonaje(SDL_Surface* screen,SDL_Window* window){//Funcion para elegir personaje
@@ -280,7 +311,7 @@ void menuPersonaje(SDL_Surface* screen,SDL_Window* window){//Funcion para elegir
     }else{
         printf("Error IMG_Init %s",IMG_GetError());
     }
-}
+}//******************
 
 void ToggleFullscreen(SDL_Window* window){
     Uint32 FullscreenFlag = SDL_WINDOW_FULLSCREEN;
