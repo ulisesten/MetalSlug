@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Uno
+Exec=Uno
+Icon=Uno/Uno.png
+Terminal=false
+Type=Application
+X-Ubuntu-Touch=true

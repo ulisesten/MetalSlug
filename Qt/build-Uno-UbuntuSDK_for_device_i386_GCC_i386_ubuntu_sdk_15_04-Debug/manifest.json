@@ -1,0 +1,16 @@
+{
+    "name": "uno.username",
+    "description": "description of Uno",
+    "architecture": "i386",
+    "title": "Uno",
+    "hooks": {
+        "Uno": {
+            "apparmor": "Uno/Uno.apparmor",
+            "desktop":  "Uno/Uno.desktop"
+        }
+    },
+    "version": "0.1",
+    "maintainer": "Firstname Surname <your@mail.com>",
+    "framework" : "ubuntu-sdk-15.04.6"
+}
+
