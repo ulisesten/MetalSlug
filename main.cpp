@@ -30,6 +30,8 @@ void clarkStand(GRAPH g,int *iT,int *iP,int x,int y,SDL_Rect torzo[],SDL_Rect pi
 void clarkRun(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]);
 void clarkStandBack(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]);
 void clarkRunBack(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]);
+
+void altura(int piso[]);
 //MAIN
 int main ( int argc, char** argv ){
     SDL_Window* window=NULL;//Ventana
@@ -310,8 +312,8 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
     GRAPH g;
     SDL_Event tecla;
     int iT=0,iP=0;
-    int a1=0,a2=0;
-    int x=100,y=140;
+    int x=100;
+    int h=59;
     unsigned int lastTime=0,currentTime=0,deltaTime=0;
     int direccion=0;
 
@@ -319,15 +321,20 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
     SDL_Surface* player;
     SDL_Surface* playerBack;
 
-    /**Arrays*/
-    SDL_Rect csT[4],csP[1];
-    SDL_Rect csbT[4],csbP[1];
-    SDL_Rect crT[4],crP[6];
-    SDL_Rect crbT[4],crbP[6];
+    /**Array declaration*/
+    SDL_Rect csT[4],csP[1];//clarkStan array
+    SDL_Rect csbT[4],csbP[1];//clarkStandBack array
+    SDL_Rect crT[4],crP[6];//clarkRun arr
+    SDL_Rect crbT[4],crbP[6];//clarkRunBack arr
+    int piso[210];
+
+    /**Array definition*/
     clarkStandArr(csT,csP);
     clarkStandBackArr(csbT,csbP);
     clarkRunArr(crT,crP);
     clarkRunBackArr(crbT,crbP);
+
+    altura(piso);
 
     int flag=IMG_INIT_PNG;//Iniciando soporte png
     IMG_Init(flag);
@@ -351,14 +358,16 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
                         exit(0);
                     break;
                     case SDLK_RIGHT://Derecha
-                        clarkRun(g,iT,iP,x,y,crT,crP);
+                        clarkRun(g,iT,iP,x,piso[h],crT,crP);
                         direccion=0;
                         x+=2;
+                        h++;
                     break;
                     case SDLK_LEFT://Izquierda
-                    clarkRunBack(g,iT,iP,x,y,crbT,crbP);
-                    direccion=-1;
-                    x-=2;
+                        clarkRunBack(g,iT,iP,x,piso[h],crbT,crbP);
+                        direccion=-1;
+                        x-=2;
+                        h--;
                     break;
                 }
             }
@@ -370,13 +379,246 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
             if(iP>=6){iP=0;}//Loop de sprite
             if(iT>=4){iT=0;}//Loop de sprite
             if(direccion==0){
-                clarkStand(g,&iT,&iP,x,y,csT,csP);
+                clarkStand(g,&iT,&iP,x,piso[h],csT,csP);
             }else{
-                clarkStandBack(g,iT,iP,x,y,csbT,csbP);//
+                clarkStandBack(g,iT,iP,x,piso[h],csbT,csbP);//
             }
             lastTime = currentTime;//Control de tiempo
         }
     }//while
+}
+
+void altura(int piso[]){
+    piso[0]=122;
+    piso[1]=122;
+    piso[2]=122;
+    piso[3]=122;
+    piso[4]=121;
+    piso[5]=121;
+    piso[6]=121;
+    piso[7]=121;
+    piso[8]=120;
+    piso[9]=120;
+    //10
+    piso[10]=120;
+    piso[11]=120;
+    piso[12]=119;
+    piso[13]=119;
+    piso[14]=119;
+    piso[15]=119;
+    piso[16]=118;
+    piso[17]=118;
+    piso[18]=118;
+    piso[19]=118;
+    //20
+    piso[20]=117;
+    piso[21]=117;
+    piso[22]=117;
+    piso[23]=117;
+    piso[24]=116;
+    piso[25]=116;
+    piso[26]=116;
+    piso[27]=116;
+    piso[28]=115;
+    piso[29]=115;
+    //30
+    piso[30]=115;
+    piso[31]=115;
+    piso[32]=114;
+    piso[33]=114;
+    piso[34]=114;
+    piso[35]=114;
+    piso[36]=113;
+    piso[37]=113;
+    piso[38]=113;
+    piso[39]=112;
+    //40
+    piso[40]=112;
+    piso[41]=112;
+    piso[42]=111;
+    piso[43]=111;
+    piso[44]=111;
+    piso[45]=110;
+    piso[46]=110;
+    piso[47]=110;
+    piso[48]=109;
+    piso[49]=109;
+    //50
+    piso[50]=109;
+    piso[51]=108;
+    piso[52]=108;
+    piso[53]=108;
+    piso[54]=107;
+    piso[55]=107;
+    piso[56]=107;
+    piso[57]=106;
+    piso[58]=106;
+    piso[59]=106;
+    //60
+    piso[60]=105;
+    piso[61]=105;
+    piso[62]=105;
+    piso[63]=104;
+    piso[64]=104;
+    piso[65]=104;
+    piso[66]=103;
+    piso[67]=103;
+    piso[68]=103;
+    piso[69]=102;
+    //70
+    piso[70]=102;
+    piso[71]=102;
+    piso[72]=101;
+    piso[73]=101;
+    piso[74]=101;
+    piso[75]=102;
+    piso[76]=104;
+    piso[77]=104;
+    piso[78]=105;
+    piso[79]=105;
+    //80
+    piso[80]=105;
+    piso[81]=106;
+    piso[82]=106;
+    piso[83]=107;
+    piso[84]=107;
+    piso[85]=107;
+    piso[86]=108;
+    piso[87]=108;
+    piso[88]=108;
+    piso[89]=109;
+    //90
+    piso[90]=109;
+    piso[91]=109;
+    piso[92]=110;
+    piso[93]=110;
+    piso[94]=110;
+    piso[95]=111;
+    piso[96]=111;
+    piso[97]=111;
+    piso[98]=112;
+    piso[99]=112;//Hasta aqui bien
+    //100
+    piso[100]=112;
+    piso[101]=113;
+    piso[102]=113;
+    piso[103]=114;
+    piso[104]=114;
+    piso[105]=115;
+    piso[106]=115;
+    piso[107]=116;
+    piso[108]=116;
+    piso[109]=117;
+    //110
+    piso[110]=117;
+    piso[111]=118;
+    piso[112]=118;
+    piso[113]=119;
+    piso[114]=119;
+    piso[115]=120;
+    piso[116]=120;
+    piso[117]=120;
+    piso[118]=121;
+    piso[119]=121;
+    //120
+    piso[120]=121;
+    piso[121]=122;
+    piso[122]=122;
+    piso[123]=123;
+    piso[124]=123;
+    piso[125]=124;
+    piso[126]=124;
+    piso[127]=125;
+    piso[128]=125;
+    piso[129]=125;
+    //130
+    piso[130]=126;
+    piso[131]=126;
+    piso[132]=126;
+    piso[133]=127;
+    piso[134]=127;
+    piso[135]=127;
+    piso[136]=128;
+    piso[137]=128;
+    piso[138]=128;
+    piso[139]=129;
+    //140
+    piso[140]=129;
+    piso[141]=129;
+    piso[142]=130;
+    piso[143]=130;
+    piso[144]=130;
+    piso[145]=131;
+    piso[146]=131;
+    piso[147]=131;
+    piso[148]=132;
+    piso[149]=132;
+    //150
+    piso[150]=132;
+    piso[151]=132;
+    piso[152]=132;
+    piso[153]=132;
+    piso[154]=132;
+    piso[155]=132;
+    piso[156]=132;
+    piso[157]=132;
+    piso[158]=132;
+    piso[159]=132;//bien
+    //160
+    piso[160]=132;
+    piso[161]=132;
+    piso[162]=132;
+    piso[163]=131;
+    piso[164]=131;
+    piso[165]=131;
+    piso[166]=131;
+    piso[167]=130;
+    piso[168]=130;
+    piso[169]=130;
+    //170
+    piso[170]=130;
+    piso[171]=129;
+    piso[172]=129;
+    piso[173]=129;
+    piso[174]=128;
+    piso[175]=128;
+    piso[176]=128;
+    piso[177]=127;
+    piso[178]=127;
+    piso[179]=127;
+    //180
+    piso[180]=126;
+    piso[181]=126;
+    piso[182]=126;
+    piso[183]=125;
+    piso[184]=125;
+    piso[185]=125;
+    piso[186]=124;
+    piso[187]=124;
+    piso[188]=124;
+    piso[189]=123;
+    //190
+    piso[190]=123;
+    piso[191]=123;
+    piso[192]=122;
+    piso[193]=122;
+    piso[194]=122;
+    piso[195]=121;
+    piso[196]=121;
+    piso[197]=121;
+    piso[198]=120;
+    piso[199]=120;
+    //200
+    piso[200]=120;
+    piso[201]=119;
+    piso[202]=119;
+    piso[203]=119;
+    piso[204]=118;
+    piso[205]=118;
+    piso[206]=118;
+    piso[207]=117;
+    piso[208]=117;
+    piso[209]=132;
 }
 
 void escenario1(SDL_Surface* screen,SDL_Window* window,SDL_Surface* scene){
