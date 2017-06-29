@@ -56,10 +56,7 @@ int main ( int argc, char** argv ){
     SDL_Quit();//Cerrando SDL
     return 0;
 }//MAIN
-
 /**Funciones Arrays*/
-
-
 void clarkStandArr(SDL_Rect torzo[4],SDL_Rect pierna[1]){
     torzo[0].x=10; torzo[0].y=5;//Parado--------------------------
     torzo[0].w=35; torzo[0].h=35;
@@ -288,7 +285,7 @@ void clarkRun(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna
     pierCoor.x=0+x; pierCoor.y=41+y;//Piernas
 
     if(g.player) {//Manejo de error
-        printf("%d , %d",iT,iP);
+        //printf("%d , %d",iT,iP);
         SDL_BlitSurface(g.player,&pierna[iP],g.screen,&pierCoor);//Clark piernas
         SDL_BlitSurface(g.player,&torzo[0],g.screen,&torCoor);//Clark torzo
         SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
@@ -348,28 +345,54 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
     g.player=player;
     g.playerBack=playerBack;
 
+    bool key_left = false;
+    bool key_right = false;
+    bool key_down = false;
+    bool key_up = false;
+
     while(true){
         currentTime = SDL_GetTicks();
-        deltaTime=(currentTime-lastTime)/1000.0f;
+        deltaTime=(currentTime-lastTime)/50000.0f;//control de tiempo
         if(SDL_PollEvent(&tecla)){//Capturando teclas
-            if(tecla.type==SDL_KEYDOWN){
+            if(tecla.type == SDL_QUIT){
+                exit(0);//cerrando
+            }
+            if(tecla.type==SDL_KEYDOWN){//Presionando tecla
                 switch(tecla.key.keysym.sym){//Salir
-                    case SDLK_ESCAPE:
-                        exit(0);
-                    break;
                     case SDLK_RIGHT://Derecha
-                        clarkRun(g,iT,iP,x,piso[h],crT,crP);
-                        direccion=0;
-                        x+=2;
-                        h++;
+                        key_right = true;
                     break;
                     case SDLK_LEFT://Izquierda
-                        clarkRunBack(g,iT,iP,x,piso[h],crbT,crbP);
-                        direccion=-1;
-                        x-=2;
-                        h--;
+                        key_left = true;
                     break;
                 }
+            }
+            if(tecla.type==SDL_KEYUP){//Soltando tecla
+                switch(tecla.key.keysym.sym){//Salir
+                    case SDLK_RIGHT://Derecha
+                        key_right = false;
+                    break;
+                    case SDLK_LEFT://Izquierda
+                        key_left = false;
+                    break;
+                }
+            }
+        }
+
+        if(key_right){
+                clarkRun(g,iT,iP,x,piso[h],crT,crP);
+                direccion=0;
+                if(currentTime>lastTime+50){
+                x+=1;
+                h++;//Arreglo de altura
+              }
+        }
+        if(key_left){
+            clarkRunBack(g,iT,iP,x,piso[h],crbT,crbP);
+            direccion=-1;
+            if(currentTime>lastTime+50){
+            x-=1;
+            h--;//Arreglo de altura
             }
         }
         /**Estas funciones se ejecutan siempre*/
