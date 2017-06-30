@@ -14,6 +14,6 @@ Abrir una terminal en este directorio e introducir el siguiente comando:
 
     ./build.sh
 
-Ejecutar:
+## Ejecutar:
 
     ./MetalSlug
