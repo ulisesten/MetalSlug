@@ -3,28 +3,37 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-
 typedef struct{
     SDL_Window* window;
     SDL_Surface* screen;
     SDL_Surface* player;
     SDL_Surface* playerBack;
 }GRAPH;
+//Escenarios
+typedef struct{
+    SDL_Window* window;
+    SDL_Surface* screen;
+    SDL_Surface* scene;
+    int x;
+    int xMountain;
+    int xHorizon;
+}SCENE;
 
 void menuPersonaje(SDL_Surface* screen,SDL_Window* window);//SelecciÃ³n de personaje
     void elementosMenu(SDL_Surface* screen,SDL_Surface* image);
     void animEscotilla(SDL_Surface* screen,SDL_Surface* image);
     void select(SDL_Surface* screen,SDL_Surface* image,int copia,int coor);
-void ToggleFullscreen(SDL_Window* window);
+void ToggleFullscreen(SDL_Window* window,SDL_Surface* screen);
 
 void nivel1(SDL_Surface* screen,SDL_Window* window);
-void escenario1(SDL_Surface* screen,SDL_Window* window,SDL_Surface* scene);
+void escenario1(SCENE scene);
 
 /**Arrays*/
 void clarkStandArr(SDL_Rect torzo[4],SDL_Rect pierna[4]);
 void clarkStandBackArr(SDL_Rect torzo[4],SDL_Rect pierna[4]);
 void clarkRunArr(SDL_Rect torzo[4],SDL_Rect pierna[4]);
 void clarkRunBackArr(SDL_Rect torzo[4],SDL_Rect pierna[4]);
+void clarkJump(int piso[]);
 /**Funciones Movimiento*/
 void clarkStand(GRAPH g,int *iT,int *iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]);
 void clarkRun(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]);
@@ -38,7 +47,7 @@ int main ( int argc, char** argv ){
     SDL_Surface* screen=NULL;//Pantalla
 
     if(SDL_Init(SDL_INIT_VIDEO)>-1){//Iniciando soporte de video
-        window=SDL_CreateWindow("MS",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,640,480,SDL_WINDOW_SHOWN);//Creando ventana
+        window=SDL_CreateWindow("Metal Slug",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,502,238,SDL_WINDOW_SHOWN);//Creando ventana
         if(window){//Manejo de error
             screen=SDL_GetWindowSurface(window);//Creando pantalla
 
@@ -305,12 +314,28 @@ void clarkRunBack(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pi
     }else{printf("IMG_Load: %s\n", IMG_GetError());}
 }
 
+void ToggleFullscreen(SDL_Window* window,SDL_Surface* screen){
+    //int flags = SDL_BASE_FLAGS | (sdl->window_fullscreen ? SDL_FULLSCREEN : 0);
+    Uint32 FullscreenFlag = SDL_WINDOW_FULLSCREEN;
+    bool IsFullscreen = SDL_GetWindowFlags(window) & FullscreenFlag;
+    screen=SDL_GetWindowSurface(window);
+
+    int res=SDL_SetWindowFullscreen(window,IsFullscreen);
+    if(res==0){
+        printf("Succes! %s\n",SDL_GetError());
+    }else{
+        printf("Error");
+    }
+    SDL_ShowCursor(IsFullscreen);
+}
+
 void nivel1(SDL_Surface* screen,SDL_Window* window){
     GRAPH g;
+    SCENE move;
     SDL_Event tecla;
-    int iT=0,iP=0;
-    int x=0;
-    int h=0;
+    int iT=0,iP=0,iS=0;
+    int x=-20;//Posición mínima en x
+    int h=0;//Indice de arreglo altura
     unsigned int lastTime=0,currentTime=0,deltaTime=0;
     int direccion=0;
 
@@ -323,7 +348,8 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
     SDL_Rect csbT[4],csbP[1];//clarkStandBack array
     SDL_Rect crT[4],crP[6];//clarkRun arr
     SDL_Rect crbT[4],crbP[6];//clarkRunBack arr
-    int piso[430];
+    int piso[519];
+    int salto[51];
 
     /**Array definition*/
     clarkStandArr(csT,csP);
@@ -332,6 +358,7 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
     clarkRunBackArr(crbT,crbP);
 
     altura(piso);
+    clarkJump(salto);
 
     int flag=IMG_INIT_PNG;//Iniciando soporte png
     IMG_Init(flag);
@@ -345,10 +372,18 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
     g.player=player;
     g.playerBack=playerBack;
 
+    move.window=window;
+    move.screen=screen;
+    move.scene=scene;
+    move.x=0;
+    move.xMountain=0;
+    move.xHorizon=0;
+
     bool key_left = false;
     bool key_right = false;
     bool key_down = false;
     bool key_up = false;
+    bool jump = false;
 
     while(true){
         currentTime = SDL_GetTicks();
@@ -365,6 +400,12 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
                     case SDLK_LEFT://Izquierda
                         key_left = true;
                     break;
+                    case SDLK_f://Pantalla completa
+                        ToggleFullscreen(g.window,g.screen);//Necesita trabajo
+                    break;
+                    case SDLK_s:
+                        jump = true;
+                    break;
                 }
             }
             if(tecla.type==SDL_KEYUP){//Soltando tecla
@@ -378,157 +419,239 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
                 }
             }
         }
-
+        /***Acciones de eventos */
         if(key_right){
-                clarkRun(g,iT,iP,x,piso[h],crT,crP);
-                direccion=0;
-                if(currentTime>lastTime+50){
-                x+=1;
-                h++;//Arreglo de altura
-                if(h <= 209){
-                  printf("piso[%d]=%d;\n",h,piso[h]);
+            if(!jump) clarkRun(g,iT,iP,x,piso[h],crT,crP);
+            direccion=0;
+            if(currentTime>lastTime+50){
+                if(x<400){
+                    x++;//Moviendonos horizontalmente
+                }else{
+                    move.x++;/**Trabajando*/
+                }
+                if(h < 519){//Límite de arreglo
+                    h++;//Arreglo de altura
+                }
+            }
+            //printf("%d\n",h);
+        }else if(key_left){
+            if(!jump) clarkRunBack(g,iT,iP,x,piso[h],crbT,crbP);
+            direccion=-1;//Dirección del jugador izquierda/derecha
+            if(currentTime>lastTime+50){
+                if(h > 0){
+                    x--;//Retrocediendo
+                    h--;//Arreglo de altura
+                }
+            }
+        }else{
+            if(!jump){
+                if(direccion==0){
+                    clarkStand(g,&iT,&iP,x,piso[h],csT,csP);
+                }else{
+                    clarkStandBack(g,iT,iP,x,piso[h],csbT,csbP);//
                 }
             }
         }
-        if(key_left){
-            clarkRunBack(g,iT,iP,x,piso[h],crbT,crbP);
-            direccion=-1;
+
+        if(jump){//SALTANDO
             if(currentTime>lastTime+50){
-            x-=1;
-            h--;//Arreglo de altura
+            if(direccion==0){
+                clarkStand(g,&iT,&iP,x,piso[h]-salto[iS],csT,csP);
+                //x++; h++;
+            }else{
+                clarkStandBack(g,iT,iP,x,piso[h]-salto[iS],csbT,csbP);//
+                //x--; h--;
+            }
+            iS++;//indice array salto
+            if(iS>=51){//Límite de array salto
+                jump = false;//Términa salto
+                iS = 0;//Reiniciando indice
+            }
             }
         }
         /**Estas funciones se ejecutan siempre*/
-        escenario1(screen,window,scene);
+        escenario1(move);
         if(currentTime>lastTime+100){
             iT++; iP++;//Numero de sprite
             if(iP>=6){iP=0;}//Loop de sprite
             if(iT>=4){iT=0;}//Loop de sprite
-            if(direccion==0){
-                clarkStand(g,&iT,&iP,x,piso[h],csT,csP);
-            }else{
-                clarkStandBack(g,iT,iP,x,piso[h],csbT,csbP);//
-            }
             lastTime = currentTime;//Control de tiempo
         }
     }//while
 }
 
+void clarkJump(int salto[]){
+    salto[0]=0;
+    salto[1]=4;
+    salto[2]=8;
+    salto[3]=12;
+    salto[4]=17;
+    salto[5]=21;
+    salto[6]=25;
+    salto[7]=28;
+    salto[8]=31;
+    salto[9]=34;
+    salto[10]=37;
+    salto[11]=40;
+    salto[12]=43;
+    salto[13]=45;
+    salto[14]=47;
+    salto[15]=49;
+    salto[16]=51;
+    salto[17]=52;
+    salto[18]=53;
+    salto[19]=54;
+    salto[20]=55;
+    salto[21]=56;
+    salto[22]=57;
+    salto[23]=58;
+    salto[24]=59;
+    salto[25]=59;/////
+
+    salto[26]=59;
+    salto[27]=59;
+    salto[28]=58;
+    salto[29]=57;
+    salto[30]=56;
+    salto[31]=55;
+    salto[32]=54;
+    salto[33]=53;
+    salto[34]=52;
+    salto[35]=51;
+    salto[36]=49;
+    salto[37]=47;
+    salto[38]=45;
+    salto[39]=43;
+    salto[40]=40;
+    salto[41]=37;
+    salto[42]=34;
+    salto[43]=31;
+    salto[44]=28;
+    salto[45]=25;
+    salto[46]=21;
+    salto[47]=17;
+    salto[48]=12;
+    salto[49]=8;
+    salto[50]=4;
+    salto[51]=0;
+}
+
 void altura(int piso[]){
-piso[0]=122;
-piso[1]=122;
-piso[2]=122;
-piso[3]=122;
-piso[4]=122;
-piso[5]=122;
-piso[6]=122;
-piso[7]=121;
-piso[8]=121;
-piso[9]=121;
-piso[10]=121;
-piso[11]=121;
-piso[12]=121;
-piso[13]=121;
-piso[14]=121;
-piso[15]=120;
-piso[16]=120;
-piso[17]=120;
-piso[18]=120;
-piso[19]=120;
-piso[20]=120;
-piso[21]=120;
-piso[22]=120;
-piso[23]=119;
-piso[24]=119;
-piso[25]=119;
-piso[26]=119;
-piso[27]=119;
-piso[28]=119;
-piso[29]=119;
-piso[30]=119;
-piso[31]=118;
-piso[32]=118;
-piso[33]=118;
-piso[34]=118;
-piso[35]=118;
-piso[36]=118;
-piso[37]=118;
-piso[38]=118;
-piso[39]=117;
-piso[40]=117;
-piso[41]=117;
-piso[42]=117;
-piso[43]=117;
-piso[44]=117;
-piso[45]=117;
-piso[46]=117;
-piso[47]=116;
-piso[48]=116;
-piso[49]=116;
-piso[50]=116;
-piso[51]=116;
-piso[52]=116;
-piso[53]=116;
-piso[54]=116;
-piso[55]=115;
-piso[56]=115;
-piso[57]=115;
-piso[58]=115;
-piso[59]=115;
-piso[60]=115;
-piso[61]=115;
-piso[62]=115;
-piso[63]=114;
-piso[64]=114;
-piso[65]=114;
-piso[66]=114;
-piso[67]=114;
-piso[68]=114;
-piso[69]=114;
-piso[70]=114;
-piso[71]=113;
-piso[72]=113;
-piso[73]=113;
-piso[74]=113;
-piso[75]=113;
-piso[76]=113;
-piso[77]=112;
-piso[78]=112;
-piso[79]=112;
-piso[80]=112;
-piso[81]=112;
-piso[82]=112;
-piso[83]=111;
-piso[84]=111;
-piso[85]=111;
-piso[86]=111;
-piso[87]=111;
-piso[88]=111;
-piso[89]=110;
-piso[90]=110;
-piso[91]=110;
-piso[92]=110;
-piso[93]=110;
-piso[94]=110;
-piso[95]=109;
-piso[96]=109;
-piso[97]=109;
-piso[98]=109;
-piso[100]=109;
+piso[  0]=128;
+piso[  1]=128;
+piso[  2]=128;
+piso[  3]=128;
+piso[  4]=128;
+piso[  5]=128;
+piso[  6]=128;
+piso[  7]=128;
+piso[  8]=128;
+piso[  9]=128;
+piso[ 10]=128;
+piso[ 11]=127;
+piso[ 12]=127;
+piso[ 13]=127;
+piso[ 14]=127;
+piso[ 15]=127;
+piso[ 16]=126;
+piso[ 17]=126;
+piso[ 18]=126;
+piso[ 19]=126;
+piso[ 20]=126;
+piso[ 21]=125;
+piso[ 22]=125;
+piso[ 23]=125;
+piso[ 24]=125;
+piso[ 25]=125;
+piso[ 26]=124;
+piso[ 27]=124;
+piso[ 28]=124;
+piso[ 29]=124;
+piso[ 30]=124;
+piso[ 31]=123;
+piso[ 32]=123;
+piso[ 33]=123;
+piso[ 34]=123;
+piso[ 35]=123;
+piso[ 36]=122;
+piso[ 37]=122;
+piso[ 38]=122;
+piso[ 39]=122;
+piso[ 40]=122;
+piso[ 41]=121;
+piso[ 42]=121;
+piso[ 43]=121;
+piso[ 44]=121;
+piso[ 45]=121;
+piso[ 46]=120;
+piso[ 47]=120;
+piso[ 48]=120;
+piso[ 49]=120;
+piso[ 50]=120;
+piso[ 51]=119;
+piso[ 52]=119;
+piso[ 53]=119;
+piso[ 54]=119;
+piso[ 55]=119;
+piso[ 56]=118;
+piso[ 57]=118;
+piso[ 58]=118;
+piso[ 59]=118;
+piso[ 60]=118;
+piso[ 61]=117;
+piso[ 62]=117;
+piso[ 63]=117;
+piso[ 64]=117;
+piso[ 65]=117;
+piso[ 66]=116;
+piso[ 67]=116;
+piso[ 68]=116;
+piso[ 69]=116;
+piso[ 70]=116;
+piso[ 71]=115;
+piso[ 72]=115;
+piso[ 73]=115;
+piso[ 74]=115;
+piso[ 75]=115;
+piso[ 76]=114;
+piso[ 77]=114;
+piso[ 78]=114;
+piso[ 79]=114;
+piso[ 80]=114;
+piso[ 81]=113;
+piso[ 82]=113;
+piso[ 83]=113;
+piso[ 84]=113;
+piso[ 85]=113;
+piso[ 86]=112;
+piso[ 87]=112;
+piso[ 88]=112;
+piso[ 89]=112;
+piso[ 90]=112;
+piso[ 91]=111;
+piso[ 92]=111;
+piso[ 93]=111;
+piso[ 94]=111;
+piso[ 95]=111;
+piso[ 96]=110;
+piso[ 97]=110;
+piso[ 98]=110;
+piso[ 99]=110;
+piso[100]=110;
 piso[101]=109;
-piso[102]=108;
-piso[103]=108;
-piso[104]=108;
-piso[105]=108;
+piso[102]=109;
+piso[103]=109;
+piso[104]=109;
+piso[105]=109;
 piso[106]=108;
 piso[107]=108;
-piso[108]=107;
-piso[109]=107;
-piso[110]=107;
+piso[108]=108;
+piso[109]=108;
+piso[110]=108;
 piso[111]=107;
 piso[112]=107;
 piso[113]=107;
-piso[114]=106;
+piso[114]=107;
 piso[115]=106;
 piso[116]=106;
 piso[117]=106;
@@ -727,6 +850,7 @@ piso[309]=132;
 piso[310]=132;
 piso[311]=132;
 piso[312]=132;
+piso[313]=132;
 piso[314]=132;
 piso[315]=132;
 piso[316]=132;
@@ -832,28 +956,134 @@ piso[415]=117;
 piso[416]=117;
 piso[417]=117;
 piso[418]=117;
-piso[419]=132;
-piso[420]=132;
-}
+piso[419]=118;/////////
+piso[420]=118;
+piso[421]=118;
+piso[422]=118;
+piso[423]=119;
+piso[424]=119;
+piso[425]=119;
+piso[426]=119;
+piso[427]=119;
+piso[428]=120;
+piso[429]=120;////////
+piso[430]=121;
+piso[431]=121;
+piso[432]=122;
+piso[433]=122;
+piso[434]=123;
+piso[435]=123;
+piso[436]=124;
+piso[437]=124;
+piso[438]=125;
+piso[439]=125;////////
+piso[440]=126;
+piso[441]=126;
+piso[442]=126;
+piso[443]=126;
+piso[444]=127;
+piso[445]=127;
+piso[446]=127;
+piso[447]=127;
+piso[448]=128;
+piso[449]=128;////////
+piso[450]=128;
+piso[451]=128;
+piso[452]=129;
+piso[453]=129;
+piso[454]=129;
+piso[455]=129;
+piso[456]=130;
+piso[457]=130;
+piso[458]=130;
+piso[459]=130;////////
+piso[460]=131;
+piso[461]=131;
+piso[462]=131;
+piso[463]=131;
+piso[464]=132;
+piso[465]=132;
+piso[466]=132;
+piso[467]=132;
+piso[468]=132;
+piso[469]=133;////////
+piso[470]=133;
+piso[471]=133;
+piso[472]=133;
+piso[473]=133;
+piso[474]=134;
+piso[475]=134;
+piso[476]=134;
+piso[477]=134;
+piso[478]=134;
+piso[479]=136;///////
+piso[480]=136;
+piso[481]=136;
+piso[482]=136;
+piso[483]=136;
+piso[484]=137;
+piso[485]=137;
+piso[486]=137;
+piso[487]=137;
+piso[488]=137;
+piso[489]=138;//////
+piso[490]=138;
+piso[491]=138;
+piso[492]=138;
+piso[493]=138;
+piso[494]=139;
+piso[495]=139;
+piso[496]=139;
+piso[497]=139;
+piso[498]=139;
+piso[499]=140;///////
+piso[500]=140;
+piso[501]=140;
+piso[502]=140;
+piso[503]=140;
+piso[504]=141;
+piso[505]=141;
+piso[506]=141;
+piso[507]=141;
+piso[508]=141;
+piso[509]=142;///////
 
-void escenario1(SDL_Surface* screen,SDL_Window* window,SDL_Surface* scene){
+piso[510]=142;
+piso[511]=142;
+piso[512]=142;
+piso[513]=142;
+piso[514]=142;
+piso[515]=143;
+piso[516]=143;
+piso[517]=143;
+piso[518]=143;
+piso[519]=143;
+
+
+}
+/**
+    x coor x de suelo
+    xMountan coor x de montañas
+    xHorizon coor x de el horizonte
+*/
+void escenario1(SCENE move){
     SDL_Rect cielo;
-        cielo.x=10; cielo.y=408;
-        cielo.w=502; cielo.h=112;
+        cielo.x=10+move.xHorizon; cielo.y=408;
+        cielo.w=502+move.xHorizon; cielo.h=112;
     SDL_Rect tierraLejana;
-        tierraLejana.x=10; tierraLejana.y=560;
-        tierraLejana.w=502; tierraLejana.h=168;
+        tierraLejana.x=10+move.xMountain; tierraLejana.y=560;
+        tierraLejana.w=502+move.xMountain; tierraLejana.h=168;
         SDL_Rect coorTieLej;
             coorTieLej.x=0;
             coorTieLej.y=57;
 
     SDL_Rect tierra;
-        tierra.x=10; tierra.y=10;
-        tierra.w=502; tierra.h=250;
+        tierra.x=10+move.x; tierra.y=10;
+        tierra.w=502+move.x; tierra.h=250;
 
-    SDL_BlitSurface(scene,&cielo,screen,NULL);
-    SDL_BlitSurface(scene,&tierraLejana,screen,&coorTieLej);
-    SDL_BlitSurface(scene,&tierra,screen,NULL);
+    SDL_BlitSurface(move.scene,&cielo,move.screen,NULL);
+    SDL_BlitSurface(move.scene,&tierraLejana,move.screen,&coorTieLej);
+    SDL_BlitSurface(move.scene,&tierra,move.screen,NULL);
 }
 
 void menuPersonaje(SDL_Surface* screen,SDL_Window* window){//Funcion para elegir personaje
@@ -887,7 +1117,7 @@ void menuPersonaje(SDL_Surface* screen,SDL_Window* window){//Funcion para elegir
                             i--;
                         }
                         if(tecla.key.keysym.sym==SDLK_f){//Pantalla completa
-                            ToggleFullscreen(window);//Necesita trabajo
+                            ToggleFullscreen(window,screen);//Necesita trabajo
                         }
                     }
                 }
@@ -901,19 +1131,6 @@ void menuPersonaje(SDL_Surface* screen,SDL_Window* window){//Funcion para elegir
         printf("Error IMG_Init %s",IMG_GetError());
     }
 }//******************
-
-void ToggleFullscreen(SDL_Window* window){
-    Uint32 FullscreenFlag = SDL_WINDOW_FULLSCREEN;
-    bool IsFullscreen = SDL_GetWindowFlags(window) & FullscreenFlag;
-    int res;
-
-    res=SDL_SetWindowFullscreen(window, IsFullscreen ? 0 : FullscreenFlag);
-    if(res==0)
-        printf("Succes!");
-    else
-        printf("Error");
-    SDL_ShowCursor(IsFullscreen);
-}
 
 void elementosMenu(SDL_Surface* screen, SDL_Surface* image){
     SDL_Rect frame;//Marco de seleccion

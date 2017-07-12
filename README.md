@@ -2,7 +2,7 @@
 Ulises Martínez Elías
 
 # MetalSlug
-Replica de Metal Slug en C y SDL 2.0
+Metal Slug en C y SDL 2.0
 
 ## Instalando SDL2:
 
