@@ -503,15 +503,11 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
         escenario1(move);
 
         if(breath){
-            iT++;// Torzo
+            iT++; 
+            iP++;//Numero de sprite
         }
-        
-        if(walk){
-            iP++;// Pies
-        }
-        
-        if(iP>=6){iP=0;}//Loop de sprite
-        if(iT>=4){iT=0;}//Loop de sprite
+            if(iP>=6){iP=0;}//Loop de sprite
+            if(iT>=4){iT=0;}//Loop de sprite
         //}
         
         breath = false;
