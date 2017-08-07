@@ -2,24 +2,28 @@
 #include <stdlib.h>
 #include <zlib.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
+#include <SDL2/SDL_joystick.h>
+#include <SDL2/SDL_gamecontroller.h>
 #include <SDL2/SDL_image.h>
 #include "floor.h"
+#include "animation.h"
 
-typedef struct{
-    SDL_Window* window;
-    SDL_Surface* screen;
-    SDL_Surface* player;
-    SDL_Surface* playerBack;
-}GRAPH;
-//Escenarios
-typedef struct{
-    SDL_Window* window;
-    SDL_Surface* screen;
-    SDL_Surface* scene;
-    int x;
-    int xMountain;
-    int xHorizon;
-}SCENE;
+//typedef struct{
+//    SDL_Window* window;
+//    SDL_Surface* screen;
+//    SDL_Surface* player;
+//    SDL_Surface* playerBack;
+//}GRAPH;
+////Escenarios
+//typedef struct{
+//    SDL_Window* window;
+//    SDL_Surface* screen;
+//    SDL_Surface* scene;
+//    int x;
+//    int xMountain;
+//    int xHorizon;
+//}SCENE;
 
 void menuPersonaje(SDL_Surface* screen,SDL_Window* window);//SelecciÃ³n de personaje
     void elementosMenu(SDL_Surface* screen,SDL_Surface* image);
@@ -31,24 +35,12 @@ int SDL_ToggleFS(SDL_Window *win);
 void nivel1(SDL_Surface* screen,SDL_Window* window);
 void escenario1(SCENE scene);
 
-/**Arrays*/
-void clarkStandArr(SDL_Rect torzo[4],SDL_Rect pierna[4]);
-void clarkStandBackArr(SDL_Rect torzo[4],SDL_Rect pierna[4]);
-void clarkRunArr(SDL_Rect torzo[4],SDL_Rect pierna[4]);
-void clarkRunBackArr(SDL_Rect torzo[4],SDL_Rect pierna[4]);
-void clarkJump(int piso[]);
-/**Funciones Movimiento*/
-void clarkStand(GRAPH g,int *iT,int *iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]);
-void clarkRun(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]);
-void clarkStandBack(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]);
-void clarkRunBack(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]);
-
 //MAIN
 int main ( int argc, char** argv ){
     SDL_Window* window=NULL;//Ventana
     SDL_Surface* screen=NULL;//Pantalla
 
-    if(SDL_Init(SDL_INIT_VIDEO)>-1){//Iniciando soporte de video
+    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK)>-1){//Iniciando soporte de video
         window=SDL_CreateWindow("Metal Slug",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,502,238,SDL_WINDOW_SHOWN);//Creando ventana
         if(window){//Manejo de error
             screen=SDL_GetWindowSurface(window);//Creando pantalla
@@ -67,254 +59,7 @@ int main ( int argc, char** argv ){
     SDL_Quit();//Cerrando SDL
     return 0;
 }//MAIN
-/**Funciones Arrays*/
-void clarkStandArr(SDL_Rect torzo[4],SDL_Rect pierna[1]){
-    torzo[0].x=10; torzo[0].y=5;//Parado--------------------------
-    torzo[0].w=35; torzo[0].h=35;
 
-    torzo[1].x=43; torzo[1].y=5;
-    torzo[1].w=35; torzo[1].h=35;
-
-    torzo[2].x=76; torzo[2].y=5;
-    torzo[2].w=35; torzo[2].h=35;
-
-    torzo[3].x=109; torzo[3].y=5;
-    torzo[3].w=35; torzo[3].h=35;
-
-    pierna[0].x=145; pierna[0].y=20;
-    pierna[0].w=35; pierna[0].h=34;//-----------------------------
-}
-
-void clarkStandBackArr(SDL_Rect torzo[4],SDL_Rect pierna[1]){
-    torzo[0].x=710; torzo[0].y=5;//Parado--------------------------
-    torzo[0].w=30; torzo[0].h=30;
-
-    torzo[1].x=677; torzo[1].y=5;
-    torzo[1].w=30; torzo[1].h=30;
-
-    torzo[2].x=644; torzo[2].y=5;
-    torzo[2].w=30; torzo[2].h=30;
-
-    torzo[3].x=611; torzo[3].y=5;
-    torzo[3].w=30; torzo[3].h=30;
-
-    pierna[0].x=580; pierna[0].y=20;
-    pierna[0].w=30; pierna[0].h=30;//-----------------------------
-}
-
-void clarkRunArr(SDL_Rect torzo[4],SDL_Rect pierna[6]){
-    torzo[0].x=10; torzo[0].y=5;//Parado--------------------------
-    torzo[0].w=35; torzo[0].h=35;
-
-    torzo[1].x=43; torzo[1].y=5;
-    torzo[1].w=35; torzo[1].h=35;
-
-    torzo[2].x=76; torzo[2].y=5;
-    torzo[2].w=35; torzo[2].h=35;
-
-    torzo[3].x=109; torzo[3].y=5;
-    torzo[3].w=35; torzo[3].h=35;
-            //Corriendo---------------------------------------------------------
-    pierna[0].x=13; pierna[0].y=434;
-    pierna[0].w=34; pierna[0].h=34;
-
-    pierna[1].x=57; pierna[1].y=434;
-    pierna[1].w=34; pierna[1].h=34;
-
-    pierna[2].x=101; pierna[2].y=434;
-    pierna[2].w=34;  pierna[2].h=34;
-
-    pierna[3].x=133; pierna[3].y=434;
-    pierna[3].w=34;  pierna[3].h=34;
-
-    pierna[4].x=167; pierna[4].y=434;
-    pierna[4].w=34;  pierna[4].h=34;
-
-    pierna[5].x=201; pierna[5].y=434;
-    pierna[5].w=34;  pierna[5].h=34;//----------------------------
-}
-
-void clarkRunBackArr(SDL_Rect torzo[4],SDL_Rect pierna[6]){
-    //Parado-------------------------------
-    torzo[0].x=710; torzo[0].y=5;
-    torzo[0].w=30; torzo[0].h=30;
-
-    torzo[1].x=677; torzo[1].y=5;
-    torzo[1].w=30; torzo[1].h=30;
-
-    torzo[2].x=644; torzo[2].y=5;
-    torzo[2].w=30; torzo[2].h=30;
-
-    torzo[3].x=611; torzo[3].y=5;
-    torzo[3].w=30; torzo[3].h=30;
-    //Corriendo---------------------------------------------------------
-    pierna[0].x=711; pierna[0].y=434;
-    pierna[0].w=34; pierna[0].h=34;
-
-    pierna[1].x=667; pierna[1].y=434;
-    pierna[1].w=34; pierna[1].h=34;
-
-    pierna[2].x=626; pierna[2].y=434;
-    pierna[2].w=34;  pierna[2].h=34;
-
-    pierna[3].x=591; pierna[3].y=434;
-    pierna[3].w=34;  pierna[3].h=34;
-
-    pierna[4].x=557; pierna[4].y=434;
-    pierna[4].w=34;  pierna[4].h=34;
-
-    pierna[5].x=523; pierna[5].y=434;
-    pierna[5].w=34;  pierna[5].h=34;//----------------------------------
-}
-
-/**Funciones movimiento*/
-void clarkStand(GRAPH g,int *iT,int *iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]){
-        SDL_Rect torCoor,pierCoor;
-
-            /*torzo[0][1].x=19; torzo[0][1].y=50;//Disparando adelante------------
-            torzo[0][1].w=55; torzo[0][1].h=30;
-
-            torzo[1][1].x=85; torzo[1][1].y=50;
-            torzo[1][1].w=55; torzo[1][1].h=30;
-
-            torzo[2][1].x=153; torzo[2][1].y=50;
-            torzo[2][1].w=58; torzo[2][1].h=30;
-
-            torzo[3][1].x=206; torzo[3][1].y=50;
-            torzo[3][1].w=37; torzo[3][1].h=30;
-
-            torzo[4][1].x=206; torzo[4][1].y=50;
-            torzo[4][1].w=50; torzo[4][1].h=30;
-
-            torzo[5][1].x=303; torzo[5][1].y=50;
-            torzo[5][1].w=45; torzo[5][1].h=30;
-
-            torzo[6][1].x=352; torzo[6][1].y=50;
-            torzo[6][1].w=45; torzo[6][1].h=30;
-
-            torzo[7][1].x=401; torzo[7][1].y=48;
-            torzo[7][1].w=40; torzo[7][1].h=30;
-
-            torzo[8][1].x=449; torzo[8][1].y=49;
-            torzo[8][1].w=35; torzo[8][1].h=30;
-
-            torzo[9][1].x=498; torzo[9][1].y=50;
-            torzo[9][1].w=35; torzo[9][1].h=30;//-------------------------------
-
-            torzo[0][2].x=10; torzo[0][2].y=85;//Apuntando arriba---------------
-            torzo[0][2].w=35; torzo[0][2].h=35;
-
-            torzo[1][2].x=43; torzo[1][2].y=85;
-            torzo[1][2].w=33; torzo[1][2].h=35;
-
-            torzo[2][2].x=76; torzo[2][2].y=85;
-            torzo[2][2].w=35; torzo[2][2].h=35;
-
-            torzo[3][2].x=109; torzo[3][2].y=85;
-            torzo[3][2].w=35; torzo[3][2].h=35;//-------------------------------
-
-            //Corregir medidas partir de aqui
-            //Necesita variable tAux para compensar altura
-            torzo[0][3].x=12; torzo[0][3].y=145;//Disparando arriba-------------
-            torzo[0][3].w=23; torzo[0][3].h=45;
-
-            torzo[1][3].x=35; torzo[1][3].y=145;
-            torzo[1][3].w=23; torzo[1][3].h=45;
-
-            torzo[2][3].x=65; torzo[2][3].y=145;
-            torzo[2][3].w=23; torzo[2][3].h=45;
-
-            torzo[3][3].x=100; torzo[3][3].y=145;
-            torzo[3][3].w=23; torzo[3][3].h=45;
-
-            torzo[4][3].x=133; torzo[4][3].y=145;
-            torzo[4][3].w=23; torzo[4][3].h=45;
-
-            torzo[5][3].x=165; torzo[5][3].y=145;
-            torzo[5][3].w=25; torzo[5][3].h=45;
-
-            torzo[6][3].x=208; torzo[6][3].y=145;
-            torzo[6][3].w=25; torzo[6][3].h=45;
-
-            torzo[7][3].x=238; torzo[7][3].y=145;
-            torzo[7][3].w=25; torzo[7][3].h=45;
-
-            torzo[8][3].x=273; torzo[8][3].y=145;
-            torzo[8][3].w=23; torzo[8][3].h=45;
-
-            torzo[9][3].x=300; torzo[9][3].y=145;
-            torzo[9][3].w=23; torzo[9][3].h=45;//-------------------------------
-
-            torzo[0][4].x=10; torzo[0][4].y=200;//Recargando arma-----------------
-            torzo[0][4].w=35; torzo[0][4].h=40;
-
-            torzo[1][4].x=45; torzo[1][4].y=200;
-            torzo[1][4].w=40; torzo[1][4].h=40;
-
-            torzo[2][4].x=90; torzo[2][4].y=200;
-            torzo[2][4].w=40; torzo[2][4].h=40;
-
-            torzo[3][4].x=135; torzo[3][4].y=200;
-            torzo[3][4].w=40; torzo[3][4].h=40;
-
-            torzo[4][4].x=190; torzo[4][4].y=200;
-            torzo[4][4].w=40; torzo[4][4].h=40;
-
-            torzo[5][4].x=245; torzo[5][4].y=200;
-            torzo[5][4].w=40; torzo[5][4].h=40;
-
-            torzo[6][4].x=295; torzo[6][4].y=200;
-            torzo[6][4].w=40; torzo[6][4].h=40;//-----------------------------*/
-
-            torCoor.x=2+x; torCoor.y=20+y;//Torzo
-            pierCoor.x=0+x; pierCoor.y=41+y;//Piernas
-
-        if(g.player) {//Manejo de error
-            SDL_BlitSurface(g.player,&pierna[0],g.screen,&pierCoor);//Clark piernas
-            SDL_BlitSurface(g.player,&torzo[*iT],g.screen,&torCoor);//Clark torzo
-            SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
-        }else{printf("IMG_Load: %s\n", IMG_GetError());}
-}
-
-void clarkStandBack(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]){
-    SDL_Rect torCoor,pierCoor;
-
-    torCoor.x=2+x; torCoor.y=20+y;//Torzo
-    pierCoor.x=9+x; pierCoor.y=41+y;//Piernas
-
-    if(g.player) {//Manejo de error
-        SDL_BlitSurface(g.playerBack,&pierna[0],g.screen,&pierCoor);//Clark piernas
-        SDL_BlitSurface(g.playerBack,&torzo[iT],g.screen,&torCoor);//Clark torzo
-        SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
-    }else{printf("IMG_Load: %s\n", IMG_GetError());}
-}
-
-void clarkRun(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]){
-    SDL_Rect torCoor,pierCoor;
-
-    torCoor.x=2+x; torCoor.y=20+y;//Torzo
-    pierCoor.x=0+x; pierCoor.y=41+y;//Piernas
-
-    if(g.player) {//Manejo de error
-        //printf("%d , %d",iT,iP);
-        SDL_BlitSurface(g.player,&pierna[iP],g.screen,&pierCoor);//Clark piernas
-        SDL_BlitSurface(g.player,&torzo[0],g.screen,&torCoor);//Clark torzo
-        SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
-    }else{printf("IMG_Load: %s\n", IMG_GetError());}
-}
-
-void clarkRunBack(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]){
-    SDL_Rect torCoor,pierCoor;
-
-    torCoor.x=0+x; torCoor.y=20+y;//Torzo coor
-    pierCoor.x=7+x; pierCoor.y=41+y;//Piernas coor
-
-    if(g.player) {//Manejo de error
-        SDL_BlitSurface(g.playerBack,&pierna[iP],g.screen,&pierCoor);//Clark piernas
-        SDL_BlitSurface(g.playerBack,&torzo[iT],g.screen,&torCoor);//Clark torzo
-        SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
-    }else{printf("IMG_Load: %s\n", IMG_GetError());}
-}
 
 void ToggleFullscreen(SDL_Window* window){
     //int flags = SDL_BASE_FLAGS | (sdl->window_fullscreen ? SDL_FULLSCREEN : 0);
@@ -345,7 +90,7 @@ int SDL_ToggleFS(SDL_Window *win)
         //SDL_RenderSetLogicalSize(Renderer, w, h); // TODO: pass renderer as param maybe?
         return 1;
     }
-    SDL_SetWindowSize(win, w, h);
+    //SDL_SetWindowSize(win, w, h);
     return 0;
 }
 
@@ -353,21 +98,24 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
     GRAPH g;
     SCENE move;
     int iT=0,iP=0,iS=0;
+    int iShoot = 0;//Index de disparo
     int x=-20;//Posición mínima en x
     int h=0;//Indice de arreglo altura
-    unsigned int pastBreath=0,currentBreath;
-    unsigned int pastWalk=0,currentWalk;
-    int direccion=0;
+    unsigned int pastBreath  =0,currentBreath;
+    unsigned int pastWalk    =0,currentWalk;
+    unsigned int pastJump    =0,currentJump;
+    unsigned int pastShoot   =0,currentShoot;
 
     SDL_Surface* scene;
     SDL_Surface* player;
     SDL_Surface* playerBack;
 
     /**Array declaration*/
-    SDL_Rect csT[4],csP[1];//clarkStan array
-    SDL_Rect csbT[4],csbP[1];//clarkStandBack array
-    SDL_Rect crT[4],crP[6];//clarkRun arr
-    SDL_Rect crbT[4],crbP[6];//clarkRunBack arr
+    SDL_Rect csT[4],   csP[1];//clarkStan array
+    SDL_Rect csbT[4],  csbP[1];//clarkStandBack array
+    SDL_Rect crT[4],   crP[6];//clarkRun arr
+    SDL_Rect crbT[4],  crbP[6];//clarkRunBack arr
+    SDL_Rect cshT[9];
     int piso[519];
     int salto[51];
 
@@ -376,6 +124,7 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
     clarkStandBackArr(csbT,csbP);
     clarkRunArr(crT,crP);
     clarkRunBackArr(crbT,crbP);
+    clarkShootArr(cshT);
 
     altura(piso);
     clarkJump(salto);
@@ -399,29 +148,85 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
     move.xMountain=0;
     move.xHorizon=0;
 
+    int direccion=1;
+    int direccionAux = 0;
     bool key_left = false;
     bool key_right = false;
     bool key_down = false;
     bool key_up = false;
     bool walk = false;
     bool jump = false;
+    bool keepWalking = false;
+    bool jumpArr = false;
     bool breath = false;
-    
+    bool shoot = false;
+    bool key_shoot = false;
+
+
+    SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS,"1");
+
     SDL_Event tecla;
     SDL_Joystick *joy;
-    
+    SDL_GameController *controller;
+    int boton;
+
+    int mouse;
+    int focus;
+
+    focus = SDL_SetWindowInputFocus(g.window);
+    if(focus < 0){
+        printf("Focus %s\n",SDL_GetError());
+        window = SDL_GetMouseFocus();
+    }
+    else{
+        printf("Deberia funcionar focus\n");
+    }
+    mouse = SDL_CaptureMouse(SDL_TRUE);
+    if(mouse < 0)
+        printf(" capture %s\n",SDL_GetError());
+    else printf("Deberia haber captura de mouse\n");
+
+    if (controller) {
+        int control = SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt");
+        if(control >= 0){
+            controller = SDL_GameControllerOpen(0);
+            joy = SDL_GameControllerGetJoystick(controller);
+            if(SDL_NumJoysticks() > 0){
+                printf("Joystick detected\n");
+                joy = SDL_JoystickOpen(0);
+                if(joy){
+                    printf("Joystick listo: %s\n",SDL_JoystickName(joy));
+                }else{
+                    printf("Joystick error %s\n",SDL_GetError());
+                }
+            }else{
+                printf("No hay Joysticks disponibles\n");
+                free(joy);
+                free(controller);
+            }
+        }else{
+            printf("%s\n",SDL_GetError());
+        }
+    }else{
+        printf("Error %s\n",SDL_GetError());
+    }
+
     while(true){
         if(SDL_PollEvent(&tecla)){//Capturando teclas
-            if(tecla.type == SDL_QUIT){
+            if(tecla.type == SDL_QUIT || tecla.type == SDLK_ESCAPE){
                 exit(0);//cerrando
             }
             if(tecla.type==SDL_KEYDOWN){//Presionando tecla
                 switch(tecla.key.keysym.sym){//Salir
                     case SDLK_RIGHT://Derecha
                         key_right = true;
+                        direccionAux=1;//
+                        direccion = 1;
                     break;
                     case SDLK_LEFT://Izquierda
                         key_left = true;
+                        direccionAux = -1;
+                        direccion=-1;//Dirección izquierda
                     break;
                     case SDLK_f://Pantalla completa
                         ToggleFullscreen(g.window);//Necesita trabajo
@@ -430,7 +235,12 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
                     case SDLK_s:
                         jump = true;
                     break;
+                    case SDLK_x:
+                        key_shoot = true;
+                        iShoot=2;
+                    break;
                 }
+
             }
             if(tecla.type==SDL_KEYUP){//Soltando tecla
                 switch(tecla.key.keysym.sym){//Salir
@@ -441,19 +251,55 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
                         key_left = false;
                     break;
                 }
+                if(!jump)
+                    direccionAux = 0;
             }
+            //Joystick =============================
+                if(tecla.type == SDL_JOYBUTTONDOWN){
+                    if(tecla.jbutton.button == 2){
+                            jump = true;
+                    }
+                    if(tecla.jbutton.button == 5){
+                            key_shoot = true;
+                            iShoot=0;
+                    }
+                }
+                //if(tecla.type == SDL_JOYBUTTONUP){
+                //    if(tecla.jbutton.button == 3){
+                //            shoot = false;
+                //    }
+                //}
+                if(tecla.type == SDL_JOYAXISMOTION){
+                    if(tecla.jaxis.axis == 0){
+                        if(tecla.jaxis.value == 0){//Sin movimiento
+                            key_right = false;
+                            key_left = false;
+                            if(!jump)
+                                direccionAux = 0;
+                        }
+                        else if(tecla.jaxis.value > 0){//Derecha
+                            key_right = true;
+                            direccion = 1;//Dirección gral
+                            direccionAux = 1;//Dirección salto
+                            keepWalking = true;
+                        }
+                        else if(tecla.jaxis.value < 0){
+                            key_left = true;
+                            direccion = -1;//Dirección izquierda
+                            direccionAux = -1;
+                            keepWalking = true;
+                        }
+                    }
+                }
+            //======================================
+
         }
-        
-    
-        // Check for joystick =============================
-        
-        //==============================
-        
+
         /***Acciones de eventos */
-        if(key_right){
+        if(key_right || (jump && keepWalking && direccionAux == 1)){
+            //Si se dispara o salta se desactiva este sprite
             if(!jump) clarkRun(g,iT,iP,x,piso[h],crT,crP);
-            direccion=0;
-            //if(walk){
+
                 if(x<400){
                     x++;//Moviendonos horizontalmente
                 }else{
@@ -462,42 +308,42 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
                 if(h < 519){//Límite de arreglo
                     h++;//Arreglo de altura
                 }
-            //}
-            //printf("%d\n",h);
-        }else if(key_left){
+        }else if(key_left || (jump && keepWalking && direccionAux == -1)){
             if(!jump) clarkRunBack(g,iT,iP,x,piso[h],crbT,crbP);
-            direccion=-1;//Dirección del jugador izquierda/derecha
-            //if(walk){
                 if(h > 0){
                     x--;//Retrocediendo
                     h--;//Arreglo de altura
                 }
-            //}
         }else{//Default
-            if(!jump){
-                if(direccion==0){
+            if(!jump && !key_shoot){
+                if(direccion==1){
                     clarkStand(g,&iT,&iP,x,piso[h],csT,csP);
-                }else{
+                }else if(direccion == -1){
                     clarkStandBack(g,iT,iP,x,piso[h],csbT,csbP);//
                 }
             }
         }
-
+        if(key_shoot){
+            clarkShoot(g,&iT,x,piso[h]-salto[iS],cshT);
+        }
         if(jump){//SALTANDO
-            //if(currentTime>lastTime+100){
-            if(direccion==0){
+            if(direccion==1){
                 clarkStand(g,&iT,&iP,x,piso[h]-salto[iS],csT,csP);
                 //x++; h++;
             }else{
                 clarkStandBack(g,iT,iP,x,piso[h]-salto[iS],csbT,csbP);//
                 //x--; h--;
             }
-            iS++;//indice array salto
+            if(jumpArr)
+                iS++;//indice array salto
             if(iS>=51){//Límite de array salto
                 jump = false;//Términa salto
+                keepWalking = false;
+                direccionAux = 0;
                 iS = 0;//Reiniciando indice
             }
-            //}
+            if(iS <= 51)
+                keepWalking = true;
         }
         /**Estas funciones se ejecutan siempre*/
         escenario1(move);
@@ -505,45 +351,66 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
         if(breath){
             iT++;// Torzo
         }
-        
         if(walk){
             iP++;// Pies
         }
-        
+        if(shoot && key_shoot){
+            iShoot++;
+        }
+
         if(iP>=6){iP=0;}//Loop de sprite
         if(iT>=4){iT=0;}//Loop de sprite
-        //}
-        
-        breath = false;
-        walk = false;
-        
-        currentBreath = currentWalk = SDL_GetTicks();
+        if(iShoot>=9){iShoot=0; key_shoot=false;}
+
+        breath       = false;
+        walk         = false;
+        jumpArr      = false;
+        shoot        = false;
+        /**Funciones de tiempo*/
+        currentBreath      = SDL_GetTicks();
+        currentWalk        = SDL_GetTicks();
+        currentJump        = SDL_GetTicks();
+        currentShoot       = SDL_GetTicks();
+
         if(currentBreath > pastBreath+200){
             breath = true;
-            
             pastBreath=currentBreath;
         }
         if(currentWalk > pastWalk + 100){
             walk = true;
-            
             pastWalk=currentWalk;
         }
+        if(currentJump > pastJump + 10){
+            jumpArr = true;
+            pastJump=currentJump;
+        }
+        if(currentShoot > pastShoot + 30){
+            shoot = true;
+            pastShoot=currentShoot;
+        }
+
+        /*Funciones de tiempo**/
     }//while
+
+    if (SDL_JoystickGetAttached(joy)) {
+        SDL_JoystickClose(joy);
+    }
+
 }
 
 void clarkJump(int salto[]){
     salto[0]=0;
     salto[1]=4;
     salto[2]=8;
-    salto[3]=12;
-    salto[4]=17;
-    salto[5]=21;
-    salto[6]=25;
-    salto[7]=28;
-    salto[8]=31;
-    salto[9]=34;
-    salto[10]=37;
-    salto[11]=40;
+    salto[3]=13;
+    salto[4]=18;
+    salto[5]=22;
+    salto[6]=26;
+    salto[7]=29;
+    salto[8]=32;
+    salto[9]=35;
+    salto[10]=38;
+    salto[11]=41;
     salto[12]=43;
     salto[13]=45;
     salto[14]=47;

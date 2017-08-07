@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <zlib.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_joystick.h>
+#include <SDL2/SDL_gamecontroller.h>
 #include <SDL2/SDL_image.h>
 #include "floor.h"
 
@@ -357,6 +359,7 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
     int h=0;//Indice de arreglo altura
     unsigned int pastBreath=0,currentBreath;
     unsigned int pastWalk=0,currentWalk;
+    unsigned int pastJump=0,currentJump;
     int direccion=0;
 
     SDL_Surface* scene;
@@ -405,10 +408,33 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
     bool key_up = false;
     bool walk = false;
     bool jump = false;
+    bool jumpArr = false;
     bool breath = false;
+    
+    #define GP2X_BUTTON_LEFT            (2)
     
     SDL_Event tecla;
     SDL_Joystick *joy;
+    SDL_GameController *controller;
+    int boton;
+    
+    SDL_InitSubSystem(SDL_INIT_JOYSTICK);
+
+    if (controller) {
+        printf("Joystck detected\n");
+        int control = SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt");
+        if(control >= 0){
+            controller = SDL_GameControllerOpen(0);
+            joy = SDL_GameControllerGetJoystick(controller);
+
+            //joy = SDL_JoystickOpen(0);
+            printf("= )\n");
+        }else{
+            printf("%s\n",SDL_GetError());
+        }
+    }else{
+        printf("= ( %s\n",SDL_GetError());
+    }
     
     while(true){
         if(SDL_PollEvent(&tecla)){//Capturando teclas
@@ -431,6 +457,7 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
                         jump = true;
                     break;
                 }
+                
             }
             if(tecla.type==SDL_KEYUP){//Soltando tecla
                 switch(tecla.key.keysym.sym){//Salir
@@ -442,12 +469,37 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
                     break;
                 }
             }
+            
+            //Joystick =============================
+                if(tecla.type == SDL_JOYBUTTONDOWN){
+                    printf("j\n");
+                    switch(tecla.jbutton.button){
+                        case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
+                            key_right = true;
+                        break;
+                        case SDL_CONTROLLER_BUTTON_DPAD_LEFT:
+                            key_left = true;
+                        break;
+                    }
+                }
+                if(tecla.type == SDL_JOYBUTTONUP){
+                    printf("j\n");
+                    switch(tecla.jbutton.button){
+                        case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
+                            key_right = false;
+                        break;
+                        case SDL_CONTROLLER_BUTTON_DPAD_LEFT:
+                            key_left = false;
+                        break;
+                    }
+                }
+                printf("%i\n", SDL_GameControllerEventState(SDL_QUERY));
+                SDL_GameControllerUpdate();
+            //======================================
+            
         }
         
-    
-        // Check for joystick =============================
         
-        //==============================
         
         /***Acciones de eventos */
         if(key_right){
@@ -484,7 +536,6 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
         }
 
         if(jump){//SALTANDO
-            //if(currentTime>lastTime+100){
             if(direccion==0){
                 clarkStand(g,&iT,&iP,x,piso[h]-salto[iS],csT,csP);
                 //x++; h++;
@@ -492,28 +543,33 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
                 clarkStandBack(g,iT,iP,x,piso[h]-salto[iS],csbT,csbP);//
                 //x--; h--;
             }
-            iS++;//indice array salto
+            if(jumpArr)
+                iS++;//indice array salto
             if(iS>=51){//Límite de array salto
                 jump = false;//Términa salto
                 iS = 0;//Reiniciando indice
             }
-            //}
         }
         /**Estas funciones se ejecutan siempre*/
         escenario1(move);
 
         if(breath){
-            iT++; 
-            iP++;//Numero de sprite
+            iT++;// Torzo
         }
-            if(iP>=6){iP=0;}//Loop de sprite
-            if(iT>=4){iT=0;}//Loop de sprite
+        
+        if(walk){
+            iP++;// Pies
+        }
+        
+        if(iP>=6){iP=0;}//Loop de sprite
+        if(iT>=4){iT=0;}//Loop de sprite
         //}
         
         breath = false;
         walk = false;
-        
-        currentBreath = currentWalk = SDL_GetTicks();
+        jumpArr = false;
+        /**Funciones de tiempo*/
+        currentBreath = currentWalk = currentJump = SDL_GetTicks();
         if(currentBreath > pastBreath+200){
             breath = true;
             
@@ -524,22 +580,33 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
             
             pastWalk=currentWalk;
         }
+        if(currentJump > pastJump + 10){
+            jumpArr = true;        
+            pastJump=currentJump;
+        }
+        
+        /*Funciones de tiempo**/
     }//while
+    
+    if (SDL_JoystickGetAttached(joy)) {
+        SDL_JoystickClose(joy);
+    }
+
 }
 
 void clarkJump(int salto[]){
     salto[0]=0;
     salto[1]=4;
     salto[2]=8;
-    salto[3]=12;
-    salto[4]=17;
-    salto[5]=21;
-    salto[6]=25;
-    salto[7]=28;
-    salto[8]=31;
-    salto[9]=34;
-    salto[10]=37;
-    salto[11]=40;
+    salto[3]=13;
+    salto[4]=18;
+    salto[5]=22;
+    salto[6]=26;
+    salto[7]=29;
+    salto[8]=32;
+    salto[9]=35;
+    salto[10]=38;
+    salto[11]=41;
     salto[12]=43;
     salto[13]=45;
     salto[14]=47;
