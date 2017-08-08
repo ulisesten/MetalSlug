@@ -91,6 +91,39 @@ void clarkRunArr(SDL_Rect torzo[4],SDL_Rect pierna[6]){
     pierna[5].w=34;  pierna[5].h=34;//----------------------------
 }
 
+void clarkPier(GRAPH g,int x,int y,SDL_Rect pierna[]){
+    SDL_Rect pierCoor;
+
+    //pierna.x=580; pierna.y=20;
+    //pierna.w=30; pierna.h=30;//-----------------------------
+
+    pierCoor.x=0+x; pierCoor.y=41+y;//Piernas
+
+    SDL_BlitSurface(g.player,&pierna[0],g.screen,&pierCoor);//Clark torzo
+    SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
+}
+
+void clarkPiernasRunArr(SDL_Rect torzo[4],SDL_Rect pierna[6]){
+    //Corriendo---------------------------------------------------
+    pierna[0].x=13; pierna[0].y=434;
+    pierna[0].w=34; pierna[0].h=34;
+
+    pierna[1].x=57; pierna[1].y=434;
+    pierna[1].w=34; pierna[1].h=34;
+
+    pierna[2].x=101; pierna[2].y=434;
+    pierna[2].w=34;  pierna[2].h=34;
+
+    pierna[3].x=133; pierna[3].y=434;
+    pierna[3].w=34;  pierna[3].h=34;
+
+    pierna[4].x=167; pierna[4].y=434;
+    pierna[4].w=34;  pierna[4].h=34;
+
+    pierna[5].x=201; pierna[5].y=434;
+    pierna[5].w=34;  pierna[5].h=34;//----------------------------
+}
+
 void clarkRunBackArr(SDL_Rect torzo[4],SDL_Rect pierna[6]){
     //Parado-------------------------------
     torzo[0].x=710; torzo[0].y=5;
@@ -132,7 +165,7 @@ void clarkShootArr(SDL_Rect torzo[9]){
     torzo[1].w=55;   torzo[1].h=30;
 
     torzo[2].x=153;  torzo[2].y=50;
-    torzo[2].w=58;   torzo[2].h=30;
+    torzo[2].w=57;   torzo[2].h=30;
 
     torzo[3].x=206;  torzo[3].y=50;
     torzo[3].w=37;   torzo[3].h=30;
@@ -156,7 +189,9 @@ void clarkShootArr(SDL_Rect torzo[9]){
     torzo[9].w=35;   torzo[9].h=30;//------
 }
 
-/**Funciones movimiento*/
+/**Funciones movimiento
+ *================================================================
+ */
 void clarkStand(GRAPH g,int *iT,int *iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]){
         SDL_Rect torCoor,pierCoor;
 
@@ -234,7 +269,7 @@ void clarkStand(GRAPH g,int *iT,int *iP,int x,int y,SDL_Rect torzo[],SDL_Rect pi
             SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
         }else{printf("IMG_Load: %s\n", IMG_GetError());}
 }
-
+//Disparando
 void clarkShoot(GRAPH g,int *iT,int x,int y,SDL_Rect torzo[]){
         SDL_Rect torCoor;
 

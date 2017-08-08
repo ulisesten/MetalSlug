@@ -220,27 +220,22 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
                 switch(tecla.key.keysym.sym){//Salir
                     case SDLK_RIGHT://Derecha
                         key_right = true;
-                        direccionAux=1;//
+                        direccionAux= 1;//
                         direccion = 1;
                     break;
                     case SDLK_LEFT://Izquierda
                         key_left = true;
                         direccionAux = -1;
-                        direccion=-1;//Dirección izquierda
+                        direccion= -1;//Dirección izquierda
                     break;
-                    case SDLK_f://Pantalla completa
-                        ToggleFullscreen(g.window);//Necesita trabajo
-                        //SDL_ToggleFS(g.window);
-                    break;
-                    case SDLK_s:
+                    case SDLK_s://Saltando
                         jump = true;
                     break;
-                    case SDLK_x:
+                    case SDLK_x://Disparando
                         key_shoot = true;
-                        iShoot=2;
+                        iShoot=3;
                     break;
                 }
-
             }
             if(tecla.type==SDL_KEYUP){//Soltando tecla
                 switch(tecla.key.keysym.sym){//Salir
@@ -261,7 +256,7 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
                     }
                     if(tecla.jbutton.button == 5){
                             key_shoot = true;
-                            iShoot=0;
+                            iShoot=3;
                     }
                 }
                 //if(tecla.type == SDL_JOYBUTTONUP){
@@ -291,8 +286,7 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
                         }
                     }
                 }
-            //======================================
-
+            //Termina Joystick======================================
         }
 
         /***Acciones de eventos */
@@ -312,7 +306,8 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
             if(!jump) clarkRunBack(g,iT,iP,x,piso[h],crbT,crbP);
                 if(h > 0){
                     x--;//Retrocediendo
-                    h--;//Arreglo de altura
+                    if(x < 520)
+                        h--;//Arreglo de altura
                 }
         }else{//Default
             if(!jump && !key_shoot){
@@ -324,6 +319,7 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
             }
         }
         if(key_shoot){
+            clarkPier(g,x,piso[h]-salto[iS],csP);
             clarkShoot(g,&iT,x,piso[h]-salto[iS],cshT);
         }
         if(jump){//SALTANDO
@@ -366,6 +362,7 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
         walk         = false;
         jumpArr      = false;
         shoot        = false;
+
         /**Funciones de tiempo*/
         currentBreath      = SDL_GetTicks();
         currentWalk        = SDL_GetTicks();
@@ -384,11 +381,10 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
             jumpArr = true;
             pastJump=currentJump;
         }
-        if(currentShoot > pastShoot + 30){
+        if(currentShoot > pastShoot + 20){
             shoot = true;
             pastShoot=currentShoot;
         }
-
         /*Funciones de tiempo**/
     }//while
 

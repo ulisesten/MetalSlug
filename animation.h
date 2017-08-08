@@ -1,5 +1,6 @@
 /**
- *02 de agosto de 2017
+ *Ulises Marínez Elías
+ *06 de agosto de 2017
  *Funciones de manejo de sprites
 */
 
@@ -23,17 +24,18 @@ typedef struct{
     int xHorizon;
 }SCENE;
 
-/**Arrays*/
+/**Arrays Medidas de blitsruface para sprites*/
 void clarkStandArr(SDL_Rect torzo[4],SDL_Rect pierna[4]);
 void clarkStandBackArr(SDL_Rect torzo[4],SDL_Rect pierna[4]);
 void clarkRunArr(SDL_Rect torzo[4],SDL_Rect pierna[4]);
 void clarkRunBackArr(SDL_Rect torzo[4],SDL_Rect pierna[4]);
-void clarkShootArr(SDL_Rect torzo[9]);
+void clarkShootArr(SDL_Rect torzo[9]);//Sprites de disparo
+void clarkJump(int piso[]);//Coordenadas de salto
 
-void clarkJump(int piso[]);
 /**Funciones Movimiento*/
 void clarkStand(GRAPH g,int *iT,int *iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]);
 void clarkRun(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]);
 void clarkStandBack(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]);
 void clarkRunBack(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pierna[]);
 void clarkShoot(GRAPH g,int *iT,int x,int y,SDL_Rect torzo[]);
+void clarkPier(GRAPH g,int x,int y,SDL_Rect pierna[]);
