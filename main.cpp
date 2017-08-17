@@ -97,27 +97,29 @@ int SDL_ToggleFS(SDL_Window *win)
 void nivel1(SDL_Surface* screen,SDL_Window* window){
     GRAPH g;
     SCENE move;
-    int iT=0,iP=0,iS=0;
-    int iShoot = 0;//Index de disparo
-    int x=-20;//Posición mínima en x
-    int h=0;//Indice de arreglo altura
-    unsigned int pastBreath  =0,currentBreath;
-    unsigned int pastWalk    =0,currentWalk;
-    unsigned int pastJump    =0,currentJump;
-    unsigned int pastShoot   =0,currentShoot;
+    int iT=         0;
+    int iP=         0;
+    int iS=         0;
+    int iShoot =    0;//Index de disparo
+    int x=        -20;//Posición mínima en x
+    int h=          0;//Indice de arreglo altura
+    unsigned int pastBreath  =   0,currentBreath;
+    unsigned int pastWalk    =   0,currentWalk;
+    unsigned int pastJump    =   0,currentJump;
+    unsigned int pastShoot   =   0,currentShoot;
 
     SDL_Surface* scene;
     SDL_Surface* player;
     SDL_Surface* playerBack;
 
     /**Array declaration*/
-    SDL_Rect csT[4],   csP[1];//clarkStan array
-    SDL_Rect csbT[4],  csbP[1];//clarkStandBack array
-    SDL_Rect crT[4],   crP[6];//clarkRun arr
-    SDL_Rect crbT[4],  crbP[6];//clarkRunBack arr
-    SDL_Rect cshT[9];
-    int piso[519];
-    int salto[51];
+    SDL_Rect csT[     4],     csP[1];//clarkStan array
+    SDL_Rect csbT[    4],    csbP[1];//clarkStandBack array
+    SDL_Rect crT[     4],     crP[6];//clarkRun arr
+    SDL_Rect crbT[    4],    crbP[6];//clarkRunBack arr
+    SDL_Rect cshT[    9];
+    int piso[       519];
+    int salto[       51];
 
     /**Array definition*/
     clarkStandArr(csT,csP);
@@ -132,59 +134,45 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
     int flag=IMG_INIT_PNG;//Iniciando soporte png
     IMG_Init(flag);
 
-    scene=IMG_Load("images/mision1.png");//Cargando backgrounds
-    player=IMG_Load("images/clark.png");//Cargando jugador
-    playerBack=IMG_Load("images/clarkBack.png");//Cargando jugador
+    scene=IMG_Load(         "images/mision1.png"     );//Cargando backgrounds
+    player=IMG_Load(        "images/clark.png"       );//Cargando jugador
+    playerBack=IMG_Load(    "images/clarkBack.png"   );//Cargando jugador
 
-    g.window=window;
-    g.screen=screen;
-    g.player=player;
-    g.playerBack=playerBack;
+    g.window          =     window;
+    g.screen          =     screen;
+    g.player          =     player;
+    g.playerBack      =     playerBack;
 
-    move.window=window;
-    move.screen=screen;
-    move.scene=scene;
-    move.x=0;
-    move.xMountain=0;
-    move.xHorizon=0;
+    move.window       =     window;
+    move.screen       =     screen;
+    move.scene        =     scene;
+    move.x            =     0;
+    move.xMountain    =     0;
+    move.xHorizon     =     0;
 
-    int direccion=1;
-    int direccionAux = 0;
-    bool key_left = false;
-    bool key_right = false;
-    bool key_down = false;
-    bool key_up = false;
-    bool walk = false;
-    bool jump = false;
-    bool keepWalking = false;
-    bool jumpArr = false;
-    bool breath = false;
-    bool shoot = false;
-    bool key_shoot = false;
+    int direccion     =     1;
+    int direccionAux  =     0;
+    bool key_left     =     false;
+    bool key_right    =     false;
+    bool key_down     =     false;
+    bool key_up       =     false;
+    bool walk         =     false;
+    bool jump         =     false;
+    bool keepWalking  =     false;
+    bool jumpArr      =     false;
+    bool breath       =     false;
+    bool shoot        =     false;
+    bool key_shoot    =     false;
 
 
     SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS,"1");
 
-    SDL_Event tecla;
-    SDL_Joystick *joy;
-    SDL_GameController *controller;
+    SDL_Event               tecla;
+    SDL_Joystick         *  joy;
+    SDL_GameController   *  controller;
     int boton;
-
     int mouse;
     int focus;
-
-    focus = SDL_SetWindowInputFocus(g.window);
-    if(focus < 0){
-        printf("Focus %s\n",SDL_GetError());
-        window = SDL_GetMouseFocus();
-    }
-    else{
-        printf("Deberia funcionar focus\n");
-    }
-    mouse = SDL_CaptureMouse(SDL_TRUE);
-    if(mouse < 0)
-        printf(" capture %s\n",SDL_GetError());
-    else printf("Deberia haber captura de mouse\n");
 
     if (controller) {
         int control = SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt");
@@ -213,86 +201,83 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
 
     while(true){
         if(SDL_PollEvent(&tecla)){//Capturando teclas
-            if(tecla.type == SDL_QUIT || tecla.type == SDLK_ESCAPE){
-                exit(0);//cerrando
-            }
             if(tecla.type==SDL_KEYDOWN){//Presionando tecla
-                switch(tecla.key.keysym.sym){//Salir
-                    case SDLK_RIGHT://Derecha
+                if(tecla.key.keysym.sym == SDLK_RIGHT){//Derecha
                         key_right = true;
                         direccionAux= 1;//
                         direccion = 1;
-                    break;
-                    case SDLK_LEFT://Izquierda
+                }else if( tecla.key.keysym.sym ==SDLK_LEFT){//Izquierda
                         key_left = true;
                         direccionAux = -1;
                         direccion= -1;//Dirección izquierda
-                    break;
-                    case SDLK_s://Saltando
+                }else if(tecla.key.keysym.sym == SDLK_ESCAPE){
+                    exit(0);
+                }
+                if(tecla.key.keysym.sym == SDLK_s)//Saltando
                         jump = true;
-                    break;
-                    case SDLK_x://Disparando
+                if(tecla.key.keysym.sym == SDLK_x){//Disparando
                         key_shoot = true;
                         iShoot=3;
-                    break;
                 }
             }
             if(tecla.type==SDL_KEYUP){//Soltando tecla
-                switch(tecla.key.keysym.sym){//Salir
-                    case SDLK_RIGHT://Derecha
+                if(tecla.key.keysym.sym == SDLK_RIGHT)//Derecha
                         key_right = false;
-                    break;
-                    case SDLK_LEFT://Izquierda
+
+                else if(tecla.key.keysym.sym == SDLK_LEFT)//Izquierda
                         key_left = false;
-                    break;
-                }
+
                 if(!jump)
-                    direccionAux = 0;
+                    direccionAux = 0;//Auxiliar de dirección en salto y disparo
+            }
+            if(tecla.type == SDL_QUIT){
+                exit(0);//cerrando
             }
             //Joystick =============================
-                if(tecla.type == SDL_JOYBUTTONDOWN){
-                    if(tecla.jbutton.button == 2){
-                            jump = true;
+            if(tecla.type == SDL_JOYBUTTONDOWN){
+                if(tecla.jbutton.button == 2){
+                        jump = true;
+                }
+                if(tecla.jbutton.button == 5){
+                        key_shoot = true;
+                        iShoot=3;
+                }
+            }
+            //if(tecla.type == SDL_JOYBUTTONUP){
+            //    if(tecla.jbutton.button == 3){
+            //            shoot = false;
+            //    }
+            //}
+            if(tecla.type == SDL_JOYAXISMOTION){
+                if(tecla.jaxis.axis == 0){
+                    if(tecla.jaxis.value == 0){//Sin movimiento
+                        key_right = false;
+                        key_left = false;
+                        if(!jump)
+                            direccionAux = 0;
                     }
-                    if(tecla.jbutton.button == 5){
-                            key_shoot = true;
-                            iShoot=3;
+                    else if(tecla.jaxis.value > 0){//Derecha
+                        key_right = true;
+                        direccion = 1;//Dirección gral
+                        direccionAux = 1;//Dirección salto
+                        keepWalking = true;
+                    }
+                    else if(tecla.jaxis.value < 0){
+                        key_left = true;
+                        direccion = -1;//Dirección izquierda
+                        direccionAux = -1;
+                        keepWalking = true;
                     }
                 }
-                //if(tecla.type == SDL_JOYBUTTONUP){
-                //    if(tecla.jbutton.button == 3){
-                //            shoot = false;
-                //    }
-                //}
-                if(tecla.type == SDL_JOYAXISMOTION){
-                    if(tecla.jaxis.axis == 0){
-                        if(tecla.jaxis.value == 0){//Sin movimiento
-                            key_right = false;
-                            key_left = false;
-                            if(!jump)
-                                direccionAux = 0;
-                        }
-                        else if(tecla.jaxis.value > 0){//Derecha
-                            key_right = true;
-                            direccion = 1;//Dirección gral
-                            direccionAux = 1;//Dirección salto
-                            keepWalking = true;
-                        }
-                        else if(tecla.jaxis.value < 0){
-                            key_left = true;
-                            direccion = -1;//Dirección izquierda
-                            direccionAux = -1;
-                            keepWalking = true;
-                        }
-                    }
-                }
+            }
             //Termina Joystick======================================
         }
 
         /***Acciones de eventos */
         if(key_right || (jump && keepWalking && direccionAux == 1)){
             //Si se dispara o salta se desactiva este sprite
-            if(!jump) clarkRun(g,iT,iP,x,piso[h],crT,crP);
+            if(!jump)
+                clarkRun(g,iT,iP,x,piso[h],crT,crP);
 
                 if(x<400){
                     x++;//Moviendonos horizontalmente
@@ -303,10 +288,11 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
                     h++;//Arreglo de altura
                 }
         }else if(key_left || (jump && keepWalking && direccionAux == -1)){
-            if(!jump) clarkRunBack(g,iT,iP,x,piso[h],crbT,crbP);
+            if(!jump)
+                clarkRunBack(g,iT,iP,x,piso[h],crbT,crbP);
                 if(h > 0){
                     x--;//Retrocediendo
-                    if(x < 520)
+                    if(move.x < 220)
                         h--;//Arreglo de altura
                 }
         }else{//Default
@@ -341,7 +327,7 @@ void nivel1(SDL_Surface* screen,SDL_Window* window){
             if(iS <= 51)
                 keepWalking = true;
         }
-        /**Estas funciones se ejecutan siempre*/
+        /*Estas funciones se ejecutan siempre*/
         escenario1(move);
 
         if(breath){

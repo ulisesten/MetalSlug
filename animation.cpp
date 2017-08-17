@@ -105,23 +105,23 @@ void clarkPier(GRAPH g,int x,int y,SDL_Rect pierna[]){
 
 void clarkPiernasRunArr(SDL_Rect torzo[4],SDL_Rect pierna[6]){
     //Corriendo---------------------------------------------------
-    pierna[0].x=13; pierna[0].y=434;
-    pierna[0].w=34; pierna[0].h=34;
+    pierna[0].x=  13; pierna[0].y=   434;
+    pierna[0].w=  34; pierna[0].h=    34;
 
-    pierna[1].x=57; pierna[1].y=434;
-    pierna[1].w=34; pierna[1].h=34;
+    pierna[1].x=  57; pierna[1].y=   434;
+    pierna[1].w=  34; pierna[1].h=    34;
 
-    pierna[2].x=101; pierna[2].y=434;
-    pierna[2].w=34;  pierna[2].h=34;
+    pierna[2].x= 101; pierna[2].y=  434;
+    pierna[2].w=  34;  pierna[2].h=  34;
 
-    pierna[3].x=133; pierna[3].y=434;
-    pierna[3].w=34;  pierna[3].h=34;
+    pierna[3].x= 133; pierna[3].y=  434;
+    pierna[3].w=  34;  pierna[3].h=  34;
 
-    pierna[4].x=167; pierna[4].y=434;
-    pierna[4].w=34;  pierna[4].h=34;
+    pierna[4].x= 167; pierna[4].y=  434;
+    pierna[4].w=  34;  pierna[4].h=  34;
 
-    pierna[5].x=201; pierna[5].y=434;
-    pierna[5].w=34;  pierna[5].h=34;//----------------------------
+    pierna[5].x= 201; pierna[5].y=  434;
+    pierna[5].w=  34;  pierna[5].h=  34;//----------------------------
 }
 
 void clarkRunBackArr(SDL_Rect torzo[4],SDL_Rect pierna[6]){
