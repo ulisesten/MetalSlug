@@ -15,6 +15,6 @@ X 	15
 R 	10
 L 	11
 Start 	8
-Select 	9
+Select  9
 Vol - 	17
 Vol + 	16
