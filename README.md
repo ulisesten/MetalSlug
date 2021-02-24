@@ -7,6 +7,8 @@ Ulisesten
 
 ## building:
 
+    ./install_sdl.sh
+    git submodule update --init --recursive
     mkdir build
     cd build
     cmake ..
