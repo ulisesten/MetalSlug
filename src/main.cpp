@@ -127,7 +127,7 @@ void mainLoop(Graphic_elements graphic_elements){
     readMeasurements(hight, "../assets/measurements/floor.txt", 535);
     readMeasurements(jumpHight, "../assets/measurements/jump.txt", 52);
     int i2;
-    for(i2 = 0; i2 <= 52; i2++){
+    for(i2 = 0; i2 < 52; i2++){
         printf("jump: %d\n", jumpHight[i2]);
     }
 
