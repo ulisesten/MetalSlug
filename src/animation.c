@@ -6,22 +6,6 @@
 #include "animation.h"
 
 /**Funciones Arrays*/
-void clarkStandSetRect(SDL_Rect torzo[4],SDL_Rect pierna[1]){
-    torzo[0].x=10; torzo[0].y=5;//Parado--------------------------
-    torzo[0].w=35; torzo[0].h=35;
-
-    torzo[1].x=43; torzo[1].y=5;
-    torzo[1].w=35; torzo[1].h=35;
-
-    torzo[2].x=76; torzo[2].y=5;
-    torzo[2].w=35; torzo[2].h=35;
-
-    torzo[3].x=109; torzo[3].y=5;
-    torzo[3].w=35; torzo[3].h=35;
-
-    pierna[0].x=145; pierna[0].y=20;
-    pierna[0].w=35; pierna[0].h=34;//-----------------------------
-}
 
 void clarkStandBackArr(SDL_Rect torzo[4],SDL_Rect pierna[1]){
     torzo[0].x=710; torzo[0].y=5;//Parado--------------------------
@@ -38,53 +22,6 @@ void clarkStandBackArr(SDL_Rect torzo[4],SDL_Rect pierna[1]){
 
     pierna[0].x=580; pierna[0].y=20;
     pierna[0].w=30; pierna[0].h=30;//-----------------------------
-}
-
-void clarkLowerBodyRunSetRect(SDL_Rect lowerBody[6]){
-    lowerBody[0].x=13;  lowerBody[0].y=434;
-    lowerBody[0].w=34;  lowerBody[0].h=34;
-    lowerBody[1].x=57;  lowerBody[1].y=434;
-    lowerBody[1].w=34;  lowerBody[1].h=34;         
-    lowerBody[2].x=101; lowerBody[2].y=434;
-    lowerBody[2].w=34;  lowerBody[2].h=34;
-    lowerBody[3].x=133; lowerBody[3].y=434;
-    lowerBody[3].w=34;  lowerBody[3].h=34;
-    lowerBody[4].x=167; lowerBody[4].y=434;
-    lowerBody[4].w=34;  lowerBody[4].h=34;
-    lowerBody[5].x=201; lowerBody[5].y=434;
-    lowerBody[5].w=34;  lowerBody[5].h=34;//----------------------------
-}
-
-void clarkUpperBodyShootSetRect(SDL_Rect upperBody[9]){
-    upperBody[0].x=19;   upperBody[0].y=50;//Disparando adelante------------
-    upperBody[0].w=35;   upperBody[0].h=35;
-
-    upperBody[1].x=85;   upperBody[1].y=50;
-    upperBody[1].w=35;   upperBody[1].h=35;
-
-    upperBody[2].x=153;  upperBody[2].y=50;
-    upperBody[2].w=35;   upperBody[2].h=35;
-
-    upperBody[3].x=206;  upperBody[3].y=50;
-    upperBody[3].w=35;   upperBody[3].h=35;
-
-    upperBody[4].x=206;  upperBody[4].y=50;
-    upperBody[4].w=35;   upperBody[4].h=35;
-
-    upperBody[5].x=303;  upperBody[5].y=50;
-    upperBody[5].w=35;   upperBody[5].h=35;
-
-    upperBody[6].x=352;  upperBody[6].y=50;
-    upperBody[6].w=35;   upperBody[6].h=35;
-
-    upperBody[7].x=401;  upperBody[7].y=48;
-    upperBody[7].w=35;   upperBody[7].h=35;
-
-    upperBody[8].x=449;  upperBody[8].y=49;
-    upperBody[8].w=35;   upperBody[8].h=35;
-
-    upperBody[9].x=498;  upperBody[9].y=50;
-    upperBody[9].w=35;   upperBody[9].h=35;//------
 }
 
 

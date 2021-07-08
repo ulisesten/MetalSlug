@@ -1,7 +1,7 @@
-#include "selection_menu.h"
+#include "character_selection.h"
 
 
-void menuPersonaje(SDL_Surface* screen,SDL_Window* window){//Funcion para elegir personaje
+void character_selection(SDL_Surface* screen,SDL_Window* window){//Funcion para elegir personaje
 
     SDL_Surface* image=NULL;//Puntero a imagen
     SDL_Event tecla;
@@ -11,7 +11,7 @@ void menuPersonaje(SDL_Surface* screen,SDL_Window* window){//Funcion para elegir
     IMG_Init(flag);//Iniciando soporte IMG
 
     if((IMG_Init(flag)&flag)){//Manejo de error
-        image=IMG_Load("assets/select.png");//Cargando imagen
+        image=IMG_Load("../assets/select.png");//Cargando imagen
         if(image) {//Manejo de error
             copia[0]  =  309;  copia[1]  =  374;//Coordenadas de sector copiado
             copia[2]  =  441;  copia[3]  =  508;
@@ -19,7 +19,7 @@ void menuPersonaje(SDL_Surface* screen,SDL_Window* window){//Funcion para elegir
             arr  [0]  =  18 ;  arr  [1]  =  83;//Coordenadas de inserciÃ³n de copia
             arr  [2]  =  150;  arr  [3]  =  217;
 
-            while(true){
+            while(1){
                 if(SDL_PollEvent(&tecla)){//Capturando teclas
                     if(tecla.type==SDL_QUIT)
                         exit(0);
@@ -40,7 +40,7 @@ void menuPersonaje(SDL_Surface* screen,SDL_Window* window){//Funcion para elegir
 
                 animEscotilla( screen,image);
                 elementosMenu( screen,image);
-                select(        screen,image,copia[i],arr[i]);
+                selection(        screen,image,copia[i],arr[i]);
                 SDL_UpdateWindowSurface(window);//Refrescando pantalla
                 
             }
@@ -86,7 +86,7 @@ void animEscotilla(SDL_Surface* screen,SDL_Surface* image){
     SDL_BlitSurface(image,&door,screen,&coorDoor);//Escotilla
 }
 
-void select(SDL_Surface* screen,SDL_Surface* image,int copia,int coor){
+void selection(SDL_Surface* screen,SDL_Surface* image,int copia,int coor){
     SDL_Rect perFrame;//Seleccion
         perFrame.x   =   copia;  perFrame.y  =  125;
         perFrame.w   =   68   ;  perFrame.h  =  122;

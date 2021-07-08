@@ -3,7 +3,7 @@ Ulisesten
 
 # MetalSlug
 
-    Metal Slug in C and SDL 2.0
+    Metal Slug in C and SDL 2
 
 ## building:
 
@@ -28,10 +28,11 @@ Ulisesten
 
 ## updates
 
-    using cmake to manage the building process
-    refactoring code
-    fullscreen is working now
+- Using cmake to manage the building process
+- Refactoring code
+- Fullscreen is working now
+- Adding Socket.io for network functions(Development)
 
 ## Notes:
 
-    Feel free to collaborate, open issues, etc.
+Feel free to collaborate, open issues, etc.
