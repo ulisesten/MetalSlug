@@ -1,169 +1,49 @@
-/* Ulises Mtz El
- * jueves 13 de jul de 2017
- * Valores coordenada altura
- */
+#include "floor.h"
 
-#include "util.h"
-
-void setRects( Rects* rects ){
-    int startPosition = 50;
-
-    rects->fullScreenHightCompensation = 38;
-
-    rects->floorRect.x = 0;
-	rects->floorRect.y = 0;
-	rects->floorRect.w = 502;
-	rects->floorRect.h = 248;
-
-    rects->traceRect.x = 0;
-    rects->traceRect.y = 287;
-    rects->traceRect.w = 502;
-    rects->traceRect.h = 72;
-
-    rects->horizonRect.x = 10;
-    rects->horizonRect.y = 560;
-    rects->horizonRect.w = 502;
-    rects->horizonRect.h = 248;
-
-    rects->skyRect.x = 10;
-    rects->skyRect.y = 408;
-    rects->skyRect.w = 502;
-    rects->skyRect.h = 248;
-
-    rects->playerSpriteFrame.x = 10 + startPosition;
-	rects->playerSpriteFrame.y = 5;
-	rects->playerSpriteFrame.w = 35;
-	rects->playerSpriteFrame.h = 35;
-
-    rects->playerUpperBodyPosition.x = -28 + startPosition;
-    rects->playerUpperBodyPosition.y = 0; //old 50
-    rects->playerUpperBodyPosition.w = 35;
-    rects->playerUpperBodyPosition.h = 35;
-
-    rects->playerLowerBodyPosition.x = -30 + startPosition;
-    rects->playerLowerBodyPosition.y = 21; //old 71
-    rects->playerLowerBodyPosition.w = 35;
-    rects->playerLowerBodyPosition.h = 35;
-
-    rects->playerLowerBodyPositionBackward.x = -26 + startPosition;
-    rects->playerLowerBodyPositionBackward.y = 21; //old 71
-    rects->playerLowerBodyPositionBackward.w = 35;
-    rects->playerLowerBodyPositionBackward.h = 35;
-}
-
-void settingFloorHight(int floor[]){
-    FILE *fptr;
-    int index = 0;
-
-    fptr = fopen("../assets/measurements/floor.txt", "r");
-    if(!fptr)
-        printf("Error opening file\n");
-
-    while ( index < 534 ) {
-         fscanf(fptr, "%d", &floor[index]);
-         index++;
+short* readFloorCoords(const char* filename, int* count) {
+    FILE* file = fopen(filename, "r");
+    const int offset = 23;
+    if (!file) {
+        printf("Error al abrir el archivo: %s\n", filename);
+        *count = 0;
+        return NULL;
     }
 
-    fclose(fptr);
-
-}
-
-void readMeasurements(int array[], const char* file_name, int length){
-    FILE *fptr = NULL;
-    int index = 0;
-
-
-    fptr = fopen(file_name, "r");
-    if(!fptr)
-        printf("Error opening file\n");
-
-    while ( index < length ) {
-         fscanf(fptr, "%d", &array[index]);
-         index++;
+    int capacity = 16;
+    short* coords = (short*)malloc(sizeof(short) * capacity);
+    if (!coords) {
+        printf("Error de memoria.\n");
+        fclose(file);
+        *count = 0;
+        return NULL;
     }
 
-    fclose(fptr);
+    short value;
+    *count = 0;
+    while (fscanf(file, "%d", &value) == 1) {
+        if (*count >= capacity) {
+            capacity *= 2;
+            short* temp = realloc(coords, sizeof(short) * capacity);
+            if (!temp) {
+                printf("Error al redimensionar memoria.\n");
+                free(coords);
+                fclose(file);
+                *count = 0;
+                return NULL;
+            }
+            coords = temp;
+        }
 
+        if(!coords) break;
+
+        coords[(*count)++] = value - offset;
+    }
+
+    fclose(file);
+    return coords;
 }
 
-void setConfiguration(struct SdlConfig* config){
-    Rects rects;
-    Indices i = {0,0,0,0};;
-
-    setRects(&rects);
-    clarkStandSetRect(          rects.upperBodyRect       ,    rects.lowerBodyRect);
-    clarkLowerBodyRunSetRect(   rects.lowerBodyRunRect    );
-    clarkUpperBodyShootSetRect( rects.upperBodyShootRect  );
-
-    config->rects = rects;
-    config->i     = i;
-}
-
-void clarkStandSetRect(SDL_Rect torzo[4],SDL_Rect pierna[1]){
-    torzo[0].x=10; torzo[0].y=5;//Parado--------------------------
-    torzo[0].w=35; torzo[0].h=35;
-
-    torzo[1].x=43; torzo[1].y=5;
-    torzo[1].w=35; torzo[1].h=35;
-
-    torzo[2].x=76; torzo[2].y=5;
-    torzo[2].w=35; torzo[2].h=35;
-
-    torzo[3].x=109; torzo[3].y=5;
-    torzo[3].w=35; torzo[3].h=35;
-
-    pierna[0].x=145; pierna[0].y=20;
-    pierna[0].w=35; pierna[0].h=34;//-----------------------------
-}
-
-void clarkLowerBodyRunSetRect(SDL_Rect lowerBody[6]){
-    lowerBody[0].x=13;  lowerBody[0].y=434;
-    lowerBody[0].w=34;  lowerBody[0].h=34;
-    lowerBody[1].x=57;  lowerBody[1].y=434;
-    lowerBody[1].w=34;  lowerBody[1].h=34;         
-    lowerBody[2].x=101; lowerBody[2].y=434;
-    lowerBody[2].w=34;  lowerBody[2].h=34;
-    lowerBody[3].x=133; lowerBody[3].y=434;
-    lowerBody[3].w=34;  lowerBody[3].h=34;
-    lowerBody[4].x=167; lowerBody[4].y=434;
-    lowerBody[4].w=34;  lowerBody[4].h=34;
-    lowerBody[5].x=201; lowerBody[5].y=434;
-    lowerBody[5].w=34;  lowerBody[5].h=34;//----------------------------
-}
-
-void clarkUpperBodyShootSetRect(SDL_Rect upperBody[9]){
-    upperBody[0].x=19;   upperBody[0].y=50;//Disparando adelante------------
-    upperBody[0].w=35;   upperBody[0].h=35;
-
-    upperBody[1].x=85;   upperBody[1].y=50;
-    upperBody[1].w=35;   upperBody[1].h=35;
-
-    upperBody[2].x=153;  upperBody[2].y=50;
-    upperBody[2].w=35;   upperBody[2].h=35;
-
-    upperBody[3].x=206;  upperBody[3].y=50;
-    upperBody[3].w=35;   upperBody[3].h=35;
-
-    upperBody[4].x=206;  upperBody[4].y=50;
-    upperBody[4].w=35;   upperBody[4].h=35;
-
-    upperBody[5].x=303;  upperBody[5].y=50;
-    upperBody[5].w=35;   upperBody[5].h=35;
-
-    upperBody[6].x=352;  upperBody[6].y=50;
-    upperBody[6].w=35;   upperBody[6].h=35;
-
-    upperBody[7].x=401;  upperBody[7].y=48;
-    upperBody[7].w=35;   upperBody[7].h=35;
-
-    upperBody[8].x=449;  upperBody[8].y=49;
-    upperBody[8].w=35;   upperBody[8].h=35;
-
-    upperBody[9].x=498;  upperBody[9].y=50;
-    upperBody[9].w=35;   upperBody[9].h=35;//------
-}
-
-/*void setFloor(int piso[]){
+/* void getAltura(int piso[]) {
     piso[  0]=128;
     piso[  1]=128;
     piso[  2]=128;
@@ -685,4 +565,19 @@ void clarkUpperBodyShootSetRect(SDL_Rect upperBody[9]){
     piso[517]=143;
     piso[518]=143;
     piso[519]=143;
-}*/
+
+    for (int i = 0; i < 520; i++) {
+        piso[i] = 180; // altura constante
+    }
+} */
+
+void clarkJump(int salto[]) {
+    static const int valores[] = {
+        0, 4, 8, 13, 18, 22, 26, 29, 32, 35, 38, 41, 43, 45, 47, 49, 51, 52, 53, 54,
+        55, 56, 57, 58, 59, 59, 59, 59, 58, 57, 56, 55, 54, 53, 52, 51, 49, 47, 45,
+        43, 40, 37, 34, 31, 28, 25, 21, 17, 12, 8, 4, 0
+    };
+    for (int i = 0; i < 52; i++) {
+        salto[i] = valores[i];
+    }
+}

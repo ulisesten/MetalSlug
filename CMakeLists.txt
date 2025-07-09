@@ -1,38 +1,37 @@
-cmake_minimum_required(VERSION 2.8)
-project(metalSlug)
+cmake_minimum_required(VERSION 3.10)
+project(MetalSlugC C)
 
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_C_STANDARD 99)
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/modules/socket.io-client-cpp)
+# Ruta base del código fuente
+set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 
-
-set(SRC
-        ${PROJECT_SOURCE_DIR}/src/main.c
-        ${PROJECT_SOURCE_DIR}/src/util.c
-        ${PROJECT_SOURCE_DIR}/src/animation.c
-        ${PROJECT_SOURCE_DIR}/src/movement.c
-        ${PROJECT_SOURCE_DIR}/src/character_selection.c
-        ${PROJECT_SOURCE_DIR}/src/main_loop.c
-        ${PROJECT_SOURCE_DIR}/src/player.c
-)
-
-#list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sdl2)
-
+# SDL2 y SDL2_image
 find_package(SDL2 REQUIRED)
-#find_package(SDL2_image REQUIRED)
-#include_directories(metalSlug ${SDL2_INCLUDE_DIRS})
+find_package(SDL2_image REQUIRED)
 
-add_executable( metalSlug ${SRC})
-
-target_include_directories( metalSlug
-    PRIVATE
-        ${PROJECT_SOURCE_DIR}/include
-        ${PROJECT_SOURCE_DIR}/assets
+include_directories(
+    ${SDL2_INCLUDE_DIRS}
+    ${SDL2_IMAGE_INCLUDE_DIRS}
+    ${SRC_DIR}
+    ${SRC_DIR}/game
+    ${SRC_DIR}/input
+    ${SRC_DIR}/render
 )
 
-include_directories(/usr/include/)
-link_directories(/usr/lib/x86_64-linux-gnu/)
-find_library(NAMES SDL2_image PATHS /usr/lib/x86_64-linux-gnu/)
+# Archivos fuente
+file(GLOB GAME_SRC ${SRC_DIR}/game/*.c)
+file(GLOB INPUT_SRC ${SRC_DIR}/input/*.c)
+file(GLOB RENDER_SRC ${SRC_DIR}/render/*.c)
 
-#target_link_libraries(metalSlug SDL2::Main SDL2::Image)
-target_link_libraries(metalSlug SDL2 SDL2_image)
+add_executable(metal_slug
+    ${SRC_DIR}/main.c
+    ${GAME_SRC}
+    ${INPUT_SRC}
+    ${RENDER_SRC}
+)
+
+target_link_libraries(metal_slug
+    ${SDL2_LIBRARIES}
+    SDL2_image
+)
