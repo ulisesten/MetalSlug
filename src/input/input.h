@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <stdbool.h>
-#include "../render/animation.h"
+#include "../animation/animation.h"
 
 /* typedef struct PlayerState PlayerState; */
 

@@ -45,7 +45,10 @@ typedef struct {
     int x_displacement;
     int iS;
     int direccion, directionAux;
-    bool key_left, key_right, key_up, key_down;
+    bool IS_RUNNING_BACKWARD;
+    bool IS_RUNNING_FORWARD;
+    bool key_up;
+    bool key_down;
     bool run, jump, shoot, breath, translate, key_shoot;
     bool keepWalking, jumpArr;
     bool quit;
@@ -54,7 +57,7 @@ typedef struct {
     bool isShooting;
     int direction;
     int sco_end_offset;
-    FloorCoors* floor_coors;
+    //FloorCoors* floor_coors;
     Indexes indexes;
     AnimationArrays* animation_arrays;
 } PlayerState;
@@ -64,6 +67,7 @@ typedef struct{
     SDL_Surface* screen;
     SDL_Surface* player;
     SDL_Surface* playerBack;
+    SDL_Surface* soldier;
 }GRAPH;
 //Escenarios
 typedef struct{
@@ -74,9 +78,12 @@ typedef struct{
     int y;
     int MAX_WIDTH;
     int xMountain;
-    int x_mountain_offset;
+    int x_mountain_offset_counter;
+    int X_MOUNTAIN_OFFSET;
     int xHorizon;
-    int x_horizon_offset;
+    int x_horizon_offset_counter;
+    int X_HORIZON_OFFSET;
+    FloorCoors* floor_coors;
 } ScenarioState;
 
 

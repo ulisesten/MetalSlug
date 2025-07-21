@@ -20,14 +20,12 @@ void handleEvents(PlayerState* state) {
                         state->quit = true;
                         break;
                     case SDLK_RIGHT:
-                        state->key_right = true;
-                        //state->isRunning = true;
+                        state->IS_RUNNING_FORWARD= true;
                         state->direction = DIRECTION_RIGHT;
                         state->directionAux = DIRECTION_RIGHT;
                         break;
                     case SDLK_LEFT:
-                        state->key_left = true;
-                        //state->isRunning = true;
+                        state->IS_RUNNING_BACKWARD = true;
                         state->direction = DIRECTION_LEFT;
                         state->directionAux = DIRECTION_LEFT;
                         break;
@@ -44,12 +42,10 @@ void handleEvents(PlayerState* state) {
             case SDL_KEYUP:
                 switch (e.key.keysym.sym) {
                     case SDLK_RIGHT:
-                        state->key_right = false;
-                        //state->isRunning = false;
+                        state->IS_RUNNING_FORWARD = false;
                         break;
                     case SDLK_LEFT:
-                        state->key_left = false;
-                        //state->isRunning = false;
+                        state->IS_RUNNING_BACKWARD = false;
                         break;
                 }
                 if (!state->jump) {
@@ -70,17 +66,17 @@ void handleEvents(PlayerState* state) {
             case SDL_JOYAXISMOTION:
                 if (e.jaxis.axis == 0) {
                     if (e.jaxis.value == 0) {
-                        state->key_right = false;
-                        state->key_left = false;
+                        state->IS_RUNNING_FORWARD = false;
+                        state->IS_RUNNING_BACKWARD = false;
                         if (!state->jump)
                             state->directionAux = 0;
                     } else if (e.jaxis.value > 0) {
-                        state->key_right = true;
+                        state->IS_RUNNING_FORWARD = true;
                         state->direction = DIRECTION_RIGHT;
                         state->directionAux = DIRECTION_RIGHT;
                         state->keepWalking = true;
                     } else if (e.jaxis.value < 0) {
-                        state->key_left = true;
+                        state->IS_RUNNING_BACKWARD = true;
                         state->direction = DIRECTION_LEFT;
                         state->directionAux = DIRECTION_LEFT;
                         state->keepWalking = true;

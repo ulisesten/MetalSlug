@@ -257,7 +257,7 @@ Indexes clarkStand(GRAPH g,int *iT,int *iP,int x,int y,SDL_Rect torzo[],SDL_Rect
         if(g.player) {//Manejo de error
             SDL_BlitSurface(g.player,&pierna[0],g.screen,&pierCoor);//Clark piernas
             SDL_BlitSurface(g.player,&torzo[*iT],g.screen,&torCoor);//Clark torzo
-            SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
+            //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
         } else {
             printf("IMG_Load: %s\n", IMG_GetError());
         }
@@ -275,7 +275,7 @@ Indexes clarkShoot(GRAPH g,int *iT,int x,int y,SDL_Rect torzo[]){
 
         if(g.player) {//Manejo de error
             SDL_BlitSurface(g.player,&torzo[*iT],g.screen,&torCoor);//Clark torzo
-            SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
+            //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
         } else {
             printf("IMG_Load: %s\n", IMG_GetError());
         }
@@ -293,7 +293,7 @@ Indexes clarkStandBack(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Re
     if(g.player) {//Manejo de error
         SDL_BlitSurface(g.playerBack,&pierna[0],g.screen,&pierCoor);//Clark piernas
         SDL_BlitSurface(g.playerBack,&torzo[iT],g.screen,&torCoor);//Clark torzo
-        SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
+        //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
     } else {
         printf("IMG_Load: %s\n", IMG_GetError());
     }
@@ -311,7 +311,7 @@ Indexes clarkRun(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pie
         //printf("%d , %d",iT,iP);
         SDL_BlitSurface(g.player,&pierna[iP],g.screen,&pierCoor);//Clark piernas
         SDL_BlitSurface(g.player,&torzo[0],g.screen,&torCoor);//Clark torzo
-        SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
+        //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
     } else {
         printf("IMG_Load: %s\n", IMG_GetError());
     }
@@ -328,7 +328,7 @@ Indexes clarkRunBack(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect
     if(g.player) {//Manejo de error
         SDL_BlitSurface(g.playerBack,&pierna[iP],g.screen,&pierCoor);//Clark piernas
         SDL_BlitSurface(g.playerBack,&torzo[iT],g.screen,&torCoor);//Clark torzo
-        SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
+        //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
     } else {
         printf("IMG_Load: %s\n", IMG_GetError());
     }
@@ -339,11 +339,6 @@ Indexes clarkRunBack(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect
 
 
 Indexes clarkStandV2(GRAPH g, PlayerState pla_state, AnimationArrays ani_arrays){
-    if(!g.player) {
-        printf("IMG_Load: %s\n", IMG_GetError());
-        return (Indexes){0,0};
-    }
-
     SDL_Rect torso_coors, leg_coors;
 
     const int x = pla_state.x;
@@ -358,17 +353,12 @@ Indexes clarkStandV2(GRAPH g, PlayerState pla_state, AnimationArrays ani_arrays)
 
     SDL_BlitSurface(g.player,&ani_arrays.StandLegs[0],g.screen, &leg_coors);//Clark piernas
     SDL_BlitSurface(g.player,&ani_arrays.ShootTorso[i],g.screen,&torso_coors);//Clark torzo
-    SDL_UpdateWindowSurface(g.window);//Refrescando pantalla    
+    //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla    
 
     return (Indexes){4,1};
 }
 
 Indexes clarkStandBackV2(GRAPH g, PlayerState pla_state, AnimationArrays ani_arrays){
-    if(!g.player) {
-        printf("IMG_Load: %s\n", IMG_GetError());
-        return (Indexes){0,0};
-    }
-
     SDL_Rect torso_coors, leg_coors;
 
     const int x = pla_state.x;
@@ -382,17 +372,12 @@ Indexes clarkStandBackV2(GRAPH g, PlayerState pla_state, AnimationArrays ani_arr
 
     SDL_BlitSurface(g.playerBack,&ani_arrays.StandBackLegs[0],g.screen,&leg_coors);//Clark piernas
     SDL_BlitSurface(g.playerBack,&ani_arrays.StandBackTorso[i],g.screen,&torso_coors);//Clark torzo
-    SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
+    //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
     
     return (Indexes){4,1};
 }
 
 Indexes clarkRunV2(GRAPH g, PlayerState* pla_state, AnimationArrays* ani_arrays){
-    if(!g.player) {
-        printf("IMG_Load: %s\n", IMG_GetError());
-        return (Indexes){0,0};
-    }
-
     SDL_Rect torso_coors, leg_coors;
 
     const int x = pla_state->x;
@@ -409,17 +394,12 @@ Indexes clarkRunV2(GRAPH g, PlayerState* pla_state, AnimationArrays* ani_arrays)
     
     SDL_BlitSurface(g.player,&ani_arrays->RunLegs[i],g.screen,&leg_coors);//Clark piernas
     SDL_BlitSurface(g.player,&ani_arrays->RunTorso[j],g.screen,&torso_coors);//Clark torzo
-    SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
+    //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
 
     return (Indexes){4,6};
 }
 
 Indexes clarkRunBackV2(GRAPH g, PlayerState* pla_state, AnimationArrays* ani_arrays){
-    if(!g.player) {
-        printf("IMG_Load: %s\n", IMG_GetError());
-        return (Indexes){0,0};
-    }
-
     SDL_Rect torso_coors, leg_coors;
 
     const int x = pla_state->x;
@@ -436,7 +416,7 @@ Indexes clarkRunBackV2(GRAPH g, PlayerState* pla_state, AnimationArrays* ani_arr
     
     SDL_BlitSurface(g.playerBack,&ani_arrays->RunBackLegs[j],g.screen,&leg_coors);//Clark piernas
     SDL_BlitSurface(g.playerBack,&ani_arrays->RunBackTorso[i],g.screen,&torso_coors);//Clark torzo
-    SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
+    //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
 
     return (Indexes){4,6};
 }
