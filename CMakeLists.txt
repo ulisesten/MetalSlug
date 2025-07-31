@@ -6,6 +6,13 @@ set(CMAKE_C_STANDARD 99)
 # Ruta base del código fuente
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 
+## Windows config
+if(WIN32)
+    set(SDL2_DIR "${CMAKE_SOURCE_DIR}/libs/SDL2/x86_64-w64-mingw32")
+    include_directories(${SDL2_DIR}/include)
+    link_directories(${SDL2_DIR}/lib)
+endif()
+
 # SDL2 y SDL2_image
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
@@ -34,7 +41,26 @@ add_executable(metal_slug
     ${ANIMATION_SRC}
 )
 
-target_link_libraries(metal_slug
-    ${SDL2_LIBRARIES}
-    SDL2_image
-)
+if(WIN32)
+    if(MSVC) # Para compilador Visual Studio
+        target_link_libraries(mi_proyecto SDL2 SDL2main SDL2_image)
+    else()
+        target_link_libraries(mi_proyecto SDL2 SDL2main SDL2_image mingw32) # Para MinGW
+    endif()
+else()
+    target_link_libraries(metal_slug
+        ${SDL2_LIBRARIES}
+        SDL2_image
+    )
+endif()
+
+
+if(WIN32)
+    # Copiar las librerías DLL al directorio de construcción
+    add_custom_command(TARGET mi_proyecto POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/libs/SDL2/x86_64-w64-mingw32/bin"
+        $<TARGET_FILE_DIR:mi_proyecto>
+    COMMENT "Copiando DLLs de SDL2 al directorio de salida"
+    )
+endif()
