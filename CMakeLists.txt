@@ -11,11 +11,13 @@ if(WIN32)
     set(SDL2_DIR "${CMAKE_SOURCE_DIR}/libs/SDL2/x86_64-w64-mingw32")
     include_directories(${SDL2_DIR}/include)
     link_directories(${SDL2_DIR}/lib)
+else()
+    # SDL2 y SDL2_image
+    find_package(SDL2 REQUIRED)
+    find_package(SDL2_image REQUIRED)
 endif()
 
-# SDL2 y SDL2_image
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
+
 
 include_directories(
     ${SDL2_INCLUDE_DIRS}
@@ -43,9 +45,9 @@ add_executable(metal_slug
 
 if(WIN32)
     if(MSVC) # Para compilador Visual Studio
-        target_link_libraries(mi_proyecto SDL2 SDL2main SDL2_image)
+        target_link_libraries(metal_slug SDL2 SDL2main SDL2_image)
     else()
-        target_link_libraries(mi_proyecto SDL2 SDL2main SDL2_image mingw32) # Para MinGW
+        target_link_libraries(metal_slug SDL2 SDL2main SDL2_image mingw32) # Para MinGW
     endif()
 else()
     target_link_libraries(metal_slug
@@ -57,10 +59,10 @@ endif()
 
 if(WIN32)
     # Copiar las librerías DLL al directorio de construcción
-    add_custom_command(TARGET mi_proyecto POST_BUILD
+    add_custom_command(TARGET metal_slug POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_SOURCE_DIR}/libs/SDL2/x86_64-w64-mingw32/bin"
-        $<TARGET_FILE_DIR:mi_proyecto>
+        $<TARGET_FILE_DIR:metal_slug>
     COMMENT "Copiando DLLs de SDL2 al directorio de salida"
     )
 endif()

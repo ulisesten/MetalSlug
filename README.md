@@ -26,9 +26,14 @@ Este proyecto es un clon en desarrollo del clásico juego **Metal Slug**, utiliz
 ### 🛠 Compilación
 Linux / macOS
 
-- cmake -S . -C build
+- cmake -S . -B build
 - cmake --build build
 - ./build/metal_slug
+
+Windows
+- cmake -S . -B build -G "MinGW Makefiles"
+- cmake --build build
+- ./build/metal_slug.exe
 
 ---
 
