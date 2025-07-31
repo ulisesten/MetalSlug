@@ -338,46 +338,61 @@ Indexes clarkRunBack(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect
 
 
 
-Indexes clarkStandV2(GRAPH g, PlayerState pla_state, AnimationArrays ani_arrays){
+Indexes clarkStandV2(GRAPH* g, PlayerState* pla_state, AnimationArrays ani_arrays){
     SDL_Rect torso_coors, leg_coors;
 
-    const int x = pla_state.x;
-    const int y = pla_state.y;
-    const int i = pla_state.iTorso;
+    const int x = pla_state->x;
+    const int y = pla_state->y;
+    const int i = pla_state->iTorso;
 
     torso_coors.x= x + 2;
     torso_coors.y= y + 20;
+    torso_coors.w = ani_arrays.StandTorso[i].w;
+    torso_coors.h = ani_arrays.StandTorso[i].h;
 
     leg_coors.x= 0+x;
     leg_coors.y=41+y;//Piernas
+    leg_coors.w = ani_arrays.StandLegs[0].w;
+    leg_coors.h = ani_arrays.StandLegs[0].h;
 
-    SDL_BlitSurface(g.player,&ani_arrays.StandLegs[0],g.screen, &leg_coors);//Clark piernas
-    SDL_BlitSurface(g.player,&ani_arrays.ShootTorso[i],g.screen,&torso_coors);//Clark torzo
+    SDL_RenderCopy(g->renderer, pla_state->pla_texture, &ani_arrays.StandLegs[0], &leg_coors);
+    SDL_RenderCopy(g->renderer, pla_state->pla_texture, &ani_arrays.StandTorso[i],&torso_coors);
+
+    //SDL_BlitSurface(g.player,&ani_arrays.StandLegs[0],g.screen, &leg_coors);//Clark piernas
+    //SDL_BlitSurface(g.player,&ani_arrays.ShootTorso[i],g.screen,&torso_coors);//Clark torzo
     //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla    
 
     return (Indexes){4,1};
 }
 
-Indexes clarkStandBackV2(GRAPH g, PlayerState pla_state, AnimationArrays ani_arrays){
+Indexes clarkStandBackV2(GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arrays){
     SDL_Rect torso_coors, leg_coors;
 
-    const int x = pla_state.x;
-    const int y = pla_state.y;
-    const int i = pla_state.iTorso;
+    const int x = pla_state->x;
+    const int y = pla_state->y;
+    const int i = pla_state->iTorso;
 
     torso_coors.x=  2+x;
     torso_coors.y= 20+y;//Torzo
+    torso_coors.w = ani_arrays->StandBackTorso[i].w;
+    torso_coors.h = ani_arrays->StandBackTorso[i].h;
+
     leg_coors.x =   9+x;
     leg_coors.y=   41+y;//Piernas
+    leg_coors.w = ani_arrays->StandBackLegs[0].w;
+    leg_coors.h = ani_arrays->StandBackLegs[0].h;
 
-    SDL_BlitSurface(g.playerBack,&ani_arrays.StandBackLegs[0],g.screen,&leg_coors);//Clark piernas
-    SDL_BlitSurface(g.playerBack,&ani_arrays.StandBackTorso[i],g.screen,&torso_coors);//Clark torzo
+    SDL_RenderCopy(g->renderer, pla_state->pla_texture_back, &ani_arrays->StandBackLegs[0], &leg_coors);
+    SDL_RenderCopy(g->renderer, pla_state->pla_texture_back, &ani_arrays->StandBackTorso[i], &torso_coors);
+
+    //SDL_BlitSurface(g.playerBack,&ani_arrays.StandBackLegs[0],g.screen,&leg_coors);//Clark piernas
+    //SDL_BlitSurface(g.playerBack,&ani_arrays.StandBackTorso[i],g.screen,&torso_coors);//Clark torzo
     //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
     
     return (Indexes){4,1};
 }
 
-Indexes clarkRunV2(GRAPH g, PlayerState* pla_state, AnimationArrays* ani_arrays){
+Indexes clarkRunV2(GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arrays){
     SDL_Rect torso_coors, leg_coors;
 
     const int x = pla_state->x;
@@ -387,19 +402,25 @@ Indexes clarkRunV2(GRAPH g, PlayerState* pla_state, AnimationArrays* ani_arrays)
 
     torso_coors.x=2+x;
     torso_coors.y=20+y;//Torzo
+    torso_coors.w = ani_arrays->RunTorso[j].w;
+    torso_coors.h = ani_arrays->RunTorso[j].h;
 
     leg_coors.x=0+x;
     leg_coors.y=41+y;//Piernas
+    leg_coors.w = ani_arrays->RunLegs[i].w;
+    leg_coors.h = ani_arrays->RunLegs[i].h;
 
-    
-    SDL_BlitSurface(g.player,&ani_arrays->RunLegs[i],g.screen,&leg_coors);//Clark piernas
-    SDL_BlitSurface(g.player,&ani_arrays->RunTorso[j],g.screen,&torso_coors);//Clark torzo
+    SDL_RenderCopy(g->renderer, pla_state->pla_texture, &ani_arrays->RunLegs[i], &leg_coors);
+    SDL_RenderCopy(g->renderer, pla_state->pla_texture, &ani_arrays->RunTorso[j], &torso_coors);
+
+    //SDL_BlitSurface(g.player,&ani_arrays->RunLegs[i],g.screen,&leg_coors);//Clark piernas
+    //SDL_BlitSurface(g.player,&ani_arrays->RunTorso[j],g.screen,&torso_coors);//Clark torzo
     //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
 
     return (Indexes){4,6};
 }
 
-Indexes clarkRunBackV2(GRAPH g, PlayerState* pla_state, AnimationArrays* ani_arrays){
+Indexes clarkRunBackV2(GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arrays){
     SDL_Rect torso_coors, leg_coors;
 
     const int x = pla_state->x;
@@ -409,13 +430,19 @@ Indexes clarkRunBackV2(GRAPH g, PlayerState* pla_state, AnimationArrays* ani_arr
 
     torso_coors.x=0+x;
     torso_coors.y=20+y;//Torzo coor
+    torso_coors.w = ani_arrays->RunBackTorso[i].w;
+    torso_coors.h = ani_arrays->RunBackTorso[i].h;
 
     leg_coors.x=7+x;
     leg_coors.y=41+y;//Piernas coor
+    leg_coors.w = ani_arrays->RunBackLegs[j].w;
+    leg_coors.h = ani_arrays->RunBackLegs[j].h;
 
-    
-    SDL_BlitSurface(g.playerBack,&ani_arrays->RunBackLegs[j],g.screen,&leg_coors);//Clark piernas
-    SDL_BlitSurface(g.playerBack,&ani_arrays->RunBackTorso[i],g.screen,&torso_coors);//Clark torzo
+    SDL_RenderCopy(g->renderer, pla_state->pla_texture_back, &ani_arrays->RunBackLegs[j], &leg_coors);
+    SDL_RenderCopy(g->renderer, pla_state->pla_texture_back, &ani_arrays->RunBackTorso[i], &torso_coors);
+
+    //SDL_BlitSurface(g.playerBack,&ani_arrays->RunBackLegs[j],g.screen,&leg_coors);//Clark piernas
+    //SDL_BlitSurface(g.playerBack,&ani_arrays->RunBackTorso[i],g.screen,&torso_coors);//Clark torzo
     //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
 
     return (Indexes){4,6};

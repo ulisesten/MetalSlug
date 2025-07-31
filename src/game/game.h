@@ -4,6 +4,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-void startGame(SDL_Surface* screen, SDL_Window* window);
+void startGame(SDL_Renderer* renderer, SDL_Surface* screen, SDL_Window* window);
 
 #endif

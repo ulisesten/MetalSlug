@@ -4,7 +4,7 @@
 #include "game.h"
 #include "../animation/animation.h"
 
-void renderScenario(ScenarioState* sco_state);
+void renderScenario(GRAPH* g, ScenarioState* sco_state);
 void renderPlayer(PlayerState* state, ScenarioState* sco_state, GRAPH* g);
 void renderUpdateCoors(PlayerState* player_state, ScenarioState* sco_state);
 

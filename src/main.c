@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    SDL_Window* window = SDL_CreateWindow("Metal Slug", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 502, 238, SDL_WINDOW_SHOWN);
+    SDL_Window* window = SDL_CreateWindow("Metal Slug", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 502, 238, SDL_WINDOW_OPENGL);
     if (!window) {
         printf("Error SDL_CreateWindow: %s\n", SDL_GetError());
         IMG_Quit();
@@ -23,10 +23,14 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    SDL_Surface* screen = SDL_GetWindowSurface(window);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    SDL_Surface* screen = NULL;//SDL_GetWindowSurface(window);
+    if(!renderer) {
+        printf("no renderer %s\n", SDL_GetError());
+    }
 
     // menuPersonaje(screen, window); // Activar si se quiere el menú
-    startGame(screen, window);       // Lógica del nivel 1
+    startGame(renderer, screen, window);       // Lógica del nivel 1
 
     SDL_DestroyWindow(window);
     IMG_Quit();

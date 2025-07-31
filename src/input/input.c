@@ -36,6 +36,9 @@ void handleEvents(PlayerState* state) {
                         state->key_shoot = true;
                         state->isShooting = 3;
                         break;
+                    case SDLK_f:
+                        state->fullscreen = true;
+                        break;
                 }
                 break;
 

@@ -58,12 +58,16 @@ typedef struct {
     int direction;
     int sco_end_offset;
     //FloorCoors* floor_coors;
+    bool fullscreen;
     Indexes indexes;
     AnimationArrays* animation_arrays;
+    SDL_Texture* pla_texture;
+    SDL_Texture* pla_texture_back;
 } PlayerState;
 
 typedef struct{
     SDL_Window* window;
+    SDL_Renderer* renderer;
     SDL_Surface* screen;
     SDL_Surface* player;
     SDL_Surface* playerBack;
@@ -74,8 +78,10 @@ typedef struct{
     SDL_Window* window;
     SDL_Surface* screen;
     SDL_Surface* scenario;
+    
     int x;
     int y;
+    int w;
     int MAX_WIDTH;
     int xMountain;
     int x_mountain_offset_counter;
@@ -84,6 +90,7 @@ typedef struct{
     int x_horizon_offset_counter;
     int X_HORIZON_OFFSET;
     FloorCoors* floor_coors;
+    SDL_Texture* sco_texture;
 } ScenarioState;
 
 
@@ -111,9 +118,9 @@ void initAnimations(AnimationArrays* ani_arrays);
 void initClarkAnimations(AnimationArrays* ani_arrays);
 
 /** Updated functions */
-Indexes clarkStandV2(GRAPH g, PlayerState pla_state, AnimationArrays ani_arrays);
-Indexes clarkStandBackV2(GRAPH g, PlayerState pla_state, AnimationArrays ani_arrays);
-Indexes clarkRunV2(GRAPH g, PlayerState* pla_state, AnimationArrays* ani_arrays);
-Indexes clarkRunBackV2(GRAPH g, PlayerState* pla_state, AnimationArrays* ani_arrays);
+Indexes clarkStandV2(       GRAPH* g, PlayerState* pla_state, AnimationArrays ani_arrays);
+Indexes clarkStandBackV2(   GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arrays);
+Indexes clarkRunV2(         GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arrays);
+Indexes clarkRunBackV2(     GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arrays);
 
 #endif
