@@ -69,9 +69,9 @@ typedef struct{
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Surface* screen;
-    SDL_Surface* player;
+    /*SDL_Surface* player;
     SDL_Surface* playerBack;
-    SDL_Surface* soldier;
+    SDL_Surface* soldier; */
 }GRAPH;
 //Escenarios
 typedef struct{

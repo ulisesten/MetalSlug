@@ -24,13 +24,12 @@ int main(int argc, char** argv) {
     }
 
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    SDL_Surface* screen = NULL;//SDL_GetWindowSurface(window);
     if(!renderer) {
         printf("no renderer %s\n", SDL_GetError());
     }
 
     // menuPersonaje(screen, window); // Activar si se quiere el menú
-    startGame(renderer, screen, window);       // Lógica del nivel 1
+    startGame(renderer, window);       // Lógica del nivel 1
 
     SDL_DestroyWindow(window);
     IMG_Quit();

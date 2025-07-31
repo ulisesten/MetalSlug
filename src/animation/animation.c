@@ -254,13 +254,13 @@ Indexes clarkStand(GRAPH g,int *iT,int *iP,int x,int y,SDL_Rect torzo[],SDL_Rect
             torCoor.x=2+x; torCoor.y=20+y;//Torzo
             pierCoor.x=0+x; pierCoor.y=41+y;//Piernas
 
-        if(g.player) {//Manejo de error
+        /* if(g.player) {//Manejo de error
             SDL_BlitSurface(g.player,&pierna[0],g.screen,&pierCoor);//Clark piernas
             SDL_BlitSurface(g.player,&torzo[*iT],g.screen,&torCoor);//Clark torzo
             //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
         } else {
             printf("IMG_Load: %s\n", IMG_GetError());
-        }
+        } */
 
         return (Indexes){4,1};
 }
@@ -273,12 +273,12 @@ Indexes clarkShoot(GRAPH g,int *iT,int x,int y,SDL_Rect torzo[]){
 
         torCoor.x=2+x; torCoor.y=20+y;//Torzo
 
-        if(g.player) {//Manejo de error
+        /* if(g.player) {//Manejo de error
             SDL_BlitSurface(g.player,&torzo[*iT],g.screen,&torCoor);//Clark torzo
             //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
         } else {
             printf("IMG_Load: %s\n", IMG_GetError());
-        }
+        } */
 
         return (Indexes){9,1};
 }
@@ -290,13 +290,13 @@ Indexes clarkStandBack(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Re
     torCoor.x=2+x; torCoor.y=20+y;//Torzo
     pierCoor.x=9+x; pierCoor.y=41+y;//Piernas
 
-    if(g.player) {//Manejo de error
+    /* if(g.player) {//Manejo de error
         SDL_BlitSurface(g.playerBack,&pierna[0],g.screen,&pierCoor);//Clark piernas
         SDL_BlitSurface(g.playerBack,&torzo[iT],g.screen,&torCoor);//Clark torzo
         //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
     } else {
         printf("IMG_Load: %s\n", IMG_GetError());
-    }
+    } */
 
     return (Indexes){4,1};
 }
@@ -307,7 +307,7 @@ Indexes clarkRun(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pie
     torCoor.x=2+x; torCoor.y=20+y;//Torzo
     pierCoor.x=0+x; pierCoor.y=41+y;//Piernas
 
-    if(g.player) {//Manejo de error
+    /* if(g.player) {//Manejo de error
         //printf("%d , %d",iT,iP);
         SDL_BlitSurface(g.player,&pierna[iP],g.screen,&pierCoor);//Clark piernas
         SDL_BlitSurface(g.player,&torzo[0],g.screen,&torCoor);//Clark torzo
@@ -315,7 +315,7 @@ Indexes clarkRun(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect pie
     } else {
         printf("IMG_Load: %s\n", IMG_GetError());
     }
-
+ */
     return (Indexes){4,6};
 }
 
@@ -325,13 +325,13 @@ Indexes clarkRunBack(GRAPH g,int iT,int iP,int x,int y,SDL_Rect torzo[],SDL_Rect
     torCoor.x=0+x; torCoor.y=20+y;//Torzo coor
     pierCoor.x=7+x; pierCoor.y=41+y;//Piernas coor
 
-    if(g.player) {//Manejo de error
+    /* if(g.player) {//Manejo de error
         SDL_BlitSurface(g.playerBack,&pierna[iP],g.screen,&pierCoor);//Clark piernas
         SDL_BlitSurface(g.playerBack,&torzo[iT],g.screen,&torCoor);//Clark torzo
         //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
     } else {
         printf("IMG_Load: %s\n", IMG_GetError());
-    }
+    } */
 
     return (Indexes){4,6};
 }
