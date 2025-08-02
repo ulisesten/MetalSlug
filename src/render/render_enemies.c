@@ -44,16 +44,26 @@ void renderUpdateEnemyCoors( EnemyState* ene_state, PlayerState* pla_state, Scen
             ene_state->h--;
             ene_state->free_animation = true;
         }
+
+        
     }
 
     else
     if(ene_state->direction == DIRECTION_RIGHT) {
         if(ene_state->mode == MODE_PURSUIT && ene_state->walk){
-            ene_state->x++;
+            if( !sco_state->isScoTranslating) {
+                ene_state->x++;
+            }
             ene_state->h++;
             ene_state->free_animation = true;
+
+            if( sco_state->isScoTranslating) {
+                ene_state->h++;
+                ene_state->x--;
+            }
         }
 
+        
     }
 
 

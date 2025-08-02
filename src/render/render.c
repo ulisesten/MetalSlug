@@ -78,11 +78,13 @@ void renderUpdateCoors(PlayerState* pla_state, ScenarioState* sco_state) {
         if(pla_state->translate) {
             if( pla_state->x < pla_state->X_RANGE_MAX + pla_state->sco_end_offset ){
                 pla_state->x++;
+                sco_state->isScoTranslating = false;
             }else{
                 if( sco_state->x < sco_state->MAX_WIDTH ) {
                     sco_state->x++;
                     sco_state->w++;
                     sco_state->x_mountain_offset_counter++;
+                    sco_state->isScoTranslating = true;
                 }
 
                 if(sco_state->x_mountain_offset_counter >= X_MOUNTAIN_OFFSET) {

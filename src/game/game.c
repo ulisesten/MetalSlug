@@ -34,6 +34,7 @@ void startGame(SDL_Renderer* renderer, SDL_Window* window) {
     EnemyState** enemies = malloc(sizeof(EnemyState*) * ENEMY_COUNT);
 
     loadResources(&assets, &floor_coors);
+
     initPlayer(&player_state, assets, &renderer);
     initEnemies(enemies, ENEMY_COUNT, assets, &renderer);
     initScenario(&sco_state, assets, &renderer);
@@ -126,7 +127,8 @@ static void initScenario(ScenarioState* state, GameAssets assets, SDL_Renderer**
         .X_MOUNTAIN_OFFSET = 4,
         .X_HORIZON_OFFSET = 18,
         .MAX_WIDTH = 3320,
-        .sco_texture = SDL_CreateTextureFromSurface(*renderer, assets.scenario)
+        .sco_texture = SDL_CreateTextureFromSurface(*renderer, assets.scenario),
+        .isScoTranslating = false
     };
 }
 

@@ -89,6 +89,7 @@ typedef struct{
     int xHorizon;
     int x_horizon_offset_counter;
     int X_HORIZON_OFFSET;
+    bool isScoTranslating;
     FloorCoors* floor_coors;
     SDL_Texture* sco_texture;
 } ScenarioState;
