@@ -33,6 +33,7 @@ typedef struct {
 } AnimationArrays;
 
 typedef struct {
+    short pla_id;
     int x;
     int y;
     int h;
@@ -50,9 +51,9 @@ typedef struct {
     bool key_up;
     bool key_down;
     bool run, jump, shoot, breath, translate, key_shoot;
+    Uint32 pastBreath, pastWalk, pastJump, pastShoot, pastTime;
     bool keepWalking, jumpArr;
     bool quit;
-    Uint32 pastBreath, pastWalk, pastJump, pastShoot, pastTime;
     bool isRunning;
     bool isShooting;
     int direction;
@@ -69,10 +70,8 @@ typedef struct{
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Surface* screen;
-    /*SDL_Surface* player;
-    SDL_Surface* playerBack;
-    SDL_Surface* soldier; */
-}GRAPH;
+} GRAPH;
+
 //Escenarios
 typedef struct{
     SDL_Window* window;
@@ -94,7 +93,12 @@ typedef struct{
 } ScenarioState;
 
 
-
+typedef struct {
+    short tipo;
+    int x;
+    int y;
+    SDL_Texture* bull_texture;
+} BulletState;
 
 
 // Declaraciones de funciones de animación
@@ -122,5 +126,6 @@ Indexes clarkStandV2(       GRAPH* g, PlayerState* pla_state, AnimationArrays an
 Indexes clarkStandBackV2(   GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arrays);
 Indexes clarkRunV2(         GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arrays);
 Indexes clarkRunBackV2(     GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arrays);
+Indexes clarkShootV2(       GRAPH* g, PlayerState* pla_state);
 
 #endif

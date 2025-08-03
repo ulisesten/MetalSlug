@@ -138,7 +138,7 @@ void clarkRunBackArr(SDL_Rect torso[4],SDL_Rect pierna[6]){
     pierna[5].w=34;  pierna[5].h=34;//----------------------------------
 }
 
-void clarkShootArr(SDL_Rect torso[9]){
+void clarkShootArr(SDL_Rect torso[10]){
     torso[0].x=19;   torso[0].y=50;//Disparando adelante------------
     torso[0].w=55;   torso[0].h=30;
 
@@ -446,4 +446,31 @@ Indexes clarkRunBackV2(GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_ar
     //SDL_UpdateWindowSurface(g.window);//Refrescando pantalla
 
     return (Indexes){4,6};
+}
+
+Indexes clarkShootV2(GRAPH* g, PlayerState* pla_state){
+    SDL_Rect torso_coors, leg_coors;
+
+    const int x = pla_state->x;
+    const int y = pla_state->y;
+    const int i = pla_state->iTorso;
+    const int j = pla_state->iPierna;
+
+    SDL_Rect torso_sprite = pla_state->animation_arrays->ShootTorso[i];
+    SDL_Rect leg_sprite = pla_state->animation_arrays->StandLegs[0];
+
+    torso_coors.x=0+x;
+    torso_coors.y=20+y;//Torzo coor
+    torso_coors.w = torso_sprite.w;
+    torso_coors.h = torso_sprite.h;
+
+    leg_coors.x=x - 1;
+    leg_coors.y=41+y;//Piernas coor
+    leg_coors.w = leg_sprite.w;
+    leg_coors.h = leg_sprite.h;
+
+    SDL_RenderCopy(g->renderer, pla_state->pla_texture, &leg_sprite, &leg_coors);
+    SDL_RenderCopy(g->renderer, pla_state->pla_texture, &torso_sprite, &torso_coors);
+
+    return (Indexes){10,1};
 }

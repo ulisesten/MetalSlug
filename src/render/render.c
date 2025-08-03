@@ -46,9 +46,8 @@ void renderPlayer(PlayerState* pla_state, ScenarioState* sco_state, GRAPH* g) {
             } 
             else 
             if (pla_state->isShooting) {
-                clarkShootArr(torso);
                 pla_state->indexes =
-                    clarkShoot(*g, &pla_state->iTorso, pla_state->x, pla_state->y, torso);
+                    clarkShootV2(g, pla_state);
             } else {
                 pla_state->indexes = clarkStandV2(g, pla_state, *pla_state->animation_arrays);
             }

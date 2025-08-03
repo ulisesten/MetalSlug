@@ -33,8 +33,8 @@ void handleEvents(PlayerState* state) {
                         state->jump = true;
                         break;
                     case SDLK_x:
-                        state->key_shoot = true;
-                        state->isShooting = 3;
+                        //state->key_shoot = true;
+                        state->isShooting = true;
                         break;
                     case SDLK_f:
                         state->fullscreen = true;
@@ -49,6 +49,10 @@ void handleEvents(PlayerState* state) {
                         break;
                     case SDLK_LEFT:
                         state->IS_RUNNING_BACKWARD = false;
+                        break;
+                    case SDLK_x:
+                        //state->key_shoot = false;
+                        state->isShooting = false;
                         break;
                 }
                 if (!state->jump) {
