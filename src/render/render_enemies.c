@@ -32,6 +32,8 @@ void renderUpdateEnemyCoors( EnemyState* ene_state, PlayerState* pla_state, Scen
     if(ene_state->h >= 0 && ene_state->h < sco_state->floor_coors->count)
         ene_state->y = sco_state->floor_coors->coors[ene_state->h] + ene_state->y_offset;
 
+    ene_state->sco_offset = sco_state->x;
+
     ///Collision
     if(ene_state->direction == DIRECTION_LEFT) {
         if(     pla_state->h + ENEMY_CLOSE == ene_state->h
@@ -80,29 +82,29 @@ void renderEnemyCollisions( EnemyState* ene_state, PlayerState* pla_state, Scena
     if(ene_state->direction == DIRECTION_LEFT && ene_state->free_animation) {
 
         if(     ene_state->isOperating
-            ||  pla_state->x + ENEMY_CLOSE < ene_state->x && ene_state->mode != MODE_CASUAL_1){
+            ||  pla_state->h + ENEMY_CLOSE < ene_state->h && ene_state->mode != MODE_CASUAL_1){
             
             ene_state->mode = MODE_PURSUIT;
             ene_state->free_animation = false;
 
         }
         
-        if(     pla_state->x >= ene_state->x - ENEMY_CONTACT
-            &&  pla_state->x <= ene_state->x + ENEMY_CONTACT ){
+        if(     pla_state->h >= ene_state->h - ENEMY_CONTACT
+            &&  pla_state->h <= ene_state->h + ENEMY_CONTACT ){
 
             ene_state->mode = MODE_ATTACK;
             ene_state->free_animation = false;
 
         }
 
-        if(pla_state->x + ENEMY_CLOSE == ene_state->x) {
+        if(pla_state->h + ENEMY_CLOSE == ene_state->h) {
 
             ene_state->mode = MODE_SCARED;
             ene_state->free_animation = false;
 
         }
         else
-        if(pla_state->x + ENEMY_CLOSE < ene_state->x){
+        if(pla_state->h + ENEMY_CLOSE < ene_state->h){
 
             ene_state->mode = MODE_CASUAL_1;
             ene_state->free_animation = false;
@@ -112,7 +114,7 @@ void renderEnemyCollisions( EnemyState* ene_state, PlayerState* pla_state, Scena
     else
     if(ene_state->direction == DIRECTION_RIGHT && ene_state->free_animation) {
         if(     ene_state->isOperating
-            ||  pla_state->x - ENEMY_CLOSE > ene_state->x && ene_state->mode != MODE_CASUAL_1){
+            ||  pla_state->h - ENEMY_CLOSE > ene_state->h && ene_state->mode != MODE_CASUAL_1){
             
             ene_state->mode = MODE_PURSUIT;
             ene_state->free_animation = false;

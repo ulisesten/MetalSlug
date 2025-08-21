@@ -37,7 +37,7 @@ void soldierKnifeArray(SDL_Rect body[18]) {
 EnemyIndexes soldierKnifeAttack(GRAPH* g, EnemyState ene_state, int direction) {
     SDL_Rect body_coors;
 
-    const int x = ene_state.x;
+    const int x = ene_state.x - ene_state.sco_offset;
     const int y = ene_state.y;
     const int i = ene_state.iBody;
 
@@ -75,7 +75,7 @@ void soldierScaredArray(SDL_Rect body[11]) {
 EnemyIndexes soldierScared(GRAPH* g, EnemyState ene_state, int direction) {
     SDL_Rect body_coors;
 
-    const int x = ene_state.x;
+    const int x = ene_state.x - ene_state.sco_offset;
     const int y = ene_state.y;
     const int i = ene_state.iBody;
 
@@ -116,7 +116,7 @@ void soldierCasualArray(SDL_Rect body[12]) {
 EnemyIndexes soldierCasual(GRAPH* g, EnemyState ene_state, int direction) {
     SDL_Rect body_coors;
 
-    const int x = ene_state.x;
+    const int x = ene_state.x - ene_state.sco_offset;
     const int y = ene_state.y;
     const int i = ene_state.iBody;
 
@@ -156,7 +156,7 @@ void soldierPursuitArray(SDL_Rect body[12]) {
 EnemyIndexes soldierPursuit(GRAPH* g, EnemyState ene_state, int direction) {
     SDL_Rect body_coors;
 
-    const int x = ene_state.x;
+    const int x = ene_state.x - ene_state.sco_offset;
     const int y = ene_state.y;
     const int i = ene_state.iBody;
 

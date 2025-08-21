@@ -40,6 +40,7 @@ typedef struct {
     Uint32 pastWalk;
     bool isOperating;
     short y_offset;
+    int sco_offset;
     short mode;
     short direction;
     bool free_animation;

@@ -110,9 +110,15 @@ static void initEnemies(EnemyState** ene_states, short count, GameAssets assets,
     for (int i = 0; i < count; i++) {
         ene_states[i] = malloc(sizeof(EnemyState));
         *ene_states[i] = (EnemyState){
-            .id = i, .x = 450 + i * 50, .h = 475 + i * 50, .y_offset = 24,
-            .mode = MODE_CASUAL_1, .direction = DIRECTION_LEFT,
-            .ani_arrays = arrays, .free_animation = true,
+            .id = i,
+            .x = 450 + i * 50,
+            .h = 475 + i * 50,
+            .y_offset = 24,
+            .sco_offset = 0,
+            .mode = MODE_CASUAL_1,
+            .direction = DIRECTION_LEFT,
+            .ani_arrays = arrays,
+            .free_animation = true,
             .ene_texture = _ene_texture
         };
     }
