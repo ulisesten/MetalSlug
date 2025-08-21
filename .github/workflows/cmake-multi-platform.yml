@@ -36,19 +36,18 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev
+        sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsdl2-mixer-dev
 
     - name: Install SDL2 dependencies (macOS)
       if: matrix.os == 'macos-latest'
       run: |
         brew update
-        brew install sdl2 sdl2_image sdl2_ttf
+        brew install sdl2 sdl2_image sdl2_ttf sdl2_mixer
 
     - name: Install SDL2 dependencies (Windows)
       if: matrix.os == 'windows-latest'
       run: |
-        # SDL2 viene preinstalado en windows-latest
-        echo "SDL2 should be available on Windows runner"
+        echo "SDL2 should be available on Windows runner (you may need vcpkg if missing)"
 
     - name: Set reusable strings
       id: strings
@@ -70,7 +69,6 @@ jobs:
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: |
-        # Ejecutar el ejecutable para verificar que funciona
         if [ "${{ matrix.os }}" = "windows-latest" ]; then
           ./${{ matrix.build_type }}/MetalSlug.exe || echo "Executable ran (may have exited with code)"
         else
@@ -84,3 +82,4 @@ jobs:
         path: |
           ${{ steps.strings.outputs.build-output-dir }}/MetalSlug*
           ${{ steps.strings.outputs.build-output-dir }}/*/MetalSlug*
+
