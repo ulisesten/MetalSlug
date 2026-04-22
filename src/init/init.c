@@ -6,20 +6,22 @@
 #include "../animation/animation.h"
 #include "../animation/animation_enemies.h"
 #include "../input/input.h"
+#include "../utils/utils.h"
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 // ========================= Inicialización ==========================
 
-void loadResources(GameAssets* assets, FloorCoors* floor_coors) {
+void loadResources(GameAssets* assets, EnemyMatrix* matrix, FloorCoors* floor_coors) {
 	assets->scenario = IMG_Load("src/resources/backgrounds/fondo_mision_1.png");
 	assets->player = IMG_Load("src/resources/players/clark.png");
 	assets->player_back = IMG_Load("src/resources/players/clarkBack.png");
 	assets->soldier = IMG_Load("src/resources/enemies/soldier_enemy.png");
 
+	//(*matrix) = malloc(sizeof(EnemyMatrix));
+	matrix->matrix = readEnemyMatrix("src/resources/matrix/stage_1/enemies.txt", &matrix->count);
 	floor_coors->coors = readFloorCoords("src/resources/coors/scene1-ground.txt", &floor_coors->count);
 
 	if (!assets->scenario || !assets->player || !assets->player_back || !assets->soldier) {
@@ -44,21 +46,24 @@ void initPlayer(PlayerState* state, GameAssets assets, SDL_Renderer** renderer) 
 	};
 }
 
-void initEnemies(EnemyState** ene_states, short count, GameAssets assets, SDL_Renderer** renderer) {
+void initEnemies(EnemyState** ene_states, EnemyMatrix* matrix, GameAssets assets, SDL_Renderer** renderer) {
 	AnimationEnemyArrays* arrays = malloc(sizeof(AnimationEnemyArrays));
 	initEnemyAnimations(arrays);
 
 	SDL_Texture* _ene_texture = SDL_CreateTextureFromSurface(*renderer, assets.soldier);
 
-	for (int i = 0; i < count; i++) {
+	*ene_states = malloc(sizeof(EnemyState*) * (matrix->count));
+
+	for (int i = 0; i < matrix->count; i++) {
 		ene_states[i] = malloc(sizeof(EnemyState));
 		*ene_states[i] = (EnemyState){
 			.id = i,
-			.x = 450 + i * 50,
-			.h = 475 + i * 50,
+			.x = matrix->matrix[i].x,
+			.h = matrix->matrix[i].y,
 			.y_offset = 24,
 			.sco_offset = 0,
-			.mode = MODE_CASUAL_1,
+			.type = matrix->matrix[i].type,
+			.mode = matrix->matrix[i].mode,
 			.direction = DIRECTION_LEFT,
 			.ani_arrays = arrays,
 			.free_animation = true,

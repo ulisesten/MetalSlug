@@ -28,6 +28,7 @@ include_directories(
     ${SRC_DIR}/render
     ${SRC_DIR}/animation
     ${SRC_DIR}/init
+    ${SRC_DIR}/utils
 )
 
 # Archivos fuente
@@ -36,6 +37,7 @@ file(GLOB INPUT_SRC ${SRC_DIR}/input/*.c)
 file(GLOB RENDER_SRC ${SRC_DIR}/render/*.c)
 file(GLOB ANIMATION_SRC ${SRC_DIR}/animation/*.c)
 file(GLOB INIT_SRC ${SRC_DIR}/init/*.c)
+file(GLOB UTILS_SRC ${SRC_DIR}/utils/*.c)
 
 add_executable(metal_slug
     ${SRC_DIR}/main.c
@@ -44,6 +46,7 @@ add_executable(metal_slug
     ${RENDER_SRC}
     ${ANIMATION_SRC}
     ${INIT_SRC}
+    ${UTILS_SRC}
 )
 
 if(WIN32)

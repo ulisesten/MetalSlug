@@ -26,19 +26,22 @@ void startGame(SDL_Renderer* renderer, SDL_Window* window) {
     ScenarioState sco_state;
     PlayerState player_state;
     FloorCoors floor_coors;
-    EnemyState** enemies = malloc(sizeof(EnemyState*) * ENEMY_COUNT);
+    EnemyMatrix matrix;
+    
+    loadResources(&assets, &matrix, &floor_coors);
 
-    loadResources(&assets, &floor_coors);
+    EnemyState** enemies = malloc(sizeof(EnemyState*) * matrix.count);
+
     initPlayer(&player_state, assets, &renderer);
-    initEnemies(enemies, ENEMY_COUNT, assets, &renderer);
+    initEnemies(enemies, &matrix, assets, &renderer);
     initScenario(&sco_state, assets, &renderer);
 
     sco_state.window = window;
     sco_state.floor_coors = &floor_coors;
     sco_state.x = sco_state.xMountain = sco_state.xHorizon = 0;
 
-    gameLoop(&g, &assets, &player_state, enemies, &sco_state, ENEMY_COUNT);
-    cleanupGame(&assets, &player_state, enemies, ENEMY_COUNT, &floor_coors);
+    gameLoop(&g, &assets, &player_state, enemies, &sco_state, matrix.count);
+    cleanupGame(&assets, &player_state, enemies, matrix.count, &floor_coors);
 }
 
 // ========================= Loop principal ==========================

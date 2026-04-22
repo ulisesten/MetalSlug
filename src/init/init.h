@@ -12,15 +12,13 @@
 #include "../animation/animation.h"
 #include "../animation/animation_enemies.h"
 #include "../input/input.h"
+#include "../game/game.h"
 
-typedef struct {
-    SDL_Surface *scenario, *player, *player_back, *soldier;
-    SDL_Texture *sco_texture, *pla_texture, *pla_texture_back;
-} GameAssets;
 
-void loadResources(GameAssets* assets, FloorCoors* floor_coors);
+
+void loadResources(GameAssets* assets, EnemyMatrix* matrix, FloorCoors* floor_coors);
 void initPlayer(PlayerState* state, GameAssets assets, SDL_Renderer** renderer);
-void initEnemies(EnemyState** ene_states, short count, GameAssets assets, SDL_Renderer** renderer);
+void initEnemies(EnemyState** ene_states, EnemyMatrix* matrix, GameAssets assets, SDL_Renderer** renderer);
 void initScenario(ScenarioState* state, GameAssets assets, SDL_Renderer** renderer);
 
 #endif // INIT_H

@@ -6,12 +6,30 @@
 #include "animation.h"
 
 
+typedef struct {
+    short type;
+    short mode;
+    int x;
+    int y;
+} EnemyMatrixData;
+
+typedef struct {
+    EnemyMatrixData* matrix;
+    short count;
+} EnemyMatrix;
+
+
 /// @brief EnemyModes
 enum {
     MODE_CASUAL_1   = 1,
     MODE_SCARED     = 2,
     MODE_PURSUIT,
     MODE_ATTACK
+};
+
+/// @brief EnemyTypes
+enum {
+    BASIC_SOLDIER = 1,
 };
 
 #define ENEMY_CLOSE 300
@@ -41,6 +59,7 @@ typedef struct {
     bool isOperating;
     short y_offset;
     int sco_offset;
+    short type;
     short mode;
     short direction;
     bool free_animation;
