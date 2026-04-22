@@ -69,10 +69,8 @@ typedef struct{
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Surface* screen;
-    /*SDL_Surface* player;
-    SDL_Surface* playerBack;
-    SDL_Surface* soldier; */
 }GRAPH;
+
 //Escenarios
 typedef struct{
     SDL_Window* window;
@@ -86,15 +84,13 @@ typedef struct{
     int xMountain;
     int x_mountain_offset_counter;
     int X_MOUNTAIN_OFFSET;
+    int X_SCO_OFFSET;
     int xHorizon;
     int x_horizon_offset_counter;
     int X_HORIZON_OFFSET;
     FloorCoors* floor_coors;
     SDL_Texture* sco_texture;
 } ScenarioState;
-
-
-
 
 
 // Declaraciones de funciones de animación

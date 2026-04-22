@@ -73,7 +73,7 @@ void renderUpdateCoors(PlayerState* pla_state, ScenarioState* sco_state) {
     const int X_HORIZON_OFFSET  = sco_state->X_HORIZON_OFFSET;
 
     if( pla_state->IS_RUNNING_FORWARD ) {
-        if( sco_state->x >= sco_state->MAX_WIDTH -1 ) pla_state->sco_end_offset = 80;
+        if( sco_state->x >= sco_state->MAX_WIDTH -1 ) pla_state->sco_end_offset = sco_state->X_SCO_OFFSET;
 
         if(pla_state->translate) {
             if( pla_state->x < pla_state->X_RANGE_MAX + pla_state->sco_end_offset ){

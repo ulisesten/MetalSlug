@@ -7,23 +7,18 @@
 #include "animation/animation_enemies.h"
 #include "render/floor.h"
 
+#include "init/init.h"
+
 #include <stdbool.h>
 
 #define ENEMY_COUNT 5
 
-typedef struct {
-    SDL_Surface *scenario, *player, *player_back, *soldier;
-    SDL_Texture *sco_texture, *pla_texture, *pla_texture_back;
-} GameAssets;
 
-static void loadResources(GameAssets* assets, FloorCoors* floor_coors);
-static void initPlayer(PlayerState* state, GameAssets assets, SDL_Renderer** renderer);
-static void initEnemies(EnemyState** ene_states, short count, GameAssets assets, SDL_Renderer** renderer);
-static void initScenario(ScenarioState* state, GameAssets assets, SDL_Renderer** renderer);
-static void gameLoop(GRAPH* g, GameAssets* assets, PlayerState* player, EnemyState** enemies, ScenarioState* scenario, short enemy_count);
-static void updateAnimationTimers(PlayerState* state);
-static void updateAnimationEnemyTimers(EnemyState* ene_states);
-static void cleanupGame(GameAssets* assets, PlayerState* player, EnemyState** enemies, short enemy_count, FloorCoors* floor_coors);
+// Declarations moved to init.h
+static void gameLoop(       GRAPH* g, GameAssets* assets, PlayerState* player, EnemyState** enemies, ScenarioState* scenario, short enemy_count);
+static void updateAnimationTimers(      PlayerState* state);
+static void updateAnimationEnemyTimers( EnemyState* ene_states);
+static void cleanupGame(    GameAssets* assets, PlayerState* player, EnemyState** enemies, short enemy_count, FloorCoors* floor_coors);
 
 void startGame(SDL_Renderer* renderer, SDL_Window* window) {
     GRAPH g = { .renderer = renderer, .window = window };
@@ -70,71 +65,7 @@ static void gameLoop(GRAPH* g, GameAssets* assets, PlayerState* player, EnemySta
 }
 
 // ========================= Inicialización ==========================
-
-static void loadResources(GameAssets* assets, FloorCoors* floor_coors) {
-    assets->scenario = IMG_Load("src/resources/backgrounds/fondo_mision_1.png");
-    assets->player = IMG_Load("src/resources/players/clark.png");
-    assets->player_back = IMG_Load("src/resources/players/clarkBack.png");
-    assets->soldier = IMG_Load("src/resources/enemies/soldier_enemy.png");
-
-    floor_coors->coors = readFloorCoords("src/resources/coors/scene1-ground.txt", &floor_coors->count);
-
-    if (!assets->scenario || !assets->player || !assets->player_back || !assets->soldier) {
-        printf("Error cargando recursos: %s\n", IMG_GetError());
-        exit(EXIT_FAILURE);
-    }
-}
-
-static void initPlayer(PlayerState* state, GameAssets assets, SDL_Renderer** renderer) {
-    AnimationArrays* ani_arrays = malloc(sizeof(AnimationArrays));
-    initAnimations(ani_arrays);
-
-    *state = (PlayerState){
-        .x = 0, .y = 0, .h = 25, .fullscreen = false,
-        .iTorso = 0, .iPierna = 0, .iShoot = 0,
-        .X_RANGE_MIN = 20, .X_RANGE_MAX = 400,
-        .direction = DIRECTION_RIGHT, .directionAux = DIRECTION_RIGHT,
-        .indexes = {4, 1},
-        .animation_arrays = ani_arrays,
-        .pla_texture        = SDL_CreateTextureFromSurface(*renderer, assets.player),
-        .pla_texture_back   = SDL_CreateTextureFromSurface(*renderer, assets.player_back)
-    };
-}
-
-static void initEnemies(EnemyState** ene_states, short count, GameAssets assets, SDL_Renderer** renderer) {
-    AnimationEnemyArrays* arrays = malloc(sizeof(AnimationEnemyArrays));
-    initEnemyAnimations(arrays);
-
-    SDL_Texture* _ene_texture = SDL_CreateTextureFromSurface(*renderer, assets.soldier);
-
-    for (int i = 0; i < count; i++) {
-        ene_states[i] = malloc(sizeof(EnemyState));
-        *ene_states[i] = (EnemyState){
-            .id = i,
-            .x = 450 + i * 50,
-            .h = 475 + i * 50,
-            .y_offset = 24,
-            .sco_offset = 0,
-            .mode = MODE_CASUAL_1,
-            .direction = DIRECTION_LEFT,
-            .ani_arrays = arrays,
-            .free_animation = true,
-            .ene_texture = _ene_texture
-        };
-    }
-}
-
-static void initScenario(ScenarioState* state, GameAssets assets, SDL_Renderer** renderer) {
-    *state = (ScenarioState){
-        .x = 0,
-        .y = 10,
-        .w = 555,
-        .X_MOUNTAIN_OFFSET = 4,
-        .X_HORIZON_OFFSET = 18,
-        .MAX_WIDTH = 3320,
-        .sco_texture = SDL_CreateTextureFromSurface(*renderer, assets.scenario)
-    };
-}
+// Implementations moved to init/init.c
 
 // ========================= Timers ==========================
 
