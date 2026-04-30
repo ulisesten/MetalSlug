@@ -11,7 +11,7 @@
 
 #include <stdbool.h>
 
-#define ENEMY_COUNT 5
+#define MAX_ENEMIES 5
 
 
 // Declarations moved to init.h
@@ -21,6 +21,11 @@ static void updateAnimationEnemyTimers( EnemyState* ene_states);
 static void cleanupGame(    GameAssets* assets, PlayerState* player, EnemyState** enemies, short enemy_count, FloorCoors* floor_coors);
 
 void startGame(SDL_Renderer* renderer, SDL_Window* window) {
+    if (!renderer || !window) {
+        fprintf(stderr, "Invalid renderer or window\n");
+        return;
+    }
+
     GRAPH g = { .renderer = renderer, .window = window };
     GameAssets assets = {0};
     ScenarioState sco_state;
@@ -31,6 +36,11 @@ void startGame(SDL_Renderer* renderer, SDL_Window* window) {
     loadResources(&assets, &matrix, &floor_coors);
 
     EnemyState** enemies = malloc(sizeof(EnemyState*) * matrix.count);
+    if (!enemies) {
+        fprintf(stderr, "Memory allocation failed for enemies\n");
+        cleanupGame(&assets, &player_state, NULL, 0, &floor_coors);
+        return;
+    }
 
     initPlayer(&player_state, assets, &renderer);
     initEnemies(enemies, &matrix, assets, &renderer);
@@ -44,8 +54,16 @@ void startGame(SDL_Renderer* renderer, SDL_Window* window) {
     cleanupGame(&assets, &player_state, enemies, matrix.count, &floor_coors);
 }
 
-// ========================= Loop principal ==========================
-
+/**
+ * @brief Main game loop that handles rendering, updates, and input
+ *
+ * @param g Graphics context containing renderer and window
+ * @param assets Game assets (textures, surfaces, etc.)
+ * @param player Player state and animation data
+ * @param enemies Array of enemy states
+ * @param scenario Scenario/level state
+ * @param enemy_count Number of enemies in the array
+ */
 static void gameLoop(GRAPH* g, GameAssets* assets, PlayerState* player, EnemyState** enemies, ScenarioState* scenario, short enemy_count) {
     while (!player->quit) {
         SDL_RenderClear(g->renderer);

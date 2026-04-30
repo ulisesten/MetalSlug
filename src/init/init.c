@@ -58,7 +58,7 @@ void initEnemies(EnemyState** ene_states, EnemyMatrix* matrix, GameAssets assets
 		ene_states[i] = malloc(sizeof(EnemyState));
 		*ene_states[i] = (EnemyState){
 			.id = i,
-			.x = matrix->matrix[i].x,
+			.x = matrix->matrix[i].x - 25,
 			.h = matrix->matrix[i].y,
 			.y_offset = 24,
 			.sco_offset = 0,

@@ -41,15 +41,27 @@ Windows
 
 ```bash
 .
+├── CMakeLists.txt          # Script de compilación con CMake
+├── README.md               # Documentación del proyecto
+├── agents/                 # Agentes y habilidades personalizadas
+│   └── skills/
 ├── build/                  # Archivos generados por CMake
-├── cmake/                  # Configuración adicional de CMake (si aplica)
-├── modules/                # [Reservado para futuras dependencias externas]
+├── cmake/                  # Configuración adicional de CMake
+│   └── sdl2/               # Scripts de búsqueda para SDL2
+├── libs/                   # Librerías incluidas
+│   ├── SDL2/               # Librería SDL2
+│   └── SDL2_image/         # Extensión SDL2 para imágenes
+├── modules/                # Dependencias externas
+│   └── socket.io-client-cpp/ # Cliente Socket.IO para C++
 ├── src/                    # Código fuente del juego
+│   ├── main.c              # Punto de entrada del juego
 │   ├── animation/          # Módulo de animaciones
 │   │   ├── animation.c/h
 │   │   ├── animation_enemies.c/h
 │   ├── game/               # Lógica principal del juego
 │   │   ├── game.c/h
+│   ├── init/               # Inicialización del juego
+│   │   ├── init.c/h
 │   ├── input/              # Captura y manejo de eventos de teclado
 │   │   ├── input.c/h
 │   ├── render/             # Renderizado de jugador, enemigos y escenario
@@ -60,11 +72,12 @@ Windows
 │   │   ├── backgrounds/
 │   │   ├── coors/          # Archivos .txt con coordenadas del piso
 │   │   ├── enemies/
+│   │   ├── matrix/
 │   │   ├── menu/
 │   │   ├── players/
-│   ├── main.c              # Punto de entrada del juego
-├── CMakeLists.txt          # Script de compilación con CMake
-├── .gitignore
+│   └── utils/              # Utilidades generales
+│       ├── utils.c/h
+└── .gitignore              # Archivos ignorados por Git
 ```
 ---
 
@@ -103,3 +116,5 @@ Los recursos están en src/resources/:
 ### 📄 Licencia
 
 Este proyecto es un clon educativo y no comercial de Metal Slug. No pretende infringir ningún derecho de propiedad intelectual de SNK o sus afiliados.
+
+
