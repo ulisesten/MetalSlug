@@ -32,8 +32,7 @@ enum {
     BASIC_SOLDIER = 1,
 };
 
-#define ENEMY_CLOSE 300
-#define ENEMY_CONTACT 45
+#include "../constants/enemies.h"
 
 typedef struct {
     SDL_Rect enemyKnifeBody[18];
@@ -43,29 +42,29 @@ typedef struct {
 } AnimationEnemyArrays;
 
 typedef struct {
-    short BODY_MAX;
+    short maxBodyFrames;
 } EnemyIndexes;
 
 typedef struct {
     short id;
     int x;
     int y;
-    int h;
-    int iBody;
-    bool animate;
-    Uint32 pastAnimate;
-    bool walk;
-    Uint32 pastWalk;
-    bool isOperating;
-    short y_offset;
-    int sco_offset;
+    int floorIndex;
+    int bodyFrame;
+    bool shouldAnimate;
+    Uint32 lastAnimateTick;
+    bool shouldWalk;
+    Uint32 lastWalkTick;
+    bool hasReacted;
+    short spriteVerticalOffset;
+    int scenarioScrollOffset;
     short type;
     short mode;
     short direction;
-    bool free_animation;
-    AnimationEnemyArrays* ani_arrays;
+    bool canTransitionMode;
+    AnimationEnemyArrays* animations;
     EnemyIndexes indexes;
-    SDL_Texture* ene_texture;
+    SDL_Texture* texture;
 } EnemyState;
 
 void initEnemyAnimations(AnimationEnemyArrays* ene_arrays);

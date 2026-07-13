@@ -23,6 +23,7 @@ include_directories(
     ${SDL2_INCLUDE_DIRS}
     ${SDL2_IMAGE_INCLUDE_DIRS}
     ${SRC_DIR}
+    ${SRC_DIR}/constants
     ${SRC_DIR}/game
     ${SRC_DIR}/input
     ${SRC_DIR}/render

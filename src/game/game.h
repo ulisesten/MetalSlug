@@ -5,8 +5,7 @@
 #include <SDL2/SDL_image.h>
 
 typedef struct {
-    SDL_Surface *scenario, *player, *player_back, *soldier;
-    SDL_Texture *sco_texture, *pla_texture, *pla_texture_back;
+    SDL_Surface *scenarioSurface, *playerSurface, *playerBackSurface, *soldierSurface;
 } GameAssets;
 void startGame(SDL_Renderer* renderer, SDL_Window* window);
 

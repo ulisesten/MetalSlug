@@ -37,21 +37,21 @@ void soldierKnifeArray(SDL_Rect body[18]) {
 EnemyIndexes soldierKnifeAttack(GRAPH* g, EnemyState ene_state, int direction) {
     SDL_Rect body_coors;
 
-    const int x = ene_state.x - ene_state.sco_offset;
+    const int x = ene_state.x - ene_state.scenarioScrollOffset;
     const int y = ene_state.y;
-    const int i = ene_state.iBody;
+    const int i = ene_state.bodyFrame;
 
     body_coors.x = x;
     body_coors.y = y;
-    body_coors.w = ene_state.ani_arrays->enemyKnifeBody[i].w;
-    body_coors.h = ene_state.ani_arrays->enemyKnifeBody[i].h;
+    body_coors.w = ene_state.animations->enemyKnifeBody[i].w;
+    body_coors.h = ene_state.animations->enemyKnifeBody[i].h;
 
     if( direction == DIRECTION_RIGHT) {
-        SDL_RenderCopyEx(g->renderer, ene_state.ene_texture, &ene_state.ani_arrays->enemyKnifeBody[i], &body_coors,0.0, NULL, SDL_FLIP_HORIZONTAL);
+        SDL_RenderCopyEx(g->renderer, ene_state.texture, &ene_state.animations->enemyKnifeBody[i], &body_coors,0.0, NULL, SDL_FLIP_HORIZONTAL);
         return (EnemyIndexes){18};
     }
 
-    SDL_RenderCopy(g->renderer, ene_state.ene_texture, &ene_state.ani_arrays->enemyKnifeBody[i], &body_coors);
+    SDL_RenderCopy(g->renderer, ene_state.texture, &ene_state.animations->enemyKnifeBody[i], &body_coors);
 
     //SDL_BlitSurface(g.soldier, &ene_state.ani_arrays->enemyKnifeBody[i], g.screen, &body_coors);
 
@@ -75,21 +75,21 @@ void soldierScaredArray(SDL_Rect body[11]) {
 EnemyIndexes soldierScared(GRAPH* g, EnemyState ene_state, int direction) {
     SDL_Rect body_coors;
 
-    const int x = ene_state.x - ene_state.sco_offset;
+    const int x = ene_state.x - ene_state.scenarioScrollOffset;
     const int y = ene_state.y;
-    const int i = ene_state.iBody;
+    const int i = ene_state.bodyFrame;
 
     body_coors.x = x;
     body_coors.y = y;
-    body_coors.w = ene_state.ani_arrays->enemyScaredBody[i].w;
-    body_coors.h = ene_state.ani_arrays->enemyScaredBody[i].h;
+    body_coors.w = ene_state.animations->enemyScaredBody[i].w;
+    body_coors.h = ene_state.animations->enemyScaredBody[i].h;
 
     if( direction == DIRECTION_RIGHT) {
-        SDL_RenderCopyEx(g->renderer, ene_state.ene_texture, &ene_state.ani_arrays->enemyScaredBody[i], &body_coors,0.0, NULL, SDL_FLIP_HORIZONTAL);
+        SDL_RenderCopyEx(g->renderer, ene_state.texture, &ene_state.animations->enemyScaredBody[i], &body_coors,0.0, NULL, SDL_FLIP_HORIZONTAL);
         return (EnemyIndexes){11};
     }
 
-    SDL_RenderCopy(g->renderer, ene_state.ene_texture, &ene_state.ani_arrays->enemyScaredBody[i], &body_coors);
+    SDL_RenderCopy(g->renderer, ene_state.texture, &ene_state.animations->enemyScaredBody[i], &body_coors);
 
     //SDL_BlitSurface(g.soldier, &ene_state.ani_arrays->enemyScaredBody[i], g.screen, &body_coors);
 
@@ -116,21 +116,21 @@ void soldierCasualArray(SDL_Rect body[12]) {
 EnemyIndexes soldierCasual(GRAPH* g, EnemyState ene_state, int direction) {
     SDL_Rect body_coors;
 
-    const int x = ene_state.x - ene_state.sco_offset;
+    const int x = ene_state.x - ene_state.scenarioScrollOffset;
     const int y = ene_state.y;
-    const int i = ene_state.iBody;
+    const int i = ene_state.bodyFrame;
 
     body_coors.x = x;
     body_coors.y = y;
-    body_coors.w = ene_state.ani_arrays->enemyCasualBody[i].w;
-    body_coors.h = ene_state.ani_arrays->enemyCasualBody[i].h;
+    body_coors.w = ene_state.animations->enemyCasualBody[i].w;
+    body_coors.h = ene_state.animations->enemyCasualBody[i].h;
 
     if( direction == DIRECTION_RIGHT) {
-        SDL_RenderCopyEx(g->renderer, ene_state.ene_texture, &ene_state.ani_arrays->enemyCasualBody[i], &body_coors,0.0, NULL, SDL_FLIP_HORIZONTAL);
+        SDL_RenderCopyEx(g->renderer, ene_state.texture, &ene_state.animations->enemyCasualBody[i], &body_coors,0.0, NULL, SDL_FLIP_HORIZONTAL);
         return (EnemyIndexes){12};
     }
 
-    SDL_RenderCopy(g->renderer, ene_state.ene_texture, &ene_state.ani_arrays->enemyCasualBody[i], &body_coors);
+    SDL_RenderCopy(g->renderer, ene_state.texture, &ene_state.animations->enemyCasualBody[i], &body_coors);
 
     //SDL_BlitSurface(g.soldier, &ene_state.ani_arrays->enemyCasualBody[i], g.screen, &body_coors);
 
@@ -156,21 +156,21 @@ void soldierPursuitArray(SDL_Rect body[12]) {
 EnemyIndexes soldierPursuit(GRAPH* g, EnemyState ene_state, int direction) {
     SDL_Rect body_coors;
 
-    const int x = ene_state.x - ene_state.sco_offset;
+    const int x = ene_state.x - ene_state.scenarioScrollOffset;
     const int y = ene_state.y;
-    const int i = ene_state.iBody;
+    const int i = ene_state.bodyFrame;
 
     body_coors.x = x;
     body_coors.y = y;
-    body_coors.w = ene_state.ani_arrays->enemyPursuitBody[i].w;
-    body_coors.h = ene_state.ani_arrays->enemyPursuitBody[i].h;
+    body_coors.w = ene_state.animations->enemyPursuitBody[i].w;
+    body_coors.h = ene_state.animations->enemyPursuitBody[i].h;
 
     if( direction == DIRECTION_RIGHT) {
-        SDL_RenderCopyEx(g->renderer, ene_state.ene_texture, &ene_state.ani_arrays->enemyPursuitBody[i], &body_coors,0.0, NULL, SDL_FLIP_HORIZONTAL);
+        SDL_RenderCopyEx(g->renderer, ene_state.texture, &ene_state.animations->enemyPursuitBody[i], &body_coors,0.0, NULL, SDL_FLIP_HORIZONTAL);
         return (EnemyIndexes){12};
     }
 
-    SDL_RenderCopy(g->renderer, ene_state.ene_texture, &ene_state.ani_arrays->enemyPursuitBody[i], &body_coors);
+    SDL_RenderCopy(g->renderer, ene_state.texture, &ene_state.animations->enemyPursuitBody[i], &body_coors);
     //SDL_BlitSurface(g.soldier, &ene_state.ani_arrays->enemyPursuitBody[i], g.screen, &body_coors);
 
     return (EnemyIndexes){12};

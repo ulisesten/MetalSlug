@@ -7,6 +7,9 @@
 #include "../animation/animation_enemies.h"
 #include "../input/input.h"
 #include "../utils/utils.h"
+#include "../constants/scenario.h"
+#include "../constants/player.h"
+#include "../constants/enemies.h"
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -15,16 +18,16 @@
 // ========================= Inicialización ==========================
 
 void loadResources(GameAssets* assets, EnemyMatrix* matrix, FloorCoors* floor_coors) {
-	assets->scenario = IMG_Load("src/resources/backgrounds/fondo_mision_1.png");
-	assets->player = IMG_Load("src/resources/players/clark.png");
-	assets->player_back = IMG_Load("src/resources/players/clarkBack.png");
-	assets->soldier = IMG_Load("src/resources/enemies/soldier_enemy.png");
+	assets->scenarioSurface = IMG_Load("src/resources/backgrounds/fondo_mision_1.png");
+	assets->playerSurface = IMG_Load("src/resources/players/clark.png");
+	assets->playerBackSurface = IMG_Load("src/resources/players/clarkBack.png");
+	assets->soldierSurface = IMG_Load("src/resources/enemies/soldier_enemy.png");
 
 	//(*matrix) = malloc(sizeof(EnemyMatrix));
 	matrix->matrix = readEnemyMatrix("src/resources/matrix/stage_1/enemies.txt", &matrix->count);
 	floor_coors->coors = readFloorCoords("src/resources/coors/scene1-ground.txt", &floor_coors->count);
 
-	if (!assets->scenario || !assets->player || !assets->player_back || !assets->soldier) {
+	if (!assets->scenarioSurface || !assets->playerSurface || !assets->playerBackSurface || !assets->soldierSurface) {
 		printf("Error cargando recursos: %s\n", IMG_GetError());
 		exit(EXIT_FAILURE);
 	}
@@ -35,14 +38,20 @@ void initPlayer(PlayerState* state, GameAssets assets, SDL_Renderer** renderer) 
 	initAnimations(ani_arrays);
 
 	*state = (PlayerState){
-		.x = 0, .y = 0, .h = 25, .fullscreen = false,
-		.iTorso = 0, .iPierna = 0, .iShoot = 0,
-		.X_RANGE_MIN = 20, .X_RANGE_MAX = 400,
-		.direction = DIRECTION_RIGHT, .directionAux = DIRECTION_RIGHT,
-		.indexes = {4, 1},
-		.animation_arrays = ani_arrays,
-		.pla_texture        = SDL_CreateTextureFromSurface(*renderer, assets.player),
-		.pla_texture_back   = SDL_CreateTextureFromSurface(*renderer, assets.player_back)
+		.x = 0,
+		.y = 0,
+		.floorIndex = PLAYER_START_FLOOR_INDEX,
+		.fullscreen = false,
+		.torsoFrame = 0,
+		.legsFrame = 0,
+		.shootFrame = 0,
+		.X_RANGE_MIN = PLAYER_X_RANGE_MIN,
+		.X_RANGE_MAX = PLAYER_X_RANGE_MAX,
+		.direction = DIRECTION_RIGHT, .lastDirection = DIRECTION_RIGHT,
+		.indexes = {.maxTorsoFrames = 4, .maxLegsFrames = 1},
+		.animations = ani_arrays,
+		.textureFront        = SDL_CreateTextureFromSurface(*renderer, assets.playerSurface),
+		.textureBack   = SDL_CreateTextureFromSurface(*renderer, assets.playerBackSurface)
 	};
 }
 
@@ -50,7 +59,7 @@ void initEnemies(EnemyState** ene_states, EnemyMatrix* matrix, GameAssets assets
 	AnimationEnemyArrays* arrays = malloc(sizeof(AnimationEnemyArrays));
 	initEnemyAnimations(arrays);
 
-	SDL_Texture* _ene_texture = SDL_CreateTextureFromSurface(*renderer, assets.soldier);
+	SDL_Texture* shared_enemy_texture = SDL_CreateTextureFromSurface(*renderer, assets.soldierSurface);
 
 	*ene_states = malloc(sizeof(EnemyState*) * (matrix->count));
 
@@ -58,16 +67,16 @@ void initEnemies(EnemyState** ene_states, EnemyMatrix* matrix, GameAssets assets
 		ene_states[i] = malloc(sizeof(EnemyState));
 		*ene_states[i] = (EnemyState){
 			.id = i,
-			.x = matrix->matrix[i].x - 25,
-			.h = matrix->matrix[i].y,
-			.y_offset = 24,
-			.sco_offset = 0,
+			.x = matrix->matrix[i].x - ENEMY_SPAWN_X_OFFSET,
+			.floorIndex = matrix->matrix[i].y,
+			.spriteVerticalOffset = ENEMY_VERTICAL_OFFSET,
+			.scenarioScrollOffset = 0,
 			.type = matrix->matrix[i].type,
 			.mode = matrix->matrix[i].mode,
 			.direction = DIRECTION_LEFT,
-			.ani_arrays = arrays,
-			.free_animation = true,
-			.ene_texture = _ene_texture
+			.animations = arrays,
+			.canTransitionMode = true,
+			.texture = shared_enemy_texture
 		};
 	}
 }
@@ -75,17 +84,13 @@ void initEnemies(EnemyState** ene_states, EnemyMatrix* matrix, GameAssets assets
 void initScenario(ScenarioState* state, GameAssets assets, SDL_Renderer** renderer) {
 	*state = (ScenarioState){
 		.x = 0,
-		.y = 10,
-		.w = 555,
-		.X_MOUNTAIN_OFFSET = 4,
-		.X_HORIZON_OFFSET = 18,
-		.X_SCO_OFFSET = 80,
-		.MAX_WIDTH = 3320,
-		.sco_texture = SDL_CreateTextureFromSurface(*renderer, assets.scenario)
+		.y = SCENARIO_BASE_Y,
+		.w = SCENARIO_BASE_W,
+		.MOUNTAIN_SCROLL_RATIO = MOUNTAIN_SCROLL_RATIO_VALUE,
+		.HORIZON_SCROLL_RATIO = HORIZON_SCROLL_RATIO_VALUE,
+		.SCENARIO_END_OFFSET = SCENARIO_END_OFFSET_VALUE,
+		.maxScrollWidth = SCENARIO_MAX_WIDTH,
+		.sco_texture = SDL_CreateTextureFromSurface(*renderer, assets.scenarioSurface)
 	};
 }
 // Initialization functions moved from game.c
-
-
-
-

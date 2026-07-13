@@ -1,5 +1,6 @@
 // input.c
 #include "input.h"
+#include "constants/player.h"
 #include <SDL2/SDL.h>
 #include <stdlib.h>
 
@@ -20,21 +21,21 @@ void handleEvents(PlayerState* state) {
                         state->quit = true;
                         break;
                     case SDLK_RIGHT:
-                        state->IS_RUNNING_FORWARD= true;
+                        state->isMovingForward= true;
                         state->direction = DIRECTION_RIGHT;
-                        state->directionAux = DIRECTION_RIGHT;
+                        state->lastDirection = DIRECTION_RIGHT;
                         break;
                     case SDLK_LEFT:
-                        state->IS_RUNNING_BACKWARD = true;
+                        state->isMovingBackward = true;
                         state->direction = DIRECTION_LEFT;
-                        state->directionAux = DIRECTION_LEFT;
+                        state->lastDirection = DIRECTION_LEFT;
                         break;
                     case SDLK_s:
-                        state->jump = true;
+                        state->shouldJump = true;
                         break;
                     case SDLK_x:
-                        state->key_shoot = true;
-                        state->isShooting = 3;
+                        state->wantToShoot = true;
+                        state->shotsRemaining = PLAYER_SHOT_FRAMES;
                         break;
                     case SDLK_f:
                         state->fullscreen = true;
@@ -45,43 +46,43 @@ void handleEvents(PlayerState* state) {
             case SDL_KEYUP:
                 switch (e.key.keysym.sym) {
                     case SDLK_RIGHT:
-                        state->IS_RUNNING_FORWARD = false;
+                        state->isMovingForward = false;
                         break;
                     case SDLK_LEFT:
-                        state->IS_RUNNING_BACKWARD = false;
+                        state->isMovingBackward = false;
                         break;
                 }
-                if (!state->jump) {
-                    state->directionAux = 0;
+                if (!state->shouldJump) {
+                    state->lastDirection = 0;
                 }
                 break;
 
             case SDL_JOYBUTTONDOWN:
                 if (e.jbutton.button == 2) {
-                    state->jump = true;
+                    state->shouldJump = true;
                 }
                 if (e.jbutton.button == 5) {
-                    state->key_shoot = true;
-                    state->isShooting = 3;
+                    state->wantToShoot = true;
+                    state->shotsRemaining = PLAYER_SHOT_FRAMES;
                 }
                 break;
 
             case SDL_JOYAXISMOTION:
                 if (e.jaxis.axis == 0) {
                     if (e.jaxis.value == 0) {
-                        state->IS_RUNNING_FORWARD = false;
-                        state->IS_RUNNING_BACKWARD = false;
-                        if (!state->jump)
-                            state->directionAux = 0;
+                        state->isMovingForward = false;
+                        state->isMovingBackward = false;
+                        if (!state->shouldJump)
+                            state->lastDirection = 0;
                     } else if (e.jaxis.value > 0) {
-                        state->IS_RUNNING_FORWARD = true;
+                        state->isMovingForward = true;
                         state->direction = DIRECTION_RIGHT;
-                        state->directionAux = DIRECTION_RIGHT;
+                        state->lastDirection = DIRECTION_RIGHT;
                         state->keepWalking = true;
                     } else if (e.jaxis.value < 0) {
-                        state->IS_RUNNING_BACKWARD = true;
+                        state->isMovingBackward = true;
                         state->direction = DIRECTION_LEFT;
-                        state->directionAux = DIRECTION_LEFT;
+                        state->lastDirection = DIRECTION_LEFT;
                         state->keepWalking = true;
                     }
                 }

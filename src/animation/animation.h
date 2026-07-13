@@ -16,8 +16,8 @@ typedef struct {
 } FloorCoors;
 
 typedef struct {
-    int iTorso_MAX;
-    int iPierna_MAX;
+    int maxTorsoFrames;
+    int maxLegsFrames;
 } Indexes;
 
 typedef struct {
@@ -35,34 +35,28 @@ typedef struct {
 typedef struct {
     int x;
     int y;
-    int h;
-    int iTorso;
-    int iPierna;
-    int iShoot;
-    int x_move_range;
+    int floorIndex;
+    int torsoFrame;
+    int legsFrame;
+    int shootFrame;
     int X_RANGE_MAX;
     int X_RANGE_MIN;
     int x_displacement;
-    int iS;
-    int direccion, directionAux;
-    bool IS_RUNNING_BACKWARD;
-    bool IS_RUNNING_FORWARD;
-    bool key_up;
-    bool key_down;
-    bool run, jump, shoot, breath, translate, key_shoot;
-    bool keepWalking, jumpArr;
+    int direction, lastDirection;
+    bool isMovingBackward;
+    bool isMovingForward;
+    bool shouldBreathe, shouldRun, shouldJump, shouldShoot, shouldTranslate, wantToShoot;
+    bool keepWalking, shouldUpdateJump;
     bool quit;
-    Uint32 pastBreath, pastWalk, pastJump, pastShoot, pastTime;
+    Uint32 lastBreathTick, lastWalkTick, lastJumpTick, lastShootTick, lastTranslateTick;
     bool isRunning;
-    bool isShooting;
-    int direction;
-    int sco_end_offset;
-    //FloorCoors* floor_coors;
+    int shotsRemaining;
+    int endOfScenarioOffset;
     bool fullscreen;
     Indexes indexes;
-    AnimationArrays* animation_arrays;
-    SDL_Texture* pla_texture;
-    SDL_Texture* pla_texture_back;
+    AnimationArrays* animations;
+    SDL_Texture* textureFront;
+    SDL_Texture* textureBack;
 } PlayerState;
 
 typedef struct{
@@ -80,14 +74,14 @@ typedef struct{
     int x;
     int y;
     int w;
-    int MAX_WIDTH;
-    int xMountain;
-    int x_mountain_offset_counter;
-    int X_MOUNTAIN_OFFSET;
-    int X_SCO_OFFSET;
-    int xHorizon;
-    int x_horizon_offset_counter;
-    int X_HORIZON_OFFSET;
+    int maxScrollWidth;
+    int mountainScrollX;
+    int mountainOffsetCounter;
+    int MOUNTAIN_SCROLL_RATIO;
+    int SCENARIO_END_OFFSET;
+    int horizonScrollX;
+    int horizonOffsetCounter;
+    int HORIZON_SCROLL_RATIO;
     FloorCoors* floor_coors;
     SDL_Texture* sco_texture;
 } ScenarioState;

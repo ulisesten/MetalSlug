@@ -27,97 +27,97 @@ void renderEnemies(EnemyState* ene_state, GRAPH* g) {
 
 void renderUpdateEnemyCoors( EnemyState* ene_state, PlayerState* pla_state, ScenarioState* sco_state ) {
 
-    ene_state->direction = (pla_state->h < ene_state->h)? DIRECTION_LEFT : DIRECTION_RIGHT;
+    ene_state->direction = (pla_state->floorIndex < ene_state->floorIndex)? DIRECTION_LEFT : DIRECTION_RIGHT;
 
-    if(ene_state->h >= 0 && ene_state->h < sco_state->floor_coors->count)
-        ene_state->y = sco_state->floor_coors->coors[ene_state->h] + ene_state->y_offset;
+    if(ene_state->floorIndex >= 0 && ene_state->floorIndex < sco_state->floor_coors->count)
+        ene_state->y = sco_state->floor_coors->coors[ene_state->floorIndex] + ene_state->spriteVerticalOffset;
 
-    ene_state->sco_offset = sco_state->x;
+    ene_state->scenarioScrollOffset = sco_state->x;
 
     ///Collision
     if(ene_state->direction == DIRECTION_LEFT) {
-        if(     pla_state->h + ENEMY_CLOSE == ene_state->h
-            &&  !(ene_state->isOperating)) {
+        if(     pla_state->floorIndex + ENEMY_CLOSE_DISTANCE == ene_state->floorIndex
+            &&  !(ene_state->hasReacted)) {
             ene_state->mode = MODE_SCARED;
         }
 
-        if(ene_state->mode == MODE_PURSUIT && ene_state->walk){
+        if(ene_state->mode == MODE_PURSUIT && ene_state->shouldWalk){
             ene_state->x--;
-            ene_state->h--;
-            ene_state->free_animation = true;
+            ene_state->floorIndex--;
+            ene_state->canTransitionMode = true;
         }
     }
 
     else
     if(ene_state->direction == DIRECTION_RIGHT) {
-        if(ene_state->mode == MODE_PURSUIT && ene_state->walk){
+        if(ene_state->mode == MODE_PURSUIT && ene_state->shouldWalk){
             ene_state->x++;
-            ene_state->h++;
-            ene_state->free_animation = true;
+            ene_state->floorIndex++;
+            ene_state->canTransitionMode = true;
         }
 
     }
 
 
-    if(ene_state->animate) {
-        ene_state->iBody++;
+    if(ene_state->shouldAnimate) {
+        ene_state->bodyFrame++;
     }
 
-    if(ene_state->iBody > ene_state->indexes.BODY_MAX -1) {
-        ene_state->iBody = 0;
-        ene_state->free_animation = true;
+    if(ene_state->bodyFrame > ene_state->indexes.maxBodyFrames -1) {
+        ene_state->bodyFrame = 0;
+        ene_state->canTransitionMode = true;
 
         if(ene_state->mode == MODE_SCARED) {
-            ene_state->isOperating = true;
+            ene_state->hasReacted = true;
         }
     }
 
-    ene_state->animate = false;
-    ene_state->walk = false;
+    ene_state->shouldAnimate = false;
+    ene_state->shouldWalk = false;
 }
 
 
 void renderEnemyCollisions( EnemyState* ene_state, PlayerState* pla_state, ScenarioState* sco_state ) {
     ///Collision
-    if(ene_state->direction == DIRECTION_LEFT && ene_state->free_animation) {
+    if(ene_state->direction == DIRECTION_LEFT && ene_state->canTransitionMode) {
 
-        if(     ene_state->isOperating
-            ||  pla_state->h + ENEMY_CLOSE < ene_state->h && ene_state->mode != MODE_CASUAL_1){
+        if(     ene_state->hasReacted
+            ||  pla_state->floorIndex + ENEMY_CLOSE_DISTANCE < ene_state->floorIndex && ene_state->mode != MODE_CASUAL_1){
             
             ene_state->mode = MODE_PURSUIT;
-            ene_state->free_animation = false;
+            ene_state->canTransitionMode = false;
 
         }
         
-        if(     pla_state->h >= ene_state->h - ENEMY_CONTACT
-            &&  pla_state->h <= ene_state->h + ENEMY_CONTACT ){
+        if(     pla_state->floorIndex >= ene_state->floorIndex - ENEMY_CONTACT_DISTANCE
+            &&  pla_state->floorIndex <= ene_state->floorIndex + ENEMY_CONTACT_DISTANCE ){
 
             ene_state->mode = MODE_ATTACK;
-            ene_state->free_animation = false;
+            ene_state->canTransitionMode = false;
 
         }
 
-        if(pla_state->h + ENEMY_CLOSE == ene_state->h) {
+        if(pla_state->floorIndex + ENEMY_CLOSE_DISTANCE == ene_state->floorIndex) {
 
             ene_state->mode = MODE_SCARED;
-            ene_state->free_animation = false;
+            ene_state->canTransitionMode = false;
 
         }
         else
-        if(pla_state->h + ENEMY_CLOSE < ene_state->h){
+        if(pla_state->floorIndex + ENEMY_CLOSE_DISTANCE < ene_state->floorIndex){
 
             ene_state->mode = MODE_CASUAL_1;
-            ene_state->free_animation = false;
+            ene_state->canTransitionMode = false;
 
         }
     }
     else
-    if(ene_state->direction == DIRECTION_RIGHT && ene_state->free_animation) {
-        if(     ene_state->isOperating
-            ||  pla_state->h - ENEMY_CLOSE > ene_state->h && ene_state->mode != MODE_CASUAL_1){
+    if(ene_state->direction == DIRECTION_RIGHT && ene_state->canTransitionMode) {
+        if(     ene_state->hasReacted
+            ||  pla_state->floorIndex - ENEMY_CLOSE_DISTANCE > ene_state->floorIndex && ene_state->mode != MODE_CASUAL_1){
             
             ene_state->mode = MODE_PURSUIT;
-            ene_state->free_animation = false;
+            ene_state->canTransitionMode = false;
 
         }
     }

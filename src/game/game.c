@@ -8,6 +8,7 @@
 #include "render/floor.h"
 
 #include "init/init.h"
+#include "constants/timers.h"
 
 #include <stdbool.h>
 
@@ -48,7 +49,7 @@ void startGame(SDL_Renderer* renderer, SDL_Window* window) {
 
     sco_state.window = window;
     sco_state.floor_coors = &floor_coors;
-    sco_state.x = sco_state.xMountain = sco_state.xHorizon = 0;
+    sco_state.x = sco_state.mountainScrollX = sco_state.horizonScrollX = 0;
 
     gameLoop(&g, &assets, &player_state, enemies, &sco_state, matrix.count);
     cleanupGame(&assets, &player_state, enemies, matrix.count, &floor_coors);
@@ -93,29 +94,29 @@ static void gameLoop(GRAPH* g, GameAssets* assets, PlayerState* player, EnemySta
 static void updateAnimationTimers(PlayerState* state) {
     Uint32 now = SDL_GetTicks();
 
-    if (now > state->pastBreath + 200) {
-        state->breath = true;
-        state->pastBreath = now;
+    if (now > state->lastBreathTick + BREATH_INTERVAL_MS) {
+        state->shouldBreathe = true;
+        state->lastBreathTick = now;
     }
 
-    if (now > state->pastWalk + 94) {
-        state->run = true;
-        state->pastWalk = now;
+    if (now > state->lastWalkTick + WALK_INTERVAL_MS) {
+        state->shouldRun = true;
+        state->lastWalkTick = now;
     }
 
-    if (now > state->pastJump + 10) {
-        state->jumpArr = true;
-        state->pastJump = now;
+    if (now > state->lastJumpTick + JUMP_INTERVAL_MS) {
+        state->shouldUpdateJump = true;
+        state->lastJumpTick = now;
     }
 
-    if (now > state->pastShoot + 20) {
-        state->shoot = true;
-        state->pastShoot = now;
+    if (now > state->lastShootTick + SHOOT_INTERVAL_MS) {
+        state->shouldShoot = true;
+        state->lastShootTick = now;
     }
 
-    if (now > state->pastTime + 9) {
-        state->translate = true;
-        state->pastTime = now;
+    if (now > state->lastTranslateTick + TRANSLATE_INTERVAL_MS) {
+        state->shouldTranslate = true;
+        state->lastTranslateTick = now;
     }
 }
 
@@ -123,14 +124,14 @@ static void updateAnimationEnemyTimers(EnemyState* ene_states){
     Uint32 now = SDL_GetTicks();
     
     // 110
-    if(now > ene_states->pastAnimate + 90) {
-        ene_states->animate = true;
-        ene_states->pastAnimate = now;
+    if(now > ene_states->lastAnimateTick + ENEMY_ANIMATE_INTERVAL_MS) {
+        ene_states->shouldAnimate = true;
+        ene_states->lastAnimateTick = now;
     }
 
-    if(now > ene_states->pastWalk + 20) {
-        ene_states->walk = true;
-        ene_states->pastWalk = now;
+    if(now > ene_states->lastWalkTick + ENEMY_WALK_INTERVAL_MS) {
+        ene_states->shouldWalk = true;
+        ene_states->lastWalkTick = now;
     }
 }
 
@@ -140,11 +141,11 @@ static void cleanupGame(GameAssets* assets, PlayerState* player, EnemyState** en
     for (int i = 0; i < enemy_count; i++)
         free(enemies[i]);
     free(enemies);
-    free(player->animation_arrays);
+    free(player->animations);
     free(floor_coors->coors);
 
-    SDL_FreeSurface(assets->scenario);
-    SDL_FreeSurface(assets->player);
-    SDL_FreeSurface(assets->player_back);
-    SDL_FreeSurface(assets->soldier);
+    SDL_FreeSurface(assets->scenarioSurface);
+    SDL_FreeSurface(assets->playerSurface);
+    SDL_FreeSurface(assets->playerBackSurface);
+    SDL_FreeSurface(assets->soldierSurface);
 }

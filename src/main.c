@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "constants/window.h"
 #include "game/game.h"
 //#include "menu/menu.h"
 
@@ -17,7 +18,7 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    SDL_Window* window = SDL_CreateWindow("Metal Slug", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 502, 238, SDL_WINDOW_OPENGL);
+    SDL_Window* window = SDL_CreateWindow("Metal Slug", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL);
     if (!window) {
         printf("Error SDL_CreateWindow: %s\n", SDL_GetError());
         IMG_Quit();

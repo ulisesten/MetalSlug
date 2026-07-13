@@ -1,8 +1,9 @@
 #include "floor.h"
+#include "../constants/scenario.h"
 
 short* readFloorCoords(const char* filename, int* count) {
     FILE* file = fopen(filename, "r");
-    const int offset = 23;
+    const int offset = GROUND_HEIGHT_OFFSET;
     if (!file) {
         printf("Error al abrir el archivo: %s\n", filename);
         *count = 0;
