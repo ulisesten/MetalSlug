@@ -31,11 +31,16 @@ void handleEvents(PlayerState* state) {
                         state->lastDirection = DIRECTION_LEFT;
                         break;
                     case SDLK_s:
-                        state->shouldJump = true;
-                        break;
-                    case SDLK_x:
                         state->wantToShoot = true;
-                        state->shotsRemaining = PLAYER_SHOT_FRAMES;
+                        if (state->shotsRemaining > 0) {
+                            state->shootFrame    = SHOOT_RESTART_FRAME;
+                            state->lastShootTick = SDL_GetTicks();
+                        } else {
+                            state->shotsRemaining = PLAYER_SHOT_FRAMES;
+                        }
+                        break;
+                    case SDLK_SPACE:
+                        state->shouldJump = true;
                         break;
                     case SDLK_f:
                         state->fullscreen = true;
@@ -63,7 +68,12 @@ void handleEvents(PlayerState* state) {
                 }
                 if (e.jbutton.button == 5) {
                     state->wantToShoot = true;
-                    state->shotsRemaining = PLAYER_SHOT_FRAMES;
+                    if (state->shotsRemaining > 0) {
+                        state->shootFrame    = SHOOT_RESTART_FRAME;
+                        state->lastShootTick = SDL_GetTicks();
+                    } else {
+                        state->shotsRemaining = PLAYER_SHOT_FRAMES;
+                    }
                 }
                 break;
 

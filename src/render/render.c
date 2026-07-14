@@ -30,9 +30,6 @@ void renderScenario(GRAPH* g, ScenarioState* sco_state) {
 }
 
 void renderPlayer(PlayerState* pla_state, ScenarioState* sco_state, GRAPH* g) {
-    static SDL_Rect torso[10];
-    static SDL_Rect pierna[6];
-
     if(pla_state->floorIndex >= 0 && pla_state->floorIndex < sco_state->floor_coors->count)
         pla_state->y = sco_state->floor_coors->coors[pla_state->floorIndex];
 
@@ -40,31 +37,7 @@ void renderPlayer(PlayerState* pla_state, ScenarioState* sco_state, GRAPH* g) {
         ToggleFullscreen(g->window);
     }
 
-    switch (pla_state->direction) {
-        case DIRECTION_RIGHT:
-            if (pla_state->isMovingForward) {
-                pla_state->indexes = clarkRunV2(g, pla_state, pla_state->animations);
-            } 
-            else 
-            if (pla_state->shotsRemaining) {
-                clarkShootArr(torso);
-                pla_state->indexes =
-                    clarkShoot(*g, &pla_state->torsoFrame, pla_state->x, pla_state->y, torso);
-            } else {
-                pla_state->indexes = clarkStandV2(g, pla_state, *pla_state->animations);
-            }
-            break;
-
-        case DIRECTION_LEFT:
-            if (pla_state->isMovingBackward) {
-                pla_state->indexes = clarkRunBackV2(g, pla_state, pla_state->animations);
-            } else {
-                pla_state->indexes = clarkStandBackV2(g, pla_state, pla_state->animations);
-            }
-            break;
-    }
-
-    
+    pla_state->indexes = animate_clark(g, pla_state, pla_state->animations);
 }
 
 void renderUpdateCoors(PlayerState* pla_state, ScenarioState* sco_state) {
@@ -111,13 +84,6 @@ void renderUpdateCoors(PlayerState* pla_state, ScenarioState* sco_state) {
             pla_state->isRunning = false;
         }
     }
-
-
-    if(pla_state->shouldBreathe) pla_state->torsoFrame++;
-    if(pla_state->shouldRun) pla_state->legsFrame++;
-
-    if( pla_state->legsFrame >= pla_state->indexes.maxLegsFrames ) pla_state->legsFrame = 0;
-    if( pla_state->torsoFrame  >= pla_state->indexes.maxTorsoFrames  ) pla_state->torsoFrame  = 0;
 
     if(sco_state->mountainOffsetCounter >= mountainRatio)
         sco_state->mountainOffsetCounter = 0;

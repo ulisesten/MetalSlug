@@ -11,4 +11,8 @@
 /* Shooting burst count (each key press triggers N frames) */
 #define PLAYER_SHOT_FRAMES 3
 
+/* Frame index to restart the shoot animation at when the player
+ * presses shoot again mid-burst (skips the initial muzzle flash). */
+#define SHOOT_RESTART_FRAME 3
+
 #endif

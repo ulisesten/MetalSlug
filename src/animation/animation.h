@@ -30,6 +30,7 @@ typedef struct {
     SDL_Rect RunBackTorso[4];
     SDL_Rect RunBackLegs[6];
     SDL_Rect ShootTorso[10];
+    SDL_Rect ShootBackTorso[10];
 } AnimationArrays;
 
 typedef struct {
@@ -87,30 +88,48 @@ typedef struct{
 } ScenarioState;
 
 
-// Declaraciones de funciones de animación
-Indexes clarkStand(        GRAPH g, int* iT, int* iP, int x, int y, SDL_Rect framesT[], SDL_Rect framesP[]);
-Indexes clarkStandBack(    GRAPH g, int iT, int iP, int x, int y, SDL_Rect framesT[], SDL_Rect framesP[]);
-Indexes clarkRun(          GRAPH g, int iT, int iP, int x, int y, SDL_Rect framesT[], SDL_Rect framesP[]);
-Indexes clarkRunBack(      GRAPH g, int iT, int iP, int x, int y, SDL_Rect framesT[], SDL_Rect framesP[]);
-Indexes clarkShoot(        GRAPH g, int* iT, int x, int y, SDL_Rect frames[]);
-//Indexes clarkPier(         GRAPH g, int x, int y, SDL_Rect frames[]);
-
 // Definiciones de los arreglos de animaciones
 void clarkStandArr(     SDL_Rect torso[4], SDL_Rect pierna[1]);
 void clarkStandBackArr( SDL_Rect torso[4], SDL_Rect pierna[1]);
 void clarkRunArr(       SDL_Rect torso[4], SDL_Rect pierna[6]);
 void clarkRunBackArr(   SDL_Rect torso[4], SDL_Rect pierna[6]);
-void clarkShootArr(     SDL_Rect frames[9]);
+void clarkShootArr(     SDL_Rect torso[10]);
+void clarkShootBackArr( SDL_Rect torso[10]);
 
 void clarkUpTorsoArr(SDL_Rect torso[4]);
 
 void initAnimations(AnimationArrays* ani_arrays);
 void initClarkAnimations(AnimationArrays* ani_arrays);
 
-/** Updated functions */
-Indexes clarkStandV2(       GRAPH* g, PlayerState* pla_state, AnimationArrays ani_arrays);
-Indexes clarkStandBackV2(   GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arrays);
-Indexes clarkRunV2(         GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arrays);
-Indexes clarkRunBackV2(     GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arrays);
+/**
+ * Frame view: source rect, texture and destination offset selected by the
+ * setter helpers. animate_clark composes one for torso and one for legs.
+ */
+typedef struct {
+    SDL_Rect     src;
+    SDL_Texture*  tex;
+    int           off_x;
+} FrameView;
+
+/* Per-movement setters. They pick the right sprite strip and texture for the
+ * given direction (DIRECTION_LEFT uses the *Back* variants), then write the
+ * computed FrameView (caller still adds pla_state->x/y). */
+void setStandTorsoFrames(  const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v);
+void setRunTorsoFrames(    const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v);
+void setShootTorsoFrames(  const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v);
+void setStandLegsFrames(   const PlayerState* s, const AnimationArrays* a,             FrameView* v);
+void setRunLegsFrames(     const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v);
+
+/**
+ * @brief Centralized player renderer + frame advancing.
+ *
+ * Handles torso and legs independently so new state combinations
+ * (e.g. running + shooting) can be added by changing the torso branch
+ * without duplicating legs logic. Advances torsoFrame/legsFrame/shootFrame
+ * according to the PlayerState flags (shouldBreathe/shouldRun/shouldShoot).
+ *
+ * @return Indexes {torso_max, legs_max} for external use (compat).
+ */
+Indexes animate_clark(       GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arrays);
 
 #endif
