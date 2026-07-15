@@ -31,6 +31,8 @@ typedef struct {
     SDL_Rect RunBackLegs[6];
     SDL_Rect ShootTorso[10];
     SDL_Rect ShootBackTorso[10];
+    SDL_Rect UpTorso[4];
+    SDL_Rect UpBackTorso[4];
 } AnimationArrays;
 
 typedef struct {
@@ -46,7 +48,7 @@ typedef struct {
     int direction, lastDirection;
     bool isMovingBackward;
     bool isMovingForward;
-    bool shouldBreathe, shouldRun, shouldJump, shouldShoot, shouldTranslate, wantToShoot;
+    bool shouldBreathe, shouldRun, shouldJump, shouldShoot, shouldTranslate, wantToShoot, shouldLookUp;
     bool keepWalking, shouldUpdateJump;
     bool quit;
     Uint32 lastBreathTick, lastWalkTick, lastJumpTick, lastShootTick, lastTranslateTick;
@@ -96,7 +98,8 @@ void clarkRunBackArr(   SDL_Rect torso[4], SDL_Rect pierna[6]);
 void clarkShootArr(     SDL_Rect torso[10]);
 void clarkShootBackArr( SDL_Rect torso[10]);
 
-void clarkUpTorsoArr(SDL_Rect torso[4]);
+void clarkUpTorsoArr(   SDL_Rect torso[4]);
+void clarkUpBackTorsoArr(SDL_Rect torso[4]);
 
 void initAnimations(AnimationArrays* ani_arrays);
 void initClarkAnimations(AnimationArrays* ani_arrays);
@@ -119,6 +122,7 @@ void setRunTorsoFrames(    const PlayerState* s, const AnimationArrays* a, int f
 void setShootTorsoFrames(  const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v);
 void setStandLegsFrames(   const PlayerState* s, const AnimationArrays* a,             FrameView* v);
 void setRunLegsFrames(     const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v);
+void setUpTorsoFrames(     const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v);
 
 /**
  * @brief Centralized player renderer + frame advancing.

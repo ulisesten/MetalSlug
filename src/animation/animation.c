@@ -209,6 +209,13 @@ void clarkUpTorsoArr(SDL_Rect torso[4]) {
     torso[3].x = 109; torso[3].y = 85;  torso[3].w = 35;  torso[3].h = 35;
 }
 
+void clarkUpBackTorsoArr(SDL_Rect torso[4]) {
+    torso[0].x = 10;  torso[0].y = 85;  torso[0].w = 35;  torso[0].h = 35;
+    torso[1].x = 43;  torso[1].y = 85;  torso[1].w = 33;  torso[1].h = 35;
+    torso[2].x = 76;  torso[2].y = 85;  torso[2].w = 35;  torso[2].h = 35;
+    torso[3].x = 109; torso[3].y = 85;  torso[3].w = 35;  torso[3].h = 35;
+}
+
 void initAnimations(AnimationArrays* ani_arrays) {
     initClarkAnimations(ani_arrays);
     // Aquí puedes agregar más inicializaciones de personajes
@@ -221,6 +228,8 @@ void initClarkAnimations(AnimationArrays* ani_arrays) {
     clarkRunBackArr(    ani_arrays->RunBackTorso,    ani_arrays->RunBackLegs);
     clarkShootArr(      ani_arrays->ShootTorso);
     clarkShootBackArr(  ani_arrays->ShootBackTorso);
+    clarkUpTorsoArr(    ani_arrays->UpTorso);
+    clarkUpBackTorsoArr(ani_arrays->UpBackTorso);
 }
 
 /* ====== Per-movement frame setters ====== */
@@ -265,6 +274,14 @@ void setRunLegsFrames(const PlayerState* s, const AnimationArrays* a, int frame,
     v->off_x = left ? 7 : 0;
 }
 
+void setUpTorsoFrames(const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v) {
+    const bool left = (s->direction == DIRECTION_LEFT);
+    const SDL_Rect* arr = left ? a->UpBackTorso : a->UpTorso;
+    v->src   = arr[frame];
+    v->tex   = left ? s->textureBack : s->textureFront;
+    v->off_x = 2;
+}
+
 /* ====== Centralized player animation ====== */
 
 Indexes animate_clark(GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arrays) {
@@ -288,6 +305,9 @@ Indexes animate_clark(GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arr
                 pla_state->shotsRemaining = 0;
             }
         }
+    } else if (pla_state->shouldLookUp) {
+        frame_idx = pla_state->torsoFrame;
+        setUpTorsoFrames(pla_state, ani_arrays, frame_idx, &torso);
     } else if (moving) {
         frame_idx = pla_state->torsoFrame;
         setRunTorsoFrames(pla_state, ani_arrays, frame_idx, &torso);

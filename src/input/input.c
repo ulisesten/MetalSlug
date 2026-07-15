@@ -30,6 +30,9 @@ void handleEvents(PlayerState* state) {
                         state->direction = DIRECTION_LEFT;
                         state->lastDirection = DIRECTION_LEFT;
                         break;
+                    case SDLK_UP:
+                        state->shouldLookUp = true;
+                        break;
                     case SDLK_s:
                         state->wantToShoot = true;
                         if (state->shotsRemaining > 0) {
@@ -55,6 +58,9 @@ void handleEvents(PlayerState* state) {
                         break;
                     case SDLK_LEFT:
                         state->isMovingBackward = false;
+                        break;
+                    case SDLK_UP:
+                        state->shouldLookUp = false;
                         break;
                 }
                 if (!state->shouldJump) {
