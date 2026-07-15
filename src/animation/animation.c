@@ -210,10 +210,17 @@ void clarkUpTorsoArr(SDL_Rect torso[4]) {
 }
 
 void clarkUpBackTorsoArr(SDL_Rect torso[4]) {
-    torso[0].x = 10;  torso[0].y = 85;  torso[0].w = 35;  torso[0].h = 35;
-    torso[1].x = 43;  torso[1].y = 85;  torso[1].w = 33;  torso[1].h = 35;
-    torso[2].x = 76;  torso[2].y = 85;  torso[2].w = 35;  torso[2].h = 35;
-    torso[3].x = 109; torso[3].y = 85;  torso[3].w = 35;  torso[3].h = 35;
+    torso[0].x = 704;   torso[0].y = 85;
+    torso[0].w = 35;    torso[0].h = 35;
+
+    torso[1].x = 671;    torso[1].y = 85;
+    torso[1].w = 33;    torso[1].h = 35;
+
+    torso[2].x = 638;    torso[2].y = 85;
+    torso[2].w = 35;    torso[2].h = 35;
+
+    torso[3].x = 605;   torso[3].y = 85;
+    torso[3].w = 35;    torso[3].h = 35;
 }
 
 void initAnimations(AnimationArrays* ani_arrays) {
@@ -279,7 +286,7 @@ void setUpTorsoFrames(const PlayerState* s, const AnimationArrays* a, int frame,
     const SDL_Rect* arr = left ? a->UpBackTorso : a->UpTorso;
     v->src   = arr[frame];
     v->tex   = left ? s->textureBack : s->textureFront;
-    v->off_x = 2;
+    v->off_x = left ? -4 : 2;
 }
 
 /* ====== Centralized player animation ====== */
