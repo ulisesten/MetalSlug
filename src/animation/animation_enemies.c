@@ -1,5 +1,5 @@
 #include "animation_enemies.h"
-#include "animation.h"
+#include "animation_player_clark.h"
 
 
 void initEnemyAnimations(AnimationEnemyArrays* ene_arrays) {

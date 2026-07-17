@@ -1,7 +1,8 @@
 // render.c
 #include "render.h"
 #include <SDL2/SDL.h>
-#include "../animation/animation.h"
+#include "../animation/animation_player_clark.h"
+#include "../animation/animation_bullets.h"
 #include "floor.h"
 #include "constants/scenario.h"
 
@@ -30,14 +31,29 @@ void renderScenario(GRAPH* g, ScenarioState* sco_state) {
 }
 
 void renderPlayer(PlayerState* pla_state, ScenarioState* sco_state, GRAPH* g) {
-    if(pla_state->floorIndex >= 0 && pla_state->floorIndex < sco_state->floor_coors->count)
-        pla_state->y = sco_state->floor_coors->coors[pla_state->floorIndex];
+    /* Lock vertical position to terrain unless jumping. While jumping,
+     * pla_state->y carries the effective on-screen Y (ground - jumpOffset)
+     * so anything that tracks the player (e.g. bullets) follows it. */
+    int ground_y = pla_state->y;
+    if(pla_state->floorIndex >= 0 && pla_state->floorIndex < sco_state->floor_coors->count) {
+        ground_y = sco_state->floor_coors->coors[pla_state->floorIndex];
+    }
+
+    if(pla_state->shouldJump && sco_state->jumpOffsetsCount > 0) {
+        int idx = pla_state->jumpTrajectoryFrame;
+        if (idx < 0) idx = 0;
+        if (idx >= sco_state->jumpOffsetsCount) idx = sco_state->jumpOffsetsCount - 1;
+        pla_state->y = ground_y - sco_state->jumpOffsets[idx];
+    } else {
+        pla_state->y = ground_y;
+    }
 
     if(pla_state->fullscreen) {
         ToggleFullscreen(g->window);
+        pla_state->fullscreen = false;  /* consume the edge */
     }
 
-    pla_state->indexes = animate_clark(g, pla_state, pla_state->animations);
+    pla_state->indexes = animate_clark(g, sco_state, pla_state, pla_state->animations);
 }
 
 void renderUpdateCoors(PlayerState* pla_state, ScenarioState* sco_state) {
@@ -88,8 +104,33 @@ void renderUpdateCoors(PlayerState* pla_state, ScenarioState* sco_state) {
     if(sco_state->mountainOffsetCounter >= mountainRatio)
         sco_state->mountainOffsetCounter = 0;
 
-    pla_state->shouldBreathe       = false;
-    pla_state->shouldRun          = false;
-    pla_state->shouldTranslate    = false;
-    pla_state->shouldShoot        = false;
+    pla_state->shouldBreathe               = false;
+    pla_state->shouldRun                  = false;
+    pla_state->shouldTranslate            = false;
+    pla_state->shouldShoot                = false;
+    pla_state->shouldAdvanceJumpAnim      = false;
+    pla_state->shouldAdvanceJumpTrajectory = false;
+}
+
+void renderBullets(GRAPH* g, BulletPool* pool) {
+    if (!pool || !pool->texture || !pool->anim) return;
+    for (int i = 0; i < BULLET_POOL_CAPACITY; i++) {
+        BulletState* b = &pool->bullets[i];
+        if (!b->active) continue;
+
+        SDL_Rect src;
+        getBulletSrcRect(b->type, pool->anim, b->frame, &src);
+        if (src.w == 0 || src.h == 0) continue; /* sprite not configured yet */
+
+        int draw_x = b->x;
+        int draw_y = b->y;
+        if (b->dx < 0) {
+            /* Sprite faces right by default; flip horizontally when firing left */
+            SDL_Rect dst = { draw_x - src.w, draw_y, src.w, src.h };
+            SDL_RenderCopyEx(g->renderer, pool->texture, &src, &dst, 0.0, NULL, SDL_FLIP_HORIZONTAL);
+        } else {
+            SDL_Rect dst = { draw_x, draw_y, src.w, src.h };
+            SDL_RenderCopy(g->renderer, pool->texture, &src, &dst);
+        }
+    }
 }

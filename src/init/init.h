@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 #include "../render/floor.h"
-#include "../animation/animation.h"
+#include "../animation/animation_player_clark.h"
 #include "../animation/animation_enemies.h"
 #include "../input/input.h"
 #include "../game/game.h"
@@ -20,5 +20,6 @@ void loadResources(GameAssets* assets, EnemyMatrix* matrix, FloorCoors* floor_co
 void initPlayer(PlayerState* state, GameAssets assets, SDL_Renderer** renderer);
 void initEnemies(EnemyState** ene_states, EnemyMatrix* matrix, GameAssets assets, SDL_Renderer** renderer);
 void initScenario(ScenarioState* state, GameAssets assets, SDL_Renderer** renderer);
+void initBullets(BulletPool* pool, GameAssets assets, SDL_Renderer** renderer);
 
 #endif // INIT_H

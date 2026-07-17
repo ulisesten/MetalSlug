@@ -33,6 +33,10 @@ typedef struct {
     SDL_Rect ShootBackTorso[10];
     SDL_Rect UpTorso[4];
     SDL_Rect UpBackTorso[4];
+    SDL_Rect JumpTorso[6];
+    SDL_Rect JumpBackTorso[6];
+    SDL_Rect JumpLegs[6];
+    SDL_Rect JumpBackLegs[6];
 } AnimationArrays;
 
 typedef struct {
@@ -42,6 +46,8 @@ typedef struct {
     int torsoFrame;
     int legsFrame;
     int shootFrame;
+    int jumpAnimFrame;        /* sprite animation cycling 6 frames */
+    int jumpTrajectoryFrame;  /* parabolic trajectory index (0..jumpOffsetsCount-1) */
     int X_RANGE_MAX;
     int X_RANGE_MIN;
     int x_displacement;
@@ -49,9 +55,11 @@ typedef struct {
     bool isMovingBackward;
     bool isMovingForward;
     bool shouldBreathe, shouldRun, shouldJump, shouldShoot, shouldTranslate, wantToShoot, shouldLookUp;
-    bool keepWalking, shouldUpdateJump;
+    bool keepWalking, shouldAdvanceJumpAnim, shouldAdvanceJumpTrajectory;
+    bool pendingShot;            /* edge-triggered manual shot request */
     bool quit;
-    Uint32 lastBreathTick, lastWalkTick, lastJumpTick, lastShootTick, lastTranslateTick;
+    Uint32 lastBreathTick, lastWalkTick, lastJumpAnimTick, lastJumpTrajectoryTick, lastShootTick, lastTranslateTick;
+    Uint32 lastBulletShotMs;     /* timestamp of last bullet fired (for cooldown) */
     bool isRunning;
     int shotsRemaining;
     int endOfScenarioOffset;
@@ -87,6 +95,8 @@ typedef struct{
     int HORIZON_SCROLL_RATIO;
     FloorCoors* floor_coors;
     SDL_Texture* sco_texture;
+    int jumpOffsets[52]; /* parabolic jump trajectory (pixels up) */
+    int jumpOffsetsCount;
 } ScenarioState;
 
 
@@ -100,6 +110,10 @@ void clarkShootBackArr( SDL_Rect torso[10]);
 
 void clarkUpTorsoArr(   SDL_Rect torso[4]);
 void clarkUpBackTorsoArr(SDL_Rect torso[4]);
+void clarkJumpTorsoArr(   SDL_Rect torso[6]);
+void clarkJumpBackTorsoArr(SDL_Rect torso[6]);
+void clarkJumpLegsArr(    SDL_Rect legs[6]);
+void clarkJumpBackLegsArr(SDL_Rect legs[6]);
 
 void initAnimations(AnimationArrays* ani_arrays);
 void initClarkAnimations(AnimationArrays* ani_arrays);
@@ -123,6 +137,8 @@ void setShootTorsoFrames(  const PlayerState* s, const AnimationArrays* a, int f
 void setStandLegsFrames(   const PlayerState* s, const AnimationArrays* a,             FrameView* v);
 void setRunLegsFrames(     const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v);
 void setUpTorsoFrames(     const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v);
+void setJumpTorsoFrames(   const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v);
+void setJumpLegsFrames(    const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v);
 
 /**
  * @brief Centralized player renderer + frame advancing.
@@ -134,6 +150,6 @@ void setUpTorsoFrames(     const PlayerState* s, const AnimationArrays* a, int f
  *
  * @return Indexes {torso_max, legs_max} for external use (compat).
  */
-Indexes animate_clark(       GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arrays);
+Indexes animate_clark(GRAPH* g, ScenarioState* sco_state, PlayerState* pla_state, AnimationArrays* ani_arrays);
 
 #endif

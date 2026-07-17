@@ -1,4 +1,4 @@
-#include "animation.h"
+#include "animation_player_clark.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
@@ -223,20 +223,62 @@ void clarkUpBackTorsoArr(SDL_Rect torso[4]) {
     torso[3].w = 35;    torso[3].h = 35;
 }
 
+
+void clarkJumpTorsoArr(SDL_Rect torso[6]) {
+    torso[0].x = 12;  torso[0].y = 635;  torso[0].w = 30;  torso[0].h = 35;
+    torso[1].x = 45;  torso[1].y = 635;  torso[1].w = 30;  torso[1].h = 35;
+    torso[2].x = 78;  torso[2].y = 635;  torso[2].w = 30;  torso[2].h = 35;
+    torso[3].x = 111; torso[3].y = 635;  torso[3].w = 30;  torso[3].h = 35;
+    torso[4].x = 144; torso[4].y = 635;  torso[4].w = 30;  torso[4].h = 35;
+    torso[5].x = 176; torso[5].y = 635;  torso[5].w = 30;  torso[5].h = 35;
+}
+
+void clarkJumpBackTorsoArr(SDL_Rect torso[6]) {
+    torso[0].x = 12;  torso[0].y = 85;  torso[0].w = 30;  torso[0].h = 35;
+    torso[1].x = 45;  torso[1].y = 85;  torso[1].w = 30;  torso[1].h = 35;
+    torso[2].x = 78;  torso[2].y = 85;  torso[2].w = 30;  torso[2].h = 35;
+    torso[3].x = 111; torso[3].y = 85;  torso[3].w = 30;  torso[3].h = 35;
+    torso[4].x = 144; torso[4].y = 85;  torso[4].w = 30;  torso[4].h = 35;
+    torso[5].x = 176; torso[5].y = 85;  torso[5].w = 30;  torso[5].h = 35;
+}
+
+void clarkJumpLegsArr(SDL_Rect legs[6]) {
+    legs[0].x = 19;  legs[0].y = 670;  legs[0].w = 20;  legs[0].h = 25;
+    legs[1].x = 52;  legs[1].y = 670;  legs[1].w = 20;  legs[1].h = 25;
+    legs[2].x = 85;  legs[2].y = 670;  legs[2].w = 20;  legs[2].h = 25;
+    legs[3].x = 118; legs[3].y = 670;  legs[3].w = 20;  legs[3].h = 25;
+    legs[4].x = 150; legs[4].y = 670;  legs[4].w = 20;  legs[4].h = 25;
+    legs[5].x = 183; legs[5].y = 670;  legs[5].w = 20;  legs[5].h = 25;
+}
+
+void clarkJumpBackLegsArr(SDL_Rect legs[6]) {
+    legs[0].x = 19;  legs[0].y = 85;  legs[0].w = 20;  legs[0].h = 25;
+    legs[1].x = 52;  legs[1].y = 85;  legs[1].w = 20;  legs[1].h = 25;
+    legs[2].x = 85;  legs[2].y = 85;  legs[2].w = 20;  legs[2].h = 25;
+    legs[3].x = 118; legs[3].y = 85;  legs[3].w = 20;  legs[3].h = 25;
+    legs[4].x = 150; legs[4].y = 85;  legs[4].w = 20;  legs[4].h = 25;
+    legs[5].x = 183; legs[5].y = 85;  legs[5].w = 20;  legs[5].h = 25;
+}
+
+
 void initAnimations(AnimationArrays* ani_arrays) {
     initClarkAnimations(ani_arrays);
     // Aquí puedes agregar más inicializaciones de personajes
 }
 
 void initClarkAnimations(AnimationArrays* ani_arrays) {
-    clarkStandArr(      ani_arrays->StandTorso,      ani_arrays->StandLegs);
-    clarkStandBackArr(  ani_arrays->StandBackTorso,  ani_arrays->StandBackLegs);
-    clarkRunArr(        ani_arrays->RunTorso,        ani_arrays->RunLegs);
-    clarkRunBackArr(    ani_arrays->RunBackTorso,    ani_arrays->RunBackLegs);
-    clarkShootArr(      ani_arrays->ShootTorso);
-    clarkShootBackArr(  ani_arrays->ShootBackTorso);
-    clarkUpTorsoArr(    ani_arrays->UpTorso);
-    clarkUpBackTorsoArr(ani_arrays->UpBackTorso);
+    clarkStandArr(        ani_arrays->StandTorso,      ani_arrays->StandLegs);
+    clarkStandBackArr(    ani_arrays->StandBackTorso,  ani_arrays->StandBackLegs);
+    clarkRunArr(          ani_arrays->RunTorso,        ani_arrays->RunLegs);
+    clarkRunBackArr(      ani_arrays->RunBackTorso,    ani_arrays->RunBackLegs);
+    clarkShootArr(        ani_arrays->ShootTorso);
+    clarkShootBackArr(    ani_arrays->ShootBackTorso);
+    clarkUpTorsoArr(      ani_arrays->UpTorso);
+    clarkUpBackTorsoArr(  ani_arrays->UpBackTorso);
+    clarkJumpTorsoArr(    ani_arrays->JumpTorso);
+    clarkJumpBackTorsoArr(ani_arrays->JumpBackTorso);
+    clarkJumpLegsArr(     ani_arrays->JumpLegs);
+    clarkJumpBackLegsArr( ani_arrays->JumpBackLegs);
 }
 
 /* ====== Per-movement frame setters ====== */
@@ -289,18 +331,35 @@ void setUpTorsoFrames(const PlayerState* s, const AnimationArrays* a, int frame,
     v->off_x = left ? -4 : 2;
 }
 
+void setJumpTorsoFrames(const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v) {
+    const bool left = (s->direction == DIRECTION_LEFT);
+    const SDL_Rect* arr = left ? a->JumpBackTorso : a->JumpTorso;
+    v->src   = arr[frame];
+    v->tex   = left ? s->textureBack : s->textureFront;
+    v->off_x = 0;
+}
+
+void setJumpLegsFrames(const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v) {
+    const bool left = (s->direction == DIRECTION_LEFT);
+    const SDL_Rect* arr = left ? a->JumpBackLegs : a->JumpLegs;
+    v->src   = arr[frame];
+    v->tex   = left ? s->textureBack : s->textureFront;
+    v->off_x = 6;
+}
+
 /* ====== Centralized player animation ====== */
 
-Indexes animate_clark(GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arrays) {
+Indexes animate_clark(GRAPH* g, ScenarioState* sco_state, PlayerState* pla_state, AnimationArrays* ani_arrays) {
     FrameView torso, legs;
-    const int x = pla_state->x;
-    const int y = pla_state->y;
+    int x = pla_state->x;
+    int y = pla_state->y;  /* renderPlayer has already applied the jump offset */
     const bool facing_left = (pla_state->direction == DIRECTION_LEFT);
     const bool moving = facing_left ? pla_state->isMovingBackward
                                     : pla_state->isMovingForward;
+    const bool jumping = pla_state->shouldJump;
     int frame_idx;
 
-    /* ====== TORSO ====== */
+    /* ====== TORSO (prioridad: shoot > jump > lookUp > run > stand) ====== */
     if (pla_state->shotsRemaining > 0) {
         frame_idx = pla_state->shootFrame;
         setShootTorsoFrames(pla_state, ani_arrays, frame_idx, &torso);
@@ -312,6 +371,10 @@ Indexes animate_clark(GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arr
                 pla_state->shotsRemaining = 0;
             }
         }
+    } else if (jumping) {
+        /* Sprite animation cycles independently of trajectory */
+        frame_idx = pla_state->jumpAnimFrame % 6;
+        setJumpTorsoFrames(pla_state, ani_arrays, frame_idx, &torso);
     } else if (pla_state->shouldLookUp) {
         frame_idx = pla_state->torsoFrame;
         setUpTorsoFrames(pla_state, ani_arrays, frame_idx, &torso);
@@ -323,28 +386,48 @@ Indexes animate_clark(GRAPH* g, PlayerState* pla_state, AnimationArrays* ani_arr
         setStandTorsoFrames(pla_state, ani_arrays, frame_idx, &torso);
     }
 
-    /* ====== PIERNAS (independientes del disparo) ====== */
-    if (moving) {
+    /* ====== PIERNAS (prioridad: jump > run > stand; shoot no las afecta) ====== */
+    if (jumping) {
+        setJumpLegsFrames(pla_state, ani_arrays, pla_state->jumpAnimFrame % 6, &legs);
+    } else if (moving) {
         setRunLegsFrames(pla_state, ani_arrays, pla_state->legsFrame, &legs);
     } else {
         setStandLegsFrames(pla_state, ani_arrays, &legs);
     }
 
     /* ====== Build destination rects ====== */
-    SDL_Rect torso_coors = { torso.off_x + x, 20 + y, torso.src.w, torso.src.h };
+    const int torso_y = jumping ? (20 + y - 2) : (20 + y);
+    SDL_Rect torso_coors = { torso.off_x + x, torso_y, torso.src.w, torso.src.h };
     SDL_Rect leg_coors   = { legs.off_x  + x, 41 + y, legs.src.w,  legs.src.h  };
 
     SDL_RenderCopy(g->renderer, legs.tex,  &legs.src,  &leg_coors);
     SDL_RenderCopy(g->renderer, torso.tex, &torso.src, &torso_coors);
 
-    /* ====== Frame advancing ====== */
-    if (pla_state->shouldBreathe && pla_state->shotsRemaining == 0) pla_state->torsoFrame++;
-    if (pla_state->shouldRun) pla_state->legsFrame++;
+    /* ====== Frame advancing — timers are independent =============
+     *  JUMP_ANIM_INTERVAL_MS (sprite cycle, ~80ms)
+     *  JUMP_TRAJECTORY_INTERVAL_MS (parabola advance, ~30ms)         */
+    if (pla_state->shouldBreathe && pla_state->shotsRemaining == 0 && !jumping) pla_state->torsoFrame++;
+    if (pla_state->shouldRun && !jumping) pla_state->legsFrame++;
 
-    const int torso_max = (pla_state->shotsRemaining > 0) ? 10 : 4;
+    if (jumping) {
+        if (pla_state->shouldAdvanceJumpAnim) {
+            pla_state->jumpAnimFrame++;
+        }
+        if (pla_state->shouldAdvanceJumpTrajectory && sco_state) {
+            pla_state->jumpTrajectoryFrame++;
+            /* End jump once the parabolic trajectory completes */
+            if (pla_state->jumpTrajectoryFrame >= sco_state->jumpOffsetsCount) {
+                pla_state->jumpTrajectoryFrame = 0;
+                pla_state->jumpAnimFrame       = 0;
+                pla_state->shouldJump          = false;
+            }
+        }
+    }
+
+    const int torso_max = (pla_state->shotsRemaining > 0) ? 10 : (jumping ? 6 : 4);
     if (pla_state->torsoFrame >= torso_max) pla_state->torsoFrame = 0;
 
-    const int legs_max = moving ? 6 : 1;
+    const int legs_max = jumping ? 6 : (moving ? 6 : 1);
     if (pla_state->legsFrame >= legs_max) pla_state->legsFrame = 0;
 
     return (Indexes){torso_max, legs_max};

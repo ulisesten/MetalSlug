@@ -34,6 +34,11 @@ void handleEvents(PlayerState* state) {
                         state->shouldLookUp = true;
                         break;
                     case SDLK_s:
+                        if (e.key.repeat == 0) {
+                            /* Edge-triggered manual shot — only fires once per
+                             * physical key press, never on auto-repeat. */
+                            state->pendingShot = true;
+                        }
                         state->wantToShoot = true;
                         if (state->shotsRemaining > 0) {
                             state->shootFrame    = SHOOT_RESTART_FRAME;
@@ -46,7 +51,9 @@ void handleEvents(PlayerState* state) {
                         state->shouldJump = true;
                         break;
                     case SDLK_f:
-                        state->fullscreen = true;
+                        if (e.key.repeat == 0) {
+                            state->fullscreen = true;
+                        }
                         break;
                 }
                 break;
@@ -73,6 +80,7 @@ void handleEvents(PlayerState* state) {
                     state->shouldJump = true;
                 }
                 if (e.jbutton.button == 5) {
+                    state->pendingShot = true;
                     state->wantToShoot = true;
                     if (state->shotsRemaining > 0) {
                         state->shootFrame    = SHOOT_RESTART_FRAME;
