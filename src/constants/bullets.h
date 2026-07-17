@@ -7,11 +7,16 @@
 /* Bullet horizontal velocity in px/frame */
 #define BULLET_SPEED_X 1
 
-/* Spawn offset relative to player.x (approximate muzzle position) */
-#define BULLET_SPAWN_OFFSET_X 36
+/* Spawn offset relative to player.x (approximate muzzle position).
+ * When facing right the muzzle is ahead of the player, so offset is positive.
+ * When facing left the sprite is mirrored so the muzzle sits further back;
+ * an extra correction (BULLET_SPAWN_OFFSET_X_LEFT_CORRECTION) is applied on
+ * top of the base offset to align the spawn point with the visible muzzle. */
+#define BULLET_SPAWN_OFFSET_X 45
+#define BULLET_SPAWN_OFFSET_X_LEFT_CORRECTION 20
 
 /* Vertical position of bullet (matches player torso y ~ +20) */
-#define BULLET_SPAWN_OFFSET_Y 26
+#define BULLET_SPAWN_OFFSET_Y 30
 
 /* Bullets are despawned after traveling this many pixels horizontally */
 #define BULLET_TRAVEL_RANGE 800

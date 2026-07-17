@@ -1,4 +1,5 @@
 #include "animation_player_clark.h"
+#include "../constants/player.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
@@ -234,12 +235,12 @@ void clarkJumpTorsoArr(SDL_Rect torso[6]) {
 }
 
 void clarkJumpBackTorsoArr(SDL_Rect torso[6]) {
-    torso[0].x = 12;  torso[0].y = 85;  torso[0].w = 30;  torso[0].h = 35;
-    torso[1].x = 45;  torso[1].y = 85;  torso[1].w = 30;  torso[1].h = 35;
-    torso[2].x = 78;  torso[2].y = 85;  torso[2].w = 30;  torso[2].h = 35;
-    torso[3].x = 111; torso[3].y = 85;  torso[3].w = 30;  torso[3].h = 35;
-    torso[4].x = 144; torso[4].y = 85;  torso[4].w = 30;  torso[4].h = 35;
-    torso[5].x = 176; torso[5].y = 85;  torso[5].w = 30;  torso[5].h = 35;
+    torso[0].x = 711;  torso[0].y = 635;  torso[0].w = 30;  torso[0].h = 35;
+    torso[1].x = 677;  torso[1].y = 635;  torso[1].w = 30;  torso[1].h = 35;
+    torso[2].x = 643;  torso[2].y = 635;  torso[2].w = 30;  torso[2].h = 35;
+    torso[3].x = 612; torso[3].y =  635;  torso[3].w = 30;  torso[3].h = 35;
+    torso[4].x = 579; torso[4].y =  635;  torso[4].w = 30;  torso[4].h = 35;
+    torso[5].x = 545; torso[5].y =  635;  torso[5].w = 30;  torso[5].h = 35;
 }
 
 void clarkJumpLegsArr(SDL_Rect legs[6]) {
@@ -252,12 +253,12 @@ void clarkJumpLegsArr(SDL_Rect legs[6]) {
 }
 
 void clarkJumpBackLegsArr(SDL_Rect legs[6]) {
-    legs[0].x = 19;  legs[0].y = 85;  legs[0].w = 20;  legs[0].h = 25;
-    legs[1].x = 52;  legs[1].y = 85;  legs[1].w = 20;  legs[1].h = 25;
-    legs[2].x = 85;  legs[2].y = 85;  legs[2].w = 20;  legs[2].h = 25;
-    legs[3].x = 118; legs[3].y = 85;  legs[3].w = 20;  legs[3].h = 25;
-    legs[4].x = 150; legs[4].y = 85;  legs[4].w = 20;  legs[4].h = 25;
-    legs[5].x = 183; legs[5].y = 85;  legs[5].w = 20;  legs[5].h = 25;
+    legs[0].x = 715;  legs[0].y = 670;  legs[0].w = 20;  legs[0].h = 25;
+    legs[1].x = 681;  legs[1].y = 670;  legs[1].w = 20;  legs[1].h = 25;
+    legs[2].x = 647;  legs[2].y = 670;  legs[2].w = 20;  legs[2].h = 25;
+    legs[3].x = 614;  legs[3].y = 670;  legs[3].w = 20;  legs[3].h = 25;
+    legs[4].x = 581;  legs[4].y = 670;  legs[4].w = 20;  legs[4].h = 25;
+    legs[5].x = 548;  legs[5].y = 670;  legs[5].w = 20;  legs[5].h = 25;
 }
 
 
@@ -357,6 +358,7 @@ Indexes animate_clark(GRAPH* g, ScenarioState* sco_state, PlayerState* pla_state
     const bool moving = facing_left ? pla_state->isMovingBackward
                                     : pla_state->isMovingForward;
     const bool jumping = pla_state->shouldJump;
+    const bool shooting = (pla_state->shotsRemaining > 0);  /* torso is in shoot cycle */
     int frame_idx;
 
     /* ====== TORSO (prioridad: shoot > jump > lookUp > run > stand) ====== */
@@ -396,9 +398,31 @@ Indexes animate_clark(GRAPH* g, ScenarioState* sco_state, PlayerState* pla_state
     }
 
     /* ====== Build destination rects ====== */
-    const int torso_y = jumping ? (20 + y - 2) : (20 + y);
-    SDL_Rect torso_coors = { torso.off_x + x, torso_y, torso.src.w, torso.src.h };
-    SDL_Rect leg_coors   = { legs.off_x  + x, 41 + y, legs.src.w,  legs.src.h  };
+    /* Jump torso sits PLAYER_JUMP_TORSO_Y_OFFSET px lower to correct the
+     * sprite desync with the legs. */
+    const int torso_y = jumping ? (PLAYER_TORSO_Y_OFFSET + y + PLAYER_JUMP_TORSO_Y_OFFSET)
+                                : (PLAYER_TORSO_Y_OFFSET + y);
+
+    int torso_x = x;  /* default torso X position */
+
+    torso_x = jumping && !facing_left ? (torso_x - PLAYER_JUMP_TORSO_X_OFFSET)
+                                : x;
+
+    torso_x = jumping && facing_left ? (torso_x + PLAYER_JUMP_TORSO_LEFT_X_OFFSET)
+                                : torso_x;
+
+    torso_x = (jumping && shooting && !facing_left)
+                          ? (torso_x + PLAYER_JUMB_SHOOTING_TORSO_X_OFFSET)
+                          : torso_x;
+
+    /* When jumping + shooting while facing left, the combined sprite is
+     * shifted relative to the regular jump pose. Nudge the torso in X. */
+    torso_x = (jumping && shooting && facing_left)
+                          ? (torso_x - PLAYER_JUMB_SHOOTING_TORSO_LEFT_X_OFFSET)
+                          : torso_x;
+
+    SDL_Rect torso_coors = { torso.off_x + torso_x, torso_y, torso.src.w, torso.src.h };
+    SDL_Rect leg_coors   = { legs.off_x  + x, PLAYER_LEGS_Y_OFFSET + y, legs.src.w,  legs.src.h  };
 
     SDL_RenderCopy(g->renderer, legs.tex,  &legs.src,  &leg_coors);
     SDL_RenderCopy(g->renderer, torso.tex, &torso.src, &torso_coors);

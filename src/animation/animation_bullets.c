@@ -4,10 +4,10 @@
 
 void bulletDefaultArr(SDL_Rect frames[1]) {
     /* Default bullet sprite sub-region inside Weapon_SFX.png */
-    frames[0].x = 25;
-    frames[0].y = 70;
-    frames[0].w = 10;
-    frames[0].h = 10;
+    frames[0].x = 5;
+    frames[0].y = 72;
+    frames[0].w = 6;
+    frames[0].h = 6;
 }
 
 void initBulletAnimations(AnimationBulletArrays* ani_arrays) {

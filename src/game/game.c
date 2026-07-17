@@ -164,6 +164,11 @@ static void spawnBulletFromPlayer(PlayerState* player, BulletPool* pool) {
      * initPlayer, which is fine for spawning. The bullet snapshots this y
      * and never tracks the player again. */
     int spawn_x = player->x + BULLET_SPAWN_OFFSET_X;
+    /* Facing left → sprite is mirrored, muzzle sits 8px further left than
+     * the default forward offset. */
+    if (player->direction == DIRECTION_LEFT) {
+        spawn_x -= BULLET_SPAWN_OFFSET_X_LEFT_CORRECTION;
+    }
     int spawn_y = player->y + BULLET_SPAWN_OFFSET_Y;
     spawnBullet(pool, spawn_x, spawn_y, player->direction);
 }

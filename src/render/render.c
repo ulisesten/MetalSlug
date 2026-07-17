@@ -8,7 +8,12 @@
 
 static void ToggleFullscreen(SDL_Window* window) {
 
-    Uint32 FullscreenFlag = SDL_WINDOW_FULLSCREEN;
+    /* Use FULLSCREEN_DESKTOP so the display keeps its current desktop
+     * resolution and SDL scales our logical WINDOW_WIDTH×WINDOW_HEIGHT
+     * render target up to fill the screen. Plain SDL_WINDOW_FULLSCREEN
+     * would switch the display to a (possibly different) video mode and
+     * leave large black borders around our fixed-size render. */
+    Uint32 FullscreenFlag = SDL_WINDOW_FULLSCREEN_DESKTOP;
 
     bool IsFullscreen = SDL_GetWindowFlags(window) & FullscreenFlag;
     SDL_SetWindowFullscreen(window, IsFullscreen ? 0 : FullscreenFlag);

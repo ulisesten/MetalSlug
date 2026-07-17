@@ -8,8 +8,14 @@ extern void exitGame(PlayerState* state);  // puedes implementar esto si quieres
 
 void handleEvents(PlayerState* state) {
     SDL_Event e;
-    SDL_PollEvent(&e);
-    //while (SDL_PollEvent(&e)) {
+    /* Drain the whole event queue each frame. Processing only one event per
+     * frame (the old behaviour) lets the queue back up under bursty input —
+     * e.g. holding a key generates SDL_KEYDOWN auto-repeat events faster than
+     * the framerate processes them, and a quick KEYUP+KEYDOWN pair can be
+     * split across frames, producing visible input lag. The switches below
+     * are all idempotent on the state they write, so re-entering them with
+     * multiple events of the same type is harmless. */
+    while (SDL_PollEvent(&e)) {
         switch (e.type) {
             case SDL_QUIT:
                 state->quit = true;
@@ -112,5 +118,5 @@ void handleEvents(PlayerState* state) {
                 }
                 break;
         }
-    //}
+    }
 }

@@ -31,6 +31,13 @@ int main(int argc, char** argv) {
         printf("no renderer %s\n", SDL_GetError());
     }
 
+    /* Lock the renderer to a logical WINDOW_WIDTH×WINDOW_HEIGHT canvas.
+     * SDL scales it to the actual window/framebuffer (fullscreen or not)
+     * preserving the aspect ratio, so the game code can keep using the
+     * fixed coordinate space while the output fills the screen. */
+    SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
+    SDL_RenderSetIntegerScale(renderer, SDL_FALSE);
+
     // menuPersonaje(screen, window); // Activar si se quiere el menú
     startGame(renderer, window);       // Lógica del nivel 1
 
