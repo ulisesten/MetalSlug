@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include "../animation/animation_player_clark.h"
 #include "../animation/animation_bullets.h"
+#include "../animation/animation_enemies.h"
 #include "floor.h"
 #include "constants/scenario.h"
 
@@ -67,7 +68,11 @@ void renderUpdateCoors(PlayerState* pla_state, ScenarioState* sco_state) {
     const int mountainRatio = sco_state->MOUNTAIN_SCROLL_RATIO;
     const int horizonRatio  = sco_state->HORIZON_SCROLL_RATIO;
 
-    if( pla_state->isMovingForward ) {
+    /* Dead player can't move (inputs were also ignored in handleEvents).
+     * We still draw the corpse anchored to the terrain below. */
+    const bool dead = pla_state->shouldDie || pla_state->isDead;
+
+    if( !dead && pla_state->isMovingForward ) {
         if( sco_state->x >= sco_state->maxScrollWidth -1 ) pla_state->endOfScenarioOffset = sco_state->SCENARIO_END_OFFSET;
 
         if(pla_state->shouldTranslate) {
@@ -92,7 +97,7 @@ void renderUpdateCoors(PlayerState* pla_state, ScenarioState* sco_state) {
     }
     
     else
-    if( pla_state->isMovingBackward ) {
+    if( !dead && pla_state->isMovingBackward ) {
         if(pla_state->shouldTranslate) {
             if(pla_state->floorIndex > 0 && pla_state->x > 0){
                 pla_state->x--;
@@ -136,6 +141,48 @@ void renderBullets(GRAPH* g, BulletPool* pool) {
         } else {
             SDL_Rect dst = { draw_x, draw_y, src.w, src.h };
             SDL_RenderCopy(g->renderer, pool->texture, &src, &dst);
+        }
+    }
+}
+
+/* === Debug === Toggled by F1. Draws coloured outlines around the player
+ * sprite parts (torso red, legs cyan when on-screen) and each live enemy
+ * body (yellow), using the cached destination rects written by
+ * animate_clark and the soldier* functions. */
+void renderDebugRects(GRAPH* g, PlayerState* pla, EnemyState** enemies, int enemy_count) {
+    if (!pla->showDebugRects) return;
+
+    /* First-run confirmation — helps spot if rects are never populated. */
+    static int shown = 0;
+    if (shown++ == 0) {
+        printf("[DEBUG] Drawing AABBs. Player torso {%d,%d,%d,%d} legs {%d,%d,%d,%d}\n",
+               pla->lastTorsoDstRect.x, pla->lastTorsoDstRect.y,
+               pla->lastTorsoDstRect.w, pla->lastTorsoDstRect.h,
+               pla->lastLegsDstRect.x,  pla->lastLegsDstRect.y,
+               pla->lastLegsDstRect.w,  pla->lastLegsDstRect.h);
+    }
+
+    /* Player torso — red. */
+    if (pla->lastTorsoDstRect.w > 0 && pla->lastTorsoDstRect.h > 0) {
+        SDL_SetRenderDrawColor(g->renderer, 255, 0, 0, 255);
+        SDL_RenderDrawRect(g->renderer, &pla->lastTorsoDstRect);
+    }
+    /* Player legs — cyan, but only when on-screen (the death animator parks
+     * them at (-10000,-10000) — drawing a rect there is harmless but
+     * visually noisy). */
+    if (pla->lastLegsDstRect.w > 0 && pla->lastLegsDstRect.h > 0
+        && pla->lastLegsDstRect.x > -100) {
+        SDL_SetRenderDrawColor(g->renderer, 0, 255, 255, 255);
+        SDL_RenderDrawRect(g->renderer, &pla->lastLegsDstRect);
+    }
+
+    /* Enemies — yellow. */
+    SDL_SetRenderDrawColor(g->renderer, 255, 255, 0, 255);
+    for (int i = 0; i < enemy_count; i++) {
+        EnemyState* e = enemies[i];
+        if (e->isDead) continue;
+        if (e->lastBodyDstRect.w > 0 && e->lastBodyDstRect.h > 0) {
+            SDL_RenderDrawRect(g->renderer, &e->lastBodyDstRect);
         }
     }
 }

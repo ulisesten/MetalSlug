@@ -20,7 +20,7 @@ void clarkStandArr(SDL_Rect torso[4],SDL_Rect pierna[1]){
     torso[3].w=35; torso[3].h=35;
 
     pierna[0].x=145; pierna[0].y=20;
-    pierna[0].w=35; pierna[0].h=34;//-----------------------------
+    pierna[0].w=35; pierna[0].h=23;//-----------------------------
 }
 
 void clarkStandBackArr(SDL_Rect torso[4],SDL_Rect pierna[1]){
@@ -36,40 +36,22 @@ void clarkStandBackArr(SDL_Rect torso[4],SDL_Rect pierna[1]){
     torso[3].x=611; torso[3].y=5;
     torso[3].w=30; torso[3].h=30;
 
-    pierna[0].x=580; pierna[0].y=20;
-    pierna[0].w=30; pierna[0].h=30;//-----------------------------
+    pierna[0].x=580; pierna[0].y=20;  pierna[0].w=30; pierna[0].h=23;//-----------------------------
 }
 
 void clarkRunArr(SDL_Rect torso[4],SDL_Rect pierna[6]){
-    torso[0].x=10; torso[0].y=5;//Parado--------------------------
-    torso[0].w=35; torso[0].h=35;
+    torso[0].x=10; torso[0].y=5;   torso[0].w=35; torso[0].h=35;
+    torso[1].x=43; torso[1].y=5;   torso[1].w=35; torso[1].h=35;
+    torso[2].x=76; torso[2].y=5;   torso[2].w=35; torso[2].h=35;
+    torso[3].x=109; torso[3].y=5;  torso[3].w=35; torso[3].h=35;
 
-    torso[1].x=43; torso[1].y=5;
-    torso[1].w=35; torso[1].h=35;
-
-    torso[2].x=76; torso[2].y=5;
-    torso[2].w=35; torso[2].h=35;
-
-    torso[3].x=109; torso[3].y=5;
-    torso[3].w=35; torso[3].h=35;
-            //Corriendo---------------------------------------------------------
-    pierna[0].x=13; pierna[0].y=434;
-    pierna[0].w=34; pierna[0].h=34;
-
-    pierna[1].x=57; pierna[1].y=434;
-    pierna[1].w=34; pierna[1].h=34;
-
-    pierna[2].x=101; pierna[2].y=434;
-    pierna[2].w=34;  pierna[2].h=34;
-
-    pierna[3].x=133; pierna[3].y=434;
-    pierna[3].w=34;  pierna[3].h=34;
-
-    pierna[4].x=167; pierna[4].y=434;
-    pierna[4].w=34;  pierna[4].h=34;
-
-    pierna[5].x=201; pierna[5].y=434;
-    pierna[5].w=34;  pierna[5].h=34;//----------------------------
+    //Corriendo---------------------------------------------------------
+    pierna[0].x=13;  pierna[0].y=434; pierna[0].w=34;  pierna[0].h=24;
+    pierna[1].x=57;  pierna[1].y=434; pierna[1].w=34;  pierna[1].h=24;
+    pierna[2].x=101; pierna[2].y=434; pierna[2].w=34;  pierna[2].h=24;
+    pierna[3].x=133; pierna[3].y=434; pierna[3].w=34;  pierna[3].h=24;
+    pierna[4].x=167; pierna[4].y=434; pierna[4].w=34;  pierna[4].h=24;
+    pierna[5].x=201; pierna[5].y=434; pierna[5].w=34;  pierna[5].h=24;//----------------------------
 }
 
 /* Indexes clarkPier(GRAPH g,int x,int y,SDL_Rect pierna[]){
@@ -120,23 +102,12 @@ void clarkRunBackArr(SDL_Rect torso[4],SDL_Rect pierna[6]){
     torso[3].x=611; torso[3].y=5;
     torso[3].w=30; torso[3].h=30;
     //Corriendo---------------------------------------------------------
-    pierna[0].x=711; pierna[0].y=434;
-    pierna[0].w=34; pierna[0].h=34;
-
-    pierna[1].x=667; pierna[1].y=434;
-    pierna[1].w=34; pierna[1].h=34;
-
-    pierna[2].x=626; pierna[2].y=434;
-    pierna[2].w=34;  pierna[2].h=34;
-
-    pierna[3].x=591; pierna[3].y=434;
-    pierna[3].w=34;  pierna[3].h=34;
-
-    pierna[4].x=557; pierna[4].y=434;
-    pierna[4].w=34;  pierna[4].h=34;
-
-    pierna[5].x=523; pierna[5].y=434;
-    pierna[5].w=34;  pierna[5].h=34;//----------------------------------
+    pierna[0].x=711; pierna[0].y=434;  pierna[0].w=34;  pierna[0].h=24;
+    pierna[1].x=667; pierna[1].y=434;  pierna[1].w=34;  pierna[1].h=24;
+    pierna[2].x=626; pierna[2].y=434;  pierna[2].w=34;  pierna[2].h=24;
+    pierna[3].x=591; pierna[3].y=434;  pierna[3].w=34;  pierna[3].h=24;
+    pierna[4].x=557; pierna[4].y=434;  pierna[4].w=34;  pierna[4].h=24;
+    pierna[5].x=523; pierna[5].y=434;  pierna[5].w=34;  pierna[5].h=24;//----------------------------------
 }
 
 void clarkShootArr(SDL_Rect torso[10]){
@@ -261,6 +232,28 @@ void clarkJumpBackLegsArr(SDL_Rect legs[6]) {
     legs[5].x = 548;  legs[5].y = 670;  legs[5].w = 20;  legs[5].h = 25;
 }
 
+void clarkDeadByShootArr(SDL_Rect body[19]) {
+    body[0].x=8;   body[0].y=4101; body[0].w=32; body[0].h=47;
+    body[1].x=38;  body[1].y=4101; body[1].w=32; body[1].h=47;
+    body[2].x=70;  body[2].y=4101; body[2].w=32; body[2].h=47;
+    body[3].x=108; body[3].y=4101; body[3].w=45; body[3].h=47;
+    body[4].x=152; body[4].y=4101; body[4].w=48; body[4].h=47;
+    body[5].x=201; body[5].y=4101; body[5].w=48; body[5].h=47;
+    body[6].x=250; body[6].y=4101; body[6].w=50; body[6].h=47;
+    body[7].x=299; body[7].y=4101; body[7].w=45; body[7].h=47;
+    body[8].x=355; body[8].y=4101; body[8].w=39; body[8].h=47;
+    body[9].x=398; body[9].y=4101; body[9].w=35; body[9].h=47;
+    body[10].x=431;body[10].y=4101;body[10].w=33;body[10].h=47;
+    body[11].x=466;body[11].y=4101;body[11].w=48;body[11].h=47;
+    body[12].x=513;body[12].y=4101;body[12].w=48;body[12].h=47;
+    body[13].x=561;body[13].y=4101;body[13].w=48;body[13].h=39;
+    body[14].x=11; body[14].y=4148;body[14].w=49;body[14].h=39;
+    body[15].x=62; body[15].y=4148;body[15].w=49;body[15].h=39;
+    body[16].x=109;body[16].y=4145;body[16].w=49;body[16].h=44;
+    body[17].x=158;body[17].y=4145;body[17].w=49;body[17].h=47;
+    body[18].x=208;body[18].y=4145;body[18].w=49;body[18].h=47;
+}
+
 
 void initAnimations(AnimationArrays* ani_arrays) {
     initClarkAnimations(ani_arrays);
@@ -280,6 +273,7 @@ void initClarkAnimations(AnimationArrays* ani_arrays) {
     clarkJumpBackTorsoArr(ani_arrays->JumpBackTorso);
     clarkJumpLegsArr(     ani_arrays->JumpLegs);
     clarkJumpBackLegsArr( ani_arrays->JumpBackLegs);
+    clarkDeadByShootArr(  ani_arrays->DeadByShootTorso);
 }
 
 /* ====== Per-movement frame setters ====== */
@@ -348,6 +342,16 @@ void setJumpLegsFrames(const PlayerState* s, const AnimationArrays* a, int frame
     v->off_x = 6;
 }
 
+void setDeadByShootFrames(const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v) {
+    /* Death-by-enemy-melee: single strip, no direction variant. It uses the
+     * front-facing texture (player has likely been hit while standing/jumping
+     * in some direction, but the death sprite is shared). */
+    const int idx = (frame >= PLAYER_DEAD_FRAMES) ? (PLAYER_DEAD_FRAMES - 1) : frame;
+    v->src   = a->DeadByShootTorso[idx];
+    v->tex   = s->textureFront;
+    v->off_x = 0;
+}
+
 /* ====== Centralized player animation ====== */
 
 Indexes animate_clark(GRAPH* g, ScenarioState* sco_state, PlayerState* pla_state, AnimationArrays* ani_arrays) {
@@ -361,8 +365,24 @@ Indexes animate_clark(GRAPH* g, ScenarioState* sco_state, PlayerState* pla_state
     const bool shooting = (pla_state->shotsRemaining > 0);  /* torso is in shoot cycle */
     int frame_idx;
 
-    /* ====== TORSO (prioridad: shoot > jump > lookUp > run > stand) ====== */
-    if (pla_state->shotsRemaining > 0) {
+    /* ====== TORSO (prioridad: death > shoot > jump > lookUp > run > stand) ====== */
+    if (pla_state->shouldDie || pla_state->isDead) {
+        /* Death animation overrides every other state. While isDead is true
+         * the setter clamps the frame to the last index, so the player
+         * simply lingers on the last sprite. */
+        frame_idx = pla_state->deadFrame;
+        setDeadByShootFrames(pla_state, ani_arrays, frame_idx, &torso);
+
+        if (pla_state->shouldAdvanceDeathAnim && !pla_state->isDead) {
+            pla_state->deadFrame++;
+            if (pla_state->deadFrame >= PLAYER_DEAD_FRAMES) {
+                pla_state->deadFrame   = PLAYER_DEAD_FRAMES - 1;
+                pla_state->isDead      = true;
+                pla_state->shouldDie   = false;
+            }
+            pla_state->shouldAdvanceDeathAnim = false;
+        }
+    } else if (pla_state->shotsRemaining > 0) {
         frame_idx = pla_state->shootFrame;
         setShootTorsoFrames(pla_state, ani_arrays, frame_idx, &torso);
 
@@ -388,8 +408,11 @@ Indexes animate_clark(GRAPH* g, ScenarioState* sco_state, PlayerState* pla_state
         setStandTorsoFrames(pla_state, ani_arrays, frame_idx, &torso);
     }
 
-    /* ====== PIERNAS (prioridad: jump > run > stand; shoot no las afecta) ====== */
-    if (jumping) {
+    /* ====== PIERNAS (prioridad: death > jump > run > stand; shoot no las afecta) ====== */
+    if (pla_state->shouldDie || pla_state->isDead) {
+        /* Keep legs on the standing frame so the death pose looks anchored. */
+        setStandLegsFrames(pla_state, ani_arrays, &legs);
+    } else if (jumping) {
         setJumpLegsFrames(pla_state, ani_arrays, pla_state->jumpAnimFrame % 6, &legs);
     } else if (moving) {
         setRunLegsFrames(pla_state, ani_arrays, pla_state->legsFrame, &legs);
@@ -422,10 +445,30 @@ Indexes animate_clark(GRAPH* g, ScenarioState* sco_state, PlayerState* pla_state
                           : torso_x;
 
     SDL_Rect torso_coors = { torso.off_x + torso_x, torso_y, torso.src.w, torso.src.h };
-    SDL_Rect leg_coors   = { legs.off_x  + x, PLAYER_LEGS_Y_OFFSET + y, legs.src.w,  legs.src.h  };
+
+    /* During the death animation the torso sprite already depicts the full
+     * collapsed body, so the legs would be drawn redundantly on top of it.
+     * Park them off-screen (way outside the logical viewport). */
+    SDL_Rect leg_coors;
+    if (pla_state->shouldDie || pla_state->isDead) {
+        leg_coors.x = -10000;
+        leg_coors.y = -10000;
+        leg_coors.w = legs.src.w;
+        leg_coors.h = legs.src.h;
+    } else {
+        leg_coors.x = legs.off_x + x;
+        leg_coors.y = PLAYER_LEGS_Y_OFFSET + y;
+        leg_coors.w = legs.src.w;
+        leg_coors.h = legs.src.h;
+    }
 
     SDL_RenderCopy(g->renderer, legs.tex,  &legs.src,  &leg_coors);
     SDL_RenderCopy(g->renderer, torso.tex, &torso.src, &torso_coors);
+
+    /* Cache final destination rects on the player state so the caller can
+     * draw debug outlines (collision visualisation) or AABB checks. */
+    pla_state->lastTorsoDstRect = torso_coors;
+    pla_state->lastLegsDstRect  = leg_coors;
 
     /* ====== Frame advancing — timers are independent =============
      *  JUMP_ANIM_INTERVAL_MS (sprite cycle, ~80ms)

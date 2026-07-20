@@ -50,12 +50,20 @@ void initPlayer(PlayerState* state, GameAssets assets, SDL_Renderer** renderer) 
 		.jumpAnimFrame = 0,
 		.jumpTrajectoryFrame = 0,
 		.pendingShot = false,
+		.shouldDie = false,
+		.isDead = false,
+		.deadFrame = 0,
+		.shouldAdvanceDeathAnim = false,
 		.lastBulletShotMs = 0,
 		.X_RANGE_MIN = PLAYER_X_RANGE_MIN,
 		.X_RANGE_MAX = PLAYER_X_RANGE_MAX,
 		.direction = DIRECTION_RIGHT, .lastDirection = DIRECTION_RIGHT,
 		.indexes = {.maxTorsoFrames = 4, .maxLegsFrames = 1},
 		.animations = ani_arrays,
+		.lastTorsoDstRect = {0, 0, 0, 0},
+		.lastLegsDstRect  = {0, 0, 0, 0},
+		.lastCollisionRect = {0, 0, 0, 0},
+		.showDebugRects = false,
 		.textureFront        = SDL_CreateTextureFromSurface(*renderer, assets.playerSurface),
 		.textureBack   = SDL_CreateTextureFromSurface(*renderer, assets.playerBackSurface)
 	};
@@ -82,6 +90,15 @@ void initEnemies(EnemyState** ene_states, EnemyMatrix* matrix, GameAssets assets
 			.direction = DIRECTION_LEFT,
 			.animations = arrays,
 			.canTransitionMode = true,
+			.isDead = false,
+			.isDying = false,
+			.isBlinking = false,
+			.shouldRemove = false,
+			.deadFrame = 0,
+			.blinkFrame = 0,
+			.lastDeadTick = 0,
+			.lastBlinkTick = 0,
+			.lastBodyDstRect = {0, 0, 0, 0},
 			.texture = shared_enemy_texture
 		};
 	}

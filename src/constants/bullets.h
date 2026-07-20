@@ -18,6 +18,10 @@
 /* Vertical position of bullet (matches player torso y ~ +20) */
 #define BULLET_SPAWN_OFFSET_Y 30
 
+/* Bullet AABB size for collision (matches bulletDefaultArr sprite). */
+#define BULLET_WIDTH  6
+#define BULLET_HEIGHT 6
+
 /* Bullets are despawned after traveling this many pixels horizontally */
 #define BULLET_TRAVEL_RANGE 800
 

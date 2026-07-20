@@ -11,6 +11,7 @@ void initSoldierAnimations(AnimationEnemyArrays* ene_arrays) {
     soldierScaredArray(ene_arrays->enemyScaredBody);
     soldierCasualArray(ene_arrays->enemyCasualBody);
     soldierPursuitArray(ene_arrays->enemyPursuitBody);
+    soldierDeadByShootArray(ene_arrays->enemyDeadByShootBody);
 }
 
 void soldierKnifeArray(SDL_Rect body[18]) {
@@ -34,7 +35,7 @@ void soldierKnifeArray(SDL_Rect body[18]) {
     body[17].x = 144; body[17].y = 1043;  body[17].w = 25;  body[17].h = 37;
 }
 
-EnemyIndexes soldierKnifeAttack(GRAPH* g, EnemyState ene_state, int direction) {
+EnemyIndexes soldierKnifeAttack(GRAPH* g, EnemyState ene_state, int direction, SDL_Rect* dst_cache) {
     SDL_Rect body_coors;
 
     const int x = ene_state.x - ene_state.scenarioScrollOffset;
@@ -45,6 +46,8 @@ EnemyIndexes soldierKnifeAttack(GRAPH* g, EnemyState ene_state, int direction) {
     body_coors.y = y;
     body_coors.w = ene_state.animations->enemyKnifeBody[i].w;
     body_coors.h = ene_state.animations->enemyKnifeBody[i].h;
+
+    if (dst_cache) *dst_cache = body_coors;
 
     if( direction == DIRECTION_RIGHT) {
         SDL_RenderCopyEx(g->renderer, ene_state.texture, &ene_state.animations->enemyKnifeBody[i], &body_coors,0.0, NULL, SDL_FLIP_HORIZONTAL);
@@ -72,7 +75,7 @@ void soldierScaredArray(SDL_Rect body[11]) {
     body[10].x = 460;   body[10].y = 242;  body[10].w = 41;  body[10].h = 47;
 }
 
-EnemyIndexes soldierScared(GRAPH* g, EnemyState ene_state, int direction) {
+EnemyIndexes soldierScared(GRAPH* g, EnemyState ene_state, int direction, SDL_Rect* dst_cache) {
     SDL_Rect body_coors;
 
     const int x = ene_state.x - ene_state.scenarioScrollOffset;
@@ -83,6 +86,8 @@ EnemyIndexes soldierScared(GRAPH* g, EnemyState ene_state, int direction) {
     body_coors.y = y;
     body_coors.w = ene_state.animations->enemyScaredBody[i].w;
     body_coors.h = ene_state.animations->enemyScaredBody[i].h;
+
+    if (dst_cache) *dst_cache = body_coors;
 
     if( direction == DIRECTION_RIGHT) {
         SDL_RenderCopyEx(g->renderer, ene_state.texture, &ene_state.animations->enemyScaredBody[i], &body_coors,0.0, NULL, SDL_FLIP_HORIZONTAL);
@@ -113,7 +118,7 @@ void soldierCasualArray(SDL_Rect body[12]) {
     body[11].x =  119;   body[11].y =  187;  body[11].w =  34;  body[11].h  = 42;
 }
 
-EnemyIndexes soldierCasual(GRAPH* g, EnemyState ene_state, int direction) {
+EnemyIndexes soldierCasual(GRAPH* g, EnemyState ene_state, int direction, SDL_Rect* dst_cache) {
     SDL_Rect body_coors;
 
     const int x = ene_state.x - ene_state.scenarioScrollOffset;
@@ -124,6 +129,8 @@ EnemyIndexes soldierCasual(GRAPH* g, EnemyState ene_state, int direction) {
     body_coors.y = y;
     body_coors.w = ene_state.animations->enemyCasualBody[i].w;
     body_coors.h = ene_state.animations->enemyCasualBody[i].h;
+
+    if (dst_cache) *dst_cache = body_coors;
 
     if( direction == DIRECTION_RIGHT) {
         SDL_RenderCopyEx(g->renderer, ene_state.texture, &ene_state.animations->enemyCasualBody[i], &body_coors,0.0, NULL, SDL_FLIP_HORIZONTAL);
@@ -153,7 +160,19 @@ void soldierPursuitArray(SDL_Rect body[12]) {
     body[11].x = 307;   body[11].y =  310;  body[11].w = 24;  body[11].h = 40;
 }
 
-EnemyIndexes soldierPursuit(GRAPH* g, EnemyState ene_state, int direction) {
+void soldierDeadByShootArray(SDL_Rect body[9]) {
+    body[0].x = 4;   body[0].y =  10467;  body[0].w =  30;  body[0].h  = 40;
+    body[1].x = 39;  body[1].y =  10467;  body[1].w =  30;  body[1].h  = 40;
+    body[2].x = 74;  body[2].y =  10467;  body[2].w =  40;  body[2].h  = 40;
+    body[3].x = 115; body[3].y =  10467;  body[3].w =  42;  body[3].h  = 40;
+    body[4].x =159;  body[4].y =  10467;  body[4].w =  42;  body[4].h  = 40;
+    body[5].x =204;  body[5].y =  10467;  body[5].w =  44;  body[5].h  = 40;
+    body[6].x =249;  body[6].y =  10467;  body[6].w =  44;  body[6].h  = 40;
+    body[7].x =292;  body[7].y =  10467;  body[7].w =  44;  body[7].h  = 40;
+    body[8].x =341;  body[8].y =  10467;  body[8].w =  44;  body[8].h  = 40;
+}
+
+EnemyIndexes soldierPursuit(GRAPH* g, EnemyState ene_state, int direction, SDL_Rect* dst_cache) {
     SDL_Rect body_coors;
 
     const int x = ene_state.x - ene_state.scenarioScrollOffset;
@@ -165,6 +184,8 @@ EnemyIndexes soldierPursuit(GRAPH* g, EnemyState ene_state, int direction) {
     body_coors.w = ene_state.animations->enemyPursuitBody[i].w;
     body_coors.h = ene_state.animations->enemyPursuitBody[i].h;
 
+    if (dst_cache) *dst_cache = body_coors;
+
     if( direction == DIRECTION_RIGHT) {
         SDL_RenderCopyEx(g->renderer, ene_state.texture, &ene_state.animations->enemyPursuitBody[i], &body_coors,0.0, NULL, SDL_FLIP_HORIZONTAL);
         return (EnemyIndexes){12};
@@ -174,4 +195,28 @@ EnemyIndexes soldierPursuit(GRAPH* g, EnemyState ene_state, int direction) {
     //SDL_BlitSurface(g.soldier, &ene_state.ani_arrays->enemyPursuitBody[i], g.screen, &body_coors);
 
     return (EnemyIndexes){12};
+}
+
+EnemyIndexes soldierDeadByShoot(GRAPH* g, EnemyState ene_state, int direction, SDL_Rect* dst_cache) {
+    SDL_Rect body_coors;
+
+    const int x = ene_state.x - ene_state.scenarioScrollOffset;
+    const int y = ene_state.y;
+    const int i = ene_state.bodyFrame;
+
+    body_coors.x = x;
+    body_coors.y = y;
+    body_coors.w = ene_state.animations->enemyDeadByShootBody[i].w;
+    body_coors.h = ene_state.animations->enemyDeadByShootBody[i].h;
+
+    if (dst_cache) *dst_cache = body_coors;
+
+    /* Death sprite faces right by default; flip if enemy was facing left. */
+    if (direction == DIRECTION_RIGHT) {
+        SDL_RenderCopyEx(g->renderer, ene_state.texture, &ene_state.animations->enemyDeadByShootBody[i], &body_coors, 0.0, NULL, SDL_FLIP_HORIZONTAL);
+        return (EnemyIndexes){9};
+    }
+
+    SDL_RenderCopy(g->renderer, ene_state.texture, &ene_state.animations->enemyDeadByShootBody[i], &body_coors);
+    return (EnemyIndexes){9};
 }

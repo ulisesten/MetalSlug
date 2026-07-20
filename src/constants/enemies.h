@@ -9,4 +9,8 @@
 #define ENEMY_SPAWN_X_OFFSET    25 /* subtracted from matrix x at spawn */
 #define ENEMY_VERTICAL_OFFSET   24 /* added to terrain height */
 
+/* Death-by-bullet animation */
+#define ENEMY_DEAD_FRAMES       9
+#define ENEMY_BLINK_FRAMES      6  /* number of blink on/off toggles */
+
 #endif

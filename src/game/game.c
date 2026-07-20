@@ -19,10 +19,10 @@
 
 
 // Declarations moved to init.h
-static void gameLoop(       GRAPH* g, GameAssets* assets, PlayerState* player, EnemyState** enemies, ScenarioState* scenario, BulletPool* bullets, short enemy_count);
+static void gameLoop(       GRAPH* g, GameAssets* assets, PlayerState* player, EnemyState** enemies, ScenarioState* scenario, BulletPool* bullets, short* enemy_count);
 static void updateAnimationTimers(      PlayerState* state);
 static void updateAnimationEnemyTimers( EnemyState* ene_states);
-static void updateBullets(BulletPool* pool);
+static void updateBullets(BulletPool* pool, EnemyState** enemies, short enemy_count);
 static void spawnBulletFromPlayer(PlayerState* player, BulletPool* pool);
 static void cleanupGame(    GameAssets* assets, PlayerState* player, EnemyState** enemies, BulletPool* bullets, short enemy_count, FloorCoors* floor_coors);
 
@@ -58,14 +58,15 @@ void startGame(SDL_Renderer* renderer, SDL_Window* window) {
     sco_state.floor_coors = &floor_coors;
     sco_state.x = sco_state.mountainScrollX = sco_state.horizonScrollX = 0;
 
-    gameLoop(&g, &assets, &player_state, enemies, &sco_state, &bullets, matrix.count);
-    cleanupGame(&assets, &player_state, enemies, &bullets, matrix.count, &floor_coors);
+    short enemy_count = matrix.count;
+    gameLoop(&g, &assets, &player_state, enemies, &sco_state, &bullets, &enemy_count);
+    cleanupGame(&assets, &player_state, enemies, &bullets, enemy_count, &floor_coors);
 }
 
 /**
  * @brief Main game loop that handles rendering, updates, and input
  */
-static void gameLoop(GRAPH* g, GameAssets* assets, PlayerState* player, EnemyState** enemies, ScenarioState* scenario, BulletPool* bullets, short enemy_count) {
+static void gameLoop(GRAPH* g, GameAssets* assets, PlayerState* player, EnemyState** enemies, ScenarioState* scenario, BulletPool* bullets, short* enemy_count) {
     (void)assets;
     while (!player->quit) {
         SDL_RenderClear(g->renderer);
@@ -87,15 +88,33 @@ static void gameLoop(GRAPH* g, GameAssets* assets, PlayerState* player, EnemySta
         renderScenario(g, scenario);
         renderPlayer(player, scenario, g);
         renderUpdateCoors(player, scenario);
-        updateBullets(bullets);
+        updateBullets(bullets, enemies, *enemy_count);
         renderBullets(g, bullets);
 
-        for (int i = 0; i < enemy_count; i++) {
+        for (int i = 0; i < *enemy_count; i++) {
             updateAnimationEnemyTimers(enemies[i]);
             renderEnemies(enemies[i], g);
             renderUpdateEnemyCoors(enemies[i], player, scenario);
             renderEnemyCollisions(enemies[i], player, scenario);
         }
+
+        /* Compact enemy array: remove the ones who finished blinking.
+         * We free their memory, shift the rest down, and decrease count. */
+        for (int i = 0; i < *enemy_count; ) {
+            if (enemies[i]->shouldRemove) {
+                free(enemies[i]);
+                for (int k = i; k < *enemy_count - 1; k++) {
+                    enemies[k] = enemies[k + 1];
+                }
+                enemies[*enemy_count - 1] = NULL;
+                (*enemy_count)--;
+            } else {
+                i++;
+            }
+        }
+
+        /* Debug overlay (F1) — drawn last so it sits above every sprite. */
+        renderDebugRects(g, player, enemies, *enemy_count);
 
         SDL_RenderPresent(g->renderer);
     }
@@ -134,6 +153,16 @@ static void updateAnimationTimers(PlayerState* state) {
         state->lastShootTick = now;
     }
 
+    /* Death animation timer. While shouldDie is true, advances deadFrame
+     * every DEATH_ANIM_INTERVAL_MS; caps at the last frame and sets isDead
+     * so the player lingers. Once isDead is true the flag flips off and the
+     * timer is no longer consulted. */
+    if (state->shouldDie && !state->isDead
+        && (now > state->lastDeadTick + DEATH_ANIM_INTERVAL_MS)) {
+        state->shouldAdvanceDeathAnim = true;
+        state->lastDeadTick = now;
+    }
+
     if (now > state->lastTranslateTick + TRANSLATE_INTERVAL_MS) {
         state->shouldTranslate = true;
         state->lastTranslateTick = now;
@@ -142,8 +171,7 @@ static void updateAnimationTimers(PlayerState* state) {
 
 static void updateAnimationEnemyTimers(EnemyState* ene_states){
     Uint32 now = SDL_GetTicks();
-    
-    // 110
+
     if(now > ene_states->lastAnimateTick + ENEMY_ANIMATE_INTERVAL_MS) {
         ene_states->shouldAnimate = true;
         ene_states->lastAnimateTick = now;
@@ -152,6 +180,36 @@ static void updateAnimationEnemyTimers(EnemyState* ene_states){
     if(now > ene_states->lastWalkTick + ENEMY_WALK_INTERVAL_MS) {
         ene_states->shouldWalk = true;
         ene_states->lastWalkTick = now;
+    }
+
+    /* Death-by-bullet animation: advance deadFrame on each interval. */
+    if (ene_states->isDying
+        && (now > ene_states->lastDeadTick + ENEMY_DEAD_ANIM_INTERVAL_MS)) {
+        ene_states->deadFrame++;
+        ene_states->lastDeadTick = now;
+        if (ene_states->deadFrame >= ENEMY_DEAD_FRAMES) {
+            /* Death animation done → switch to blinking phase.
+             * Park the enemy off-screen so the visible sprite disappears
+             * immediately while the blink timer counts down (the blink
+             * is purely a cooldown before the slot is reclaimed). */
+            ene_states->x = -10000;
+            ene_states->isDying = false;
+            ene_states->isBlinking = true;
+            ene_states->deadFrame = ENEMY_DEAD_FRAMES - 1;
+            ene_states->blinkFrame = 0;
+            ene_states->lastBlinkTick = now;
+        }
+    }
+
+    /* Blinking: advance blink counter every interval, then mark for removal. */
+    if (ene_states->isBlinking
+        && (now > ene_states->lastBlinkTick + ENEMY_BLINK_INTERVAL_MS)) {
+        ene_states->blinkFrame++;
+        ene_states->lastBlinkTick = now;
+        if (ene_states->blinkFrame >= ENEMY_BLINK_FRAMES * 2) {
+            ene_states->isBlinking = false;
+            ene_states->shouldRemove = true;
+        }
     }
 }
 
@@ -173,7 +231,7 @@ static void spawnBulletFromPlayer(PlayerState* player, BulletPool* pool) {
     spawnBullet(pool, spawn_x, spawn_y, player->direction);
 }
 
-static void updateBullets(BulletPool* pool) {
+static void updateBullets(BulletPool* pool, EnemyState** enemies, short enemy_count) {
     Uint32 now = SDL_GetTicks();
     for (int i = 0; i < BULLET_POOL_CAPACITY; i++) {
         BulletState* b = &pool->bullets[i];
@@ -188,6 +246,30 @@ static void updateBullets(BulletPool* pool) {
 
         /* y is NOT touched: it stays at spawn value forever, so a player
          * returning to the ground doesn't drag the bullet down with them. */
+
+        /* Bullet AABB for collision (b->x,y is top-left). */
+        SDL_Rect bullet_rect = { b->x, b->y, BULLET_WIDTH, BULLET_HEIGHT };
+
+        /* Check against every live enemy. Hit → mark enemy isDying, despawn
+         * the bullet. First hit only; bullet disappears on touching. */
+        bool hit = false;
+        for (int j = 0; j < enemy_count; j++) {
+            EnemyState* e = enemies[j];
+            if (!e || e->isDead || e->isDying || e->isBlinking || e->shouldRemove) continue;
+            if (e->lastBodyDstRect.w <= 0 || e->lastBodyDstRect.h <= 0) continue;
+
+            if (SDL_HasIntersection(&bullet_rect, &e->lastBodyDstRect)) {
+                e->isDying = true;
+                e->deadFrame = 0;
+                e->lastDeadTick = now;
+                hit = true;
+                break;
+            }
+        }
+        if (hit) {
+            b->active = false;
+            continue;
+        }
 
         /* Despawn after travelling BULLET_TRAVEL_RANGE pixels or going
          * well outside the visible viewport. */

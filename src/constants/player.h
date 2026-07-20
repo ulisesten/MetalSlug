@@ -6,7 +6,7 @@
 
 /* Player movement range on screen (px) */
 #define PLAYER_X_RANGE_MIN 20
-#define PLAYER_X_RANGE_MAX 400
+#define PLAYER_X_RANGE_MAX 280//400
 
 /* Shooting burst count (each key press triggers N frames) */
 #define PLAYER_SHOT_FRAMES 3
@@ -36,5 +36,15 @@
 
 #define PLAYER_JUMB_SHOOTING_TORSO_X_OFFSET 4
 #define PLAYER_JUMB_SHOOTING_TORSO_LEFT_X_OFFSET 10
+
+/* Frames in the death-by-enemy-melee sprite strip (clarkDeadByShootArr).
+ * When the animation finishes, the player lingers on the last frame. */
+#define PLAYER_DEAD_FRAMES 19
+
+/* Minimum jump height (px above ground) at which the player's sprite is
+ * tall enough above the ground to clear the enemy's melee reach. While
+ * jumpOffsets[idx] > threshold, contact with an enemy on that floorIndex
+ * is ignored (the player is in the air). */
+#define PLAYER_AIRBORNE_THRESHOLD 28
 
 #endif

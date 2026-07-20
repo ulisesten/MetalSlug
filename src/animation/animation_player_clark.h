@@ -37,6 +37,7 @@ typedef struct {
     SDL_Rect JumpBackTorso[6];
     SDL_Rect JumpLegs[6];
     SDL_Rect JumpBackLegs[6];
+    SDL_Rect DeadByShootTorso[19]; /* death-by-enemy-melee sprite strip */
 } AnimationArrays;
 
 typedef struct {
@@ -48,6 +49,7 @@ typedef struct {
     int shootFrame;
     int jumpAnimFrame;        /* sprite animation cycling 6 frames */
     int jumpTrajectoryFrame;  /* parabolic trajectory index (0..jumpOffsetsCount-1) */
+    int deadFrame;            /* index into clarkDeadByShoot (0..PLAYER_DEAD_FRAMES-1) */
     int X_RANGE_MAX;
     int X_RANGE_MIN;
     int x_displacement;
@@ -56,9 +58,12 @@ typedef struct {
     bool isMovingForward;
     bool shouldBreathe, shouldRun, shouldJump, shouldShoot, shouldTranslate, wantToShoot, shouldLookUp;
     bool keepWalking, shouldAdvanceJumpAnim, shouldAdvanceJumpTrajectory;
+    bool shouldAdvanceDeathAnim;
     bool pendingShot;            /* edge-triggered manual shot request */
+    bool shouldDie;              /* edge-triggered death-by-enemy-melee */
+    bool isDead;                 /* death animation has finished; linger on last frame */
     bool quit;
-    Uint32 lastBreathTick, lastWalkTick, lastJumpAnimTick, lastJumpTrajectoryTick, lastShootTick, lastTranslateTick;
+    Uint32 lastBreathTick, lastWalkTick, lastJumpAnimTick, lastJumpTrajectoryTick, lastShootTick, lastTranslateTick, lastDeadTick;
     Uint32 lastBulletShotMs;     /* timestamp of last bullet fired (for cooldown) */
     bool isRunning;
     int shotsRemaining;
@@ -68,6 +73,11 @@ typedef struct {
     AnimationArrays* animations;
     SDL_Texture* textureFront;
     SDL_Texture* textureBack;
+    /* Debug — destination rects last frame, exposed for collision visualisation. */
+    SDL_Rect lastTorsoDstRect;
+    SDL_Rect lastLegsDstRect;
+    SDL_Rect lastCollisionRect; /* compact AABB (torso+legs) used for collisions */
+    bool showDebugRects;        /* toggled by F1; outlines sprites when true */
 } PlayerState;
 
 typedef struct{
@@ -114,6 +124,7 @@ void clarkJumpTorsoArr(   SDL_Rect torso[6]);
 void clarkJumpBackTorsoArr(SDL_Rect torso[6]);
 void clarkJumpLegsArr(    SDL_Rect legs[6]);
 void clarkJumpBackLegsArr(SDL_Rect legs[6]);
+void clarkDeadByShootArr( SDL_Rect torso[19]);
 
 void initAnimations(AnimationArrays* ani_arrays);
 void initClarkAnimations(AnimationArrays* ani_arrays);
@@ -139,6 +150,7 @@ void setRunLegsFrames(     const PlayerState* s, const AnimationArrays* a, int f
 void setUpTorsoFrames(     const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v);
 void setJumpTorsoFrames(   const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v);
 void setJumpLegsFrames(    const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v);
+void setDeadByShootFrames( const PlayerState* s, const AnimationArrays* a, int frame, FrameView* v);
 
 /**
  * @brief Centralized player renderer + frame advancing.

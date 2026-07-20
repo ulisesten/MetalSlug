@@ -16,12 +16,15 @@ void handleEvents(PlayerState* state) {
      * are all idempotent on the state they write, so re-entering them with
      * multiple events of the same type is harmless. */
     while (SDL_PollEvent(&e)) {
+        /* Ignore gameplay inputs once dead, but keep ESC/QUIT working. */
+        const bool dead = state->shouldDie || state->isDead;
         switch (e.type) {
             case SDL_QUIT:
                 state->quit = true;
                 break;
 
             case SDL_KEYDOWN:
+                if (dead && e.key.keysym.sym != SDLK_ESCAPE) break;
                 switch (e.key.keysym.sym) {
                     case SDLK_ESCAPE:
                         state->quit = true;
@@ -59,6 +62,12 @@ void handleEvents(PlayerState* state) {
                     case SDLK_f:
                         if (e.key.repeat == 0) {
                             state->fullscreen = true;
+                        }
+                        break;
+                    case SDLK_y:  /* the `~ key — common debug toggle */
+                        if (e.key.repeat == 0) {
+                            state->showDebugRects = !state->showDebugRects;
+                            printf("[DEBUG] showDebugRects = %s\n", state->showDebugRects ? "ON" : "OFF");
                         }
                         break;
                 }
